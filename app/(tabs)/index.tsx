@@ -168,8 +168,8 @@ export default function TrackerScreen() {
                   <Text style={styles.visaTypeText}>{currentVisa.visa_type}</Text>
                 </View>
 
-                {/* Divider */}
-                <View style={styles.divider} />
+                {/* Blue Divider */}
+                <View style={styles.blueDivider} />
 
                 {/* Progress Bar */}
                 <View style={styles.progressBar}>
@@ -185,22 +185,22 @@ export default function TrackerScreen() {
                 </View>
                 <Text style={styles.progressText}>{Math.round(getProgressPercentage(currentVisa))}% used</Text>
 
-                {/* Divider */}
-                <View style={styles.divider} />
+                {/* Blue Divider */}
+                <View style={styles.blueDivider} />
 
-                {/* Visa Details with individual dividers */}
+                {/* Visa Details with individual blue dividers */}
                 <View style={styles.visaDetails}>
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Entry</Text>
                     <Text style={styles.detailValue}>{formatDate(currentVisa.entry_date)}</Text>
                   </View>
-                  <View style={styles.divider} />
+                  <View style={styles.blueDivider} />
                   
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Exit</Text>
                     <Text style={styles.detailValue}>{formatDate(currentVisa.exit_date)}</Text>
                   </View>
-                  <View style={styles.divider} />
+                  <View style={styles.blueDivider} />
                   
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Duration</Text>
@@ -208,8 +208,8 @@ export default function TrackerScreen() {
                   </View>
                 </View>
 
-                {/* Divider */}
-                <View style={styles.divider} />
+                {/* Blue Divider */}
+                <View style={styles.blueDivider} />
                 
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Extensions</Text>
@@ -219,8 +219,8 @@ export default function TrackerScreen() {
                 {/* Extension Deadline */}
                 {currentVisa.extensions_available > 0 && (
                   <>
-                    {/* Divider */}
-                    <View style={styles.divider} />
+                    {/* Blue Divider */}
+                    <View style={styles.blueDivider} />
                     <View style={styles.extensionDeadline}>
                       <Text style={styles.extensionText}>
                         Extension deadline: {getExtensionDeadline(currentVisa)}
@@ -281,9 +281,10 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 24,
+    paddingVertical: 20,
     paddingTop: 16,
     position: 'relative',
+    height: height * 0.4, // Take up 40% of screen height
   },
   progressContent: {
     position: 'absolute',
@@ -305,20 +306,21 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     paddingHorizontal: 20,
-    paddingTop: 8,
     flex: 1,
+    justifyContent: 'flex-start',
   },
   visaCard: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 18,
+    padding: 16,
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
+    maxHeight: height * 0.5, // Limit to 50% of screen height
   },
   removeButton: {
     position: 'absolute',
@@ -340,51 +342,51 @@ const styles = StyleSheet.create({
   countryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
     marginTop: 2,
   },
   countryFlag: {
-    fontSize: 28,
-    marginRight: 12,
+    fontSize: 26,
+    marginRight: 10,
   },
   countryName: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: colors.text,
+    color: '#000',
     flex: 1,
   },
   visaTypeBadge: {
     backgroundColor: colors.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
     borderRadius: 16,
     alignSelf: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   visaTypeText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: 12,
   },
   progressBar: {
-    height: 10,
+    height: 12,
     backgroundColor: colors.lightGray,
-    borderRadius: 5,
-    marginBottom: 6,
+    borderRadius: 6,
+    marginBottom: 4,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 6,
   },
   progressText: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textSecondary,
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  divider: {
+  blueDivider: {
     height: 1,
-    backgroundColor: colors.border,
-    marginVertical: 8,
+    backgroundColor: colors.primary,
+    marginVertical: 6,
   },
   visaDetails: {
     gap: 0,
@@ -393,25 +395,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   detailLabel: {
-    fontSize: 15,
+    fontSize: 14,
     color: colors.textSecondary,
   },
   detailValue: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
+    color: '#000',
   },
   extensionDeadline: {
     backgroundColor: colors.lightRed,
-    padding: 10,
+    padding: 8,
     borderRadius: 8,
-    marginTop: 8,
+    marginTop: 6,
   },
   extensionText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#C62828',
     textAlign: 'center',
     fontWeight: '500',
