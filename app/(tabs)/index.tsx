@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
 import { Plus, Check, X } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
@@ -7,7 +7,7 @@ import { CircularProgress } from '@/components/CircularProgress';
 import AddVisaModal from '@/components/AddVisaModal';
 import { colors } from '@/constants/colors';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width - 40;
 
 export default function TrackerScreen() {
@@ -122,18 +122,14 @@ export default function TrackerScreen() {
         }} 
       />
 
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.content}>
         {currentVisa ? (
           <>
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
               <CircularProgress
-                size={200}
-                strokeWidth={12}
+                size={240}
+                strokeWidth={16}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
                 backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -164,9 +160,6 @@ export default function TrackerScreen() {
                 <View style={styles.countryHeader}>
                   <Text style={styles.countryFlag}>{getCountryFlag(currentVisa.country)}</Text>
                   <Text style={styles.countryName}>{currentVisa.country}</Text>
-                  <View style={styles.daysRemainingBadge}>
-                    <Text style={styles.daysRemainingText}>{currentVisa.daysLeft}d</Text>
-                  </View>
                 </View>
 
                 {/* Visa Type Badge */}
@@ -226,17 +219,21 @@ export default function TrackerScreen() {
           </View>
         )}
 
-        {/* Add Visa Button - Only show when no active visa */}
-        {!hasActiveVisa && (
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={() => setShowAddModal(true)}
-          >
-            <Plus size={24} color="white" />
-            <Text style={styles.addButtonText}>Add Visa Record</Text>
-          </TouchableOpacity>
-        )}
-      </ScrollView>
+        {/* Add Visa Button - Always show but disable when there's an active visa */}
+        <TouchableOpacity 
+          style={[
+            styles.addButton,
+            hasActiveVisa && styles.addButtonDisabled
+          ]}
+          onPress={() => setShowAddModal(true)}
+          disabled={hasActiveVisa}
+        >
+          <Plus size={24} color="white" />
+          <Text style={styles.addButtonText}>
+            {hasActiveVisa ? 'Replace Visa Record' : 'Add Visa Record'}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <AddVisaModal 
         visible={showAddModal}
@@ -262,40 +259,39 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  scrollView: {
+  content: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 100,
+    justifyContent: 'space-between',
+    paddingBottom: 20,
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 40,
+    paddingVertical: 30,
     position: 'relative',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 40,
+    top: 30,
     left: 0,
     right: 0,
     bottom: 0,
   },
   daysNumber: {
-    fontSize: 48,
+    fontSize: 56,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 16,
+    fontSize: 18,
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: -5,
   },
   statusBadge: {
     position: 'absolute',
-    top: 60,
-    right: width / 2 - 80,
+    top: 50,
+    right: width / 2 - 100,
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -306,7 +302,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     paddingHorizontal: 20,
-    marginTop: 20,
+    flex: 1,
+    justifyContent: 'center',
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -353,17 +350,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
   },
-  daysRemainingBadge: {
-    backgroundColor: colors.success,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  daysRemainingText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
   visaTypeBadge: {
     backgroundColor: colors.primary,
     paddingHorizontal: 16,
@@ -390,10 +376,10 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   visaDetails: {
-    gap: 12,
+    gap: 10,
   },
   detailRow: {
     flexDirection: 'row',
@@ -413,7 +399,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF3CD',
     padding: 12,
     borderRadius: 8,
-    marginTop: 16,
+    marginTop: 12,
   },
   extensionText: {
     fontSize: 14,
@@ -425,6 +411,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 60,
     paddingHorizontal: 40,
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyTitle: {
     fontSize: 24,
@@ -444,7 +432,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 16,
     marginHorizontal: 20,
-    marginTop: 20,
     borderRadius: 16,
     gap: 8,
     borderWidth: 2,
@@ -454,6 +441,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
+  },
+  addButtonDisabled: {
+    opacity: 0.6,
   },
   addButtonText: {
     color: 'white',
