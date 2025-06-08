@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import { Plus, Check } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
 import { CircularProgress } from '@/components/CircularProgress';
-import { AddVisaModal } from '@/components/AddVisaModal';
+import AddVisaModal from '@/components/AddVisaModal';
 import { colors } from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
