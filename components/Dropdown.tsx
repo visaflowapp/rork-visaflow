@@ -348,7 +348,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: Colors.black,
     fontWeight: '600',
-    fontFamily: 'Montserrat-SemiBold',
   },
   button: {
     flexDirection: 'row',
@@ -373,11 +372,9 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: Colors.black,
-    fontFamily: 'Montserrat',
   },
   placeholderText: {
     color: Colors.silver,
-    fontFamily: 'Montserrat',
   },
   overlay: {
     flex: 1,
@@ -406,13 +403,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.black,
-    fontFamily: 'Montserrat-Bold',
   },
   closeText: {
     fontSize: 16,
     color: Colors.primary,
     fontWeight: '600',
-    fontFamily: 'Montserrat-SemiBold',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -431,7 +426,6 @@ const styles = StyleSheet.create({
     height: 44,
     fontSize: 16,
     color: Colors.black,
-    fontFamily: 'Montserrat',
   },
   listContainer: {
     marginTop: 8,
@@ -450,19 +444,16 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     color: Colors.black,
-    fontFamily: 'Montserrat',
   },
   selectedItemText: {
     color: Colors.primary,
     fontWeight: '600',
-    fontFamily: 'Montserrat-SemiBold',
   },
   emptyText: {
     textAlign: 'center',
     padding: 20,
     color: Colors.silver,
     fontSize: 16,
-    fontFamily: 'Montserrat',
   },
 });
 

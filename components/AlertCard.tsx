@@ -123,18 +123,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.black,
     marginBottom: 4,
-    fontFamily: 'Montserrat-Bold',
   },
   description: {
     fontSize: 14,
     color: Colors.silver,
     marginBottom: 8,
-    fontFamily: 'Montserrat',
   },
   timestamp: {
     fontSize: 12,
     color: Colors.silver,
-    fontFamily: 'Montserrat',
   },
   deleteAction: {
     backgroundColor: Colors.red,
@@ -149,7 +146,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '600',
     fontSize: 14,
-    fontFamily: 'Montserrat-SemiBold',
   },
 });
 

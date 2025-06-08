@@ -21,7 +21,6 @@ export default function TabLayout() {
           fontSize: 12,
           fontWeight: '600',
           marginTop: 4,
-          fontFamily: 'Montserrat',
         },
         tabBarIconStyle: {
           marginTop: 4,
@@ -32,7 +31,6 @@ export default function TabLayout() {
         headerTintColor: colors.white,
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontFamily: 'Montserrat',
         },
       }}
     >
@@ -44,7 +42,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Clock size={26} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'VisaFlow',
         }}
       />
       <Tabs.Screen
