@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.white,
     marginBottom: 4,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   profileEmail: {
     fontSize: 16,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
     marginHorizontal: 16,
     marginBottom: 12,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   card: {
     backgroundColor: Colors.white,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.black,
     fontWeight: '500',
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'Montserrat',
   },
   buttonContainer: {
     padding: 16,

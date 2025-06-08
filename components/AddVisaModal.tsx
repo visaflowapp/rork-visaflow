@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.black,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   closeButton: {
     padding: 4,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: Colors.black,
     fontWeight: '500',
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'Montserrat',
   },
   input: {
     height: 50,

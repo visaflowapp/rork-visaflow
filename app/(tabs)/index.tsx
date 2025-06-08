@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
-import { Plus, X } from 'lucide-react-native';
+import { X } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
 import { CircularProgress } from '@/components/CircularProgress';
 import AddVisaModal from '@/components/AddVisaModal';
@@ -131,11 +131,11 @@ export default function TrackerScreen() {
       <View style={styles.content}>
         {currentVisa ? (
           <>
-            {/* Circular Progress Section */}
+            {/* Circular Progress Section - Moved to top */}
             <View style={styles.progressSection}>
               <CircularProgress
-                size={180}
-                strokeWidth={16}
+                size={200}
+                strokeWidth={20}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
                 backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat',
   },
   content: {
     flex: 1,
@@ -279,34 +279,34 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 24,
-    paddingTop: 16,
+    paddingVertical: 20,
+    paddingTop: 10,
     position: 'relative',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 16,
+    top: 10,
     left: 0,
     right: 0,
     bottom: 0,
   },
   daysNumber: {
-    fontSize: 44,
+    fontSize: 52,
     fontWeight: 'bold',
     color: 'white',
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   daysLabel: {
-    fontSize: 15,
+    fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: -2,
+    marginTop: -4,
     fontFamily: 'Montserrat',
   },
   cardContainer: {
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 4,
     flex: 1,
   },
   visaCard: {
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.text,
     flex: 1,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   visaTypeBadge: {
     backgroundColor: colors.primary,
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 12,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat',
   },
   progressBar: {
     height: 5,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: colors.text,
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat',
   },
   extensionDeadline: {
     backgroundColor: '#FFF3CD',
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     color: '#856404',
     textAlign: 'center',
     fontWeight: '500',
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'Montserrat',
   },
   emptyState: {
     alignItems: 'center',
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     marginBottom: 8,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   emptySubtitle: {
     fontSize: 16,

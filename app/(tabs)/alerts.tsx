@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.white,
     marginBottom: 8,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   headerSubtitle: {
     fontSize: 16,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.black,
     marginBottom: 8,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat',
   },
   emptyText: {
     fontSize: 14,
