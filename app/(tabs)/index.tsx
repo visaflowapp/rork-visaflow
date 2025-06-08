@@ -133,16 +133,18 @@ export default function TrackerScreen() {
           <>
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
-              <CircularProgress
-                size={240}
-                strokeWidth={20}
-                progress={getProgressPercentage(currentVisa)}
-                color={getStatusColor(currentVisa.daysLeft)}
-                backgroundColor="rgba(255, 255, 255, 0.2)"
-              />
-              <View style={styles.progressContent}>
-                <Text style={styles.daysNumber}>{currentVisa.daysLeft}</Text>
-                <Text style={styles.daysLabel}>days left</Text>
+              <View style={styles.progressContainer}>
+                <CircularProgress
+                  size={240}
+                  strokeWidth={20}
+                  progress={getProgressPercentage(currentVisa)}
+                  color={getStatusColor(currentVisa.daysLeft)}
+                  backgroundColor="rgba(255, 255, 255, 0.2)"
+                />
+                <View style={styles.progressContent}>
+                  <Text style={styles.daysNumber}>{currentVisa.daysLeft}</Text>
+                  <Text style={styles.daysLabel}>days left</Text>
+                </View>
               </View>
             </View>
 
@@ -280,16 +282,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     paddingTop: 16,
-    position: 'relative',
     height: height * 0.4,
+    justifyContent: 'center',
+  },
+  progressContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -120 }, { translateY: -25 }],
+    width: 240,
+    height: 240,
   },
   daysNumber: {
     fontSize: 56,
