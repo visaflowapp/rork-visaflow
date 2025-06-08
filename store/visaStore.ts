@@ -54,7 +54,7 @@ interface VisaState {
   toggleTravelMode: (enabled: boolean) => void;
 }
 
-// Dummy data
+// Dummy data - only one visa for single tracking
 const dummyVisas: VisaRecord[] = [
   {
     id: '1',
@@ -66,17 +66,6 @@ const dummyVisas: VisaRecord[] = [
     extensions_available: 1,
     is_active: true,
     daysLeft: 96,
-  },
-  {
-    id: '2',
-    country: 'Thailand',
-    visa_type: 'Tourist Visa',
-    entry_date: '2024-02-01',
-    duration: 60,
-    exit_date: '2024-04-01',
-    extensions_available: 0,
-    is_active: true,
-    daysLeft: 15,
   }
 ];
 
@@ -89,15 +78,6 @@ const dummyAlerts: Alert[] = [
     timestamp: new Date().toISOString(),
     is_read: false,
     icon: 'clock',
-  },
-  {
-    id: '2',
-    type: 'deadline',
-    title: 'Urgent: Thailand Visa',
-    description: 'Your Thailand Tourist Visa expires in 15 days',
-    timestamp: new Date().toISOString(),
-    is_read: false,
-    icon: 'alert-triangle',
   }
 ];
 
@@ -131,9 +111,13 @@ export const useVisaStore = create<VisaState>()(
         
         // Simulate loading delay
         setTimeout(() => {
+          const state = get();
+          // Only load dummy data if no visas exist
+          const visasToLoad = state.activeVisas.length === 0 ? dummyVisas : state.activeVisas;
+          
           set({
             userProfile: dummyProfile,
-            activeVisas: dummyVisas.sort((a, b) => a.daysLeft - b.daysLeft),
+            activeVisas: visasToLoad.sort((a, b) => a.daysLeft - b.daysLeft),
             alerts: dummyAlerts,
             isLoading: false,
           });
@@ -141,6 +125,7 @@ export const useVisaStore = create<VisaState>()(
       },
       
       addVisa: (visa) => {
+        // Only allow one visa at a time - replace existing visa
         const newVisa = {
           id: Date.now().toString(),
           ...visa,
@@ -148,9 +133,9 @@ export const useVisaStore = create<VisaState>()(
           daysLeft: Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
         };
         
-        set(state => ({
-          activeVisas: [...state.activeVisas, newVisa].sort((a, b) => a.daysLeft - b.daysLeft),
-        }));
+        set({
+          activeVisas: [newVisa], // Replace with single visa
+        });
       },
       
       removeVisa: (visaId: string) => {

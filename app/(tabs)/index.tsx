@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
-import { Plus, Check } from 'lucide-react-native';
+import { Plus, Check, X } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
 import { CircularProgress } from '@/components/CircularProgress';
 import AddVisaModal from '@/components/AddVisaModal';
@@ -17,7 +17,8 @@ export default function TrackerScreen() {
     userId, 
     setUserId, 
     loadUserData,
-    addVisa 
+    addVisa,
+    removeVisa 
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -81,10 +82,25 @@ export default function TrackerScreen() {
     return flags[country] || '🌍';
   };
 
+  const getExtensionDeadline = (visa: any) => {
+    if (visa.extensions_available === 0) return null;
+    const exitDate = new Date(visa.exit_date);
+    exitDate.setDate(exitDate.getDate() - 30); // 30 days before expiry
+    return exitDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
   const currentVisa = activeVisas.length > 0 ? activeVisas[0] : null;
+  const hasActiveVisa = activeVisas.length > 0;
 
   const handleAddVisa = (visaData: any) => {
     addVisa(visaData);
+  };
+
+  const handleRemoveVisa = (visaId: string) => {
+    removeVisa(visaId);
   };
 
   if (isLoading) {
@@ -133,72 +149,75 @@ export default function TrackerScreen() {
               </View>
             </View>
 
-            {/* Visa Cards Section */}
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.cardsContainer}
-              style={styles.cardsScrollView}
-            >
-              {activeVisas.map((visa, index) => (
-                <View key={visa.id} style={[styles.visaCard, index === 0 && styles.activeCard]}>
-                  {/* Country Header */}
-                  <View style={styles.countryHeader}>
-                    <Text style={styles.countryFlag}>{getCountryFlag(visa.country)}</Text>
-                    <Text style={styles.countryName}>{visa.country}</Text>
-                    <View style={styles.daysRemainingBadge}>
-                      <Text style={styles.daysRemainingText}>{visa.daysLeft}d</Text>
-                    </View>
-                  </View>
+            {/* Single Visa Card */}
+            <View style={styles.cardContainer}>
+              <View style={styles.visaCard}>
+                {/* Remove Button */}
+                <TouchableOpacity 
+                  style={styles.removeButton}
+                  onPress={() => handleRemoveVisa(currentVisa.id)}
+                >
+                  <X size={20} color="#666" />
+                </TouchableOpacity>
 
-                  {/* Visa Type Badge */}
-                  <View style={styles.visaTypeBadge}>
-                    <Text style={styles.visaTypeText}>{visa.visa_type}</Text>
+                {/* Country Header */}
+                <View style={styles.countryHeader}>
+                  <Text style={styles.countryFlag}>{getCountryFlag(currentVisa.country)}</Text>
+                  <Text style={styles.countryName}>{currentVisa.country}</Text>
+                  <View style={styles.daysRemainingBadge}>
+                    <Text style={styles.daysRemainingText}>{currentVisa.daysLeft}d</Text>
                   </View>
-
-                  {/* Progress Bar */}
-                  <View style={styles.progressBar}>
-                    <View 
-                      style={[
-                        styles.progressFill, 
-                        { 
-                          width: `${getProgressPercentage(visa)}%`,
-                          backgroundColor: getStatusColor(visa.daysLeft)
-                        }
-                      ]} 
-                    />
-                  </View>
-                  <Text style={styles.progressText}>{Math.round(getProgressPercentage(visa))}% used</Text>
-
-                  {/* Visa Details */}
-                  <View style={styles.visaDetails}>
-                    <View style={styles.detailRow}>
-                      <Text style={styles.detailLabel}>Entry</Text>
-                      <Text style={styles.detailValue}>{formatDate(visa.entry_date)}</Text>
-                    </View>
-                    <View style={styles.detailRow}>
-                      <Text style={styles.detailLabel}>Exit</Text>
-                      <Text style={styles.detailValue}>{formatDate(visa.exit_date)}</Text>
-                    </View>
-                    <View style={styles.detailRow}>
-                      <Text style={styles.detailLabel}>Duration</Text>
-                      <Text style={styles.detailValue}>{visa.duration} days</Text>
-                    </View>
-                    <View style={styles.detailRow}>
-                      <Text style={styles.detailLabel}>Extensions</Text>
-                      <Text style={styles.detailValue}>{visa.extensions_available}</Text>
-                    </View>
-                  </View>
-
-                  {/* Extension Deadline */}
-                  {visa.extensions_available > 0 && (
-                    <View style={styles.extensionDeadline}>
-                      <Text style={styles.extensionText}>Extension deadline: Aug 11</Text>
-                    </View>
-                  )}
                 </View>
-              ))}
-            </ScrollView>
+
+                {/* Visa Type Badge */}
+                <View style={styles.visaTypeBadge}>
+                  <Text style={styles.visaTypeText}>{currentVisa.visa_type}</Text>
+                </View>
+
+                {/* Progress Bar */}
+                <View style={styles.progressBar}>
+                  <View 
+                    style={[
+                      styles.progressFill, 
+                      { 
+                        width: `${getProgressPercentage(currentVisa)}%`,
+                        backgroundColor: getStatusColor(currentVisa.daysLeft)
+                      }
+                    ]} 
+                  />
+                </View>
+                <Text style={styles.progressText}>{Math.round(getProgressPercentage(currentVisa))}% used</Text>
+
+                {/* Visa Details */}
+                <View style={styles.visaDetails}>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Entry</Text>
+                    <Text style={styles.detailValue}>{formatDate(currentVisa.entry_date)}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Exit</Text>
+                    <Text style={styles.detailValue}>{formatDate(currentVisa.exit_date)}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Duration</Text>
+                    <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Extensions</Text>
+                    <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
+                  </View>
+                </View>
+
+                {/* Extension Deadline */}
+                {currentVisa.extensions_available > 0 && (
+                  <View style={styles.extensionDeadline}>
+                    <Text style={styles.extensionText}>
+                      Extension deadline: {getExtensionDeadline(currentVisa)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
           </>
         ) : (
           <View style={styles.emptyState}>
@@ -207,14 +226,16 @@ export default function TrackerScreen() {
           </View>
         )}
 
-        {/* Add Visa Button */}
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => setShowAddModal(true)}
-        >
-          <Plus size={24} color="white" />
-          <Text style={styles.addButtonText}>Add Visa Record</Text>
-        </TouchableOpacity>
+        {/* Add Visa Button - Only show when no active visa */}
+        {!hasActiveVisa && (
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={() => setShowAddModal(true)}
+          >
+            <Plus size={24} color="white" />
+            <Text style={styles.addButtonText}>Add Visa Record</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
 
       <AddVisaModal 
@@ -283,32 +304,44 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: colors.primary,
   },
-  cardsScrollView: {
-    marginTop: 20,
-  },
-  cardsContainer: {
+  cardContainer: {
     paddingHorizontal: 20,
-    gap: 16,
+    marginTop: 20,
   },
   visaCard: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
+    position: 'relative',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
-  activeCard: {
-    borderWidth: 2,
-    borderColor: colors.success,
+  removeButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   countryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    marginTop: 8,
   },
   countryFlag: {
     fontSize: 32,
@@ -386,6 +419,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#856404',
     textAlign: 'center',
+    fontWeight: '500',
   },
   emptyState: {
     alignItems: 'center',
