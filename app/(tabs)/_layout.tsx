@@ -13,9 +13,14 @@ export default function TabLayout() {
           backgroundColor: colors.white,
           borderTopWidth: 1,
           borderTopColor: colors.border,
-          height: 88,
-          paddingBottom: 24,
-          paddingTop: 8,
+          height: 90,
+          paddingBottom: 28,
+          paddingTop: 12,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 10,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -42,7 +47,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Clock size={26} color={color} />
           ),
-          headerTitle: 'VisaFlow',
+          headerTitle: '',
         }}
       />
       <Tabs.Screen
