@@ -135,8 +135,8 @@ export default function TrackerScreen() {
             <View style={styles.progressSection}>
               <View style={styles.progressContainer}>
                 <CircularProgress
-                  size={240}
-                  strokeWidth={20}
+                  size={200}
+                  strokeWidth={16}
                   progress={getProgressPercentage(currentVisa)}
                   color={getStatusColor(currentVisa.daysLeft)}
                   backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -205,14 +205,12 @@ export default function TrackerScreen() {
                     <Text style={styles.detailLabel}>Duration</Text>
                     <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
                   </View>
-                </View>
-
-                {/* Blue Divider */}
-                <View style={styles.blueDivider} />
-                
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Extensions</Text>
-                  <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
+                  <View style={styles.blueDivider} />
+                  
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Extensions Left</Text>
+                    <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
+                  </View>
                 </View>
 
                 {/* Extension Deadline */}
@@ -287,9 +285,9 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 20,
-    paddingTop: 16,
-    height: height * 0.4,
+    paddingVertical: 16,
+    paddingTop: 12,
+    height: height * 0.32,
     justifyContent: 'center',
   },
   progressContainer: {
@@ -301,16 +299,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 240,
-    height: 240,
+    width: 200,
+    height: 200,
   },
   daysNumber: {
-    fontSize: 56,
+    fontSize: 48,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
     marginTop: -4,
@@ -319,7 +317,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 80,
+    paddingBottom: 40,
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -332,7 +330,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
-    maxHeight: height * 0.45,
+    maxHeight: height * 0.38,
   },
   removeButton: {
     position: 'absolute',
@@ -354,15 +352,15 @@ const styles = StyleSheet.create({
   countryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
     marginTop: 2,
   },
   countryFlag: {
-    fontSize: 26,
+    fontSize: 24,
     marginRight: 10,
   },
   countryName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
     flex: 1,
@@ -370,10 +368,10 @@ const styles = StyleSheet.create({
   visaTypeBadge: {
     backgroundColor: colors.primary,
     paddingHorizontal: 12,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 16,
     alignSelf: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   visaTypeText: {
     color: 'white',
@@ -381,24 +379,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   progressBar: {
-    height: 14,
+    height: 12,
     backgroundColor: colors.lightGray,
-    borderRadius: 7,
-    marginBottom: 4,
+    borderRadius: 6,
+    marginBottom: 3,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 7,
+    borderRadius: 6,
   },
   progressText: {
-    fontSize: 12,
+    fontSize: 11,
     color: colors.textSecondary,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   blueDivider: {
     height: 1,
     backgroundColor: colors.primary,
-    marginVertical: 6,
+    marginVertical: 4,
   },
   visaDetails: {
     gap: 0,
@@ -407,7 +405,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   detailLabel: {
     fontSize: 14,
@@ -420,12 +418,12 @@ const styles = StyleSheet.create({
   },
   extensionDeadline: {
     backgroundColor: colors.lightRed,
-    padding: 8,
+    padding: 6,
     borderRadius: 8,
-    marginTop: 6,
+    marginTop: 4,
   },
   extensionText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#C62828',
     textAlign: 'center',
     fontWeight: '500',
