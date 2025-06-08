@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.black,
+    fontFamily: 'Montserrat-Bold',
   },
   closeButton: {
     padding: 4,
@@ -231,6 +232,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: Colors.black,
     fontWeight: '500',
+    fontFamily: 'Montserrat-Medium',
   },
   input: {
     height: 50,
@@ -240,6 +242,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 16,
     color: Colors.black,
+    fontFamily: 'Montserrat',
   },
   dateInput: {
     height: 50,
@@ -252,6 +255,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     color: Colors.black,
+    fontFamily: 'Montserrat',
   },
   calculatedField: {
     height: 50,
@@ -265,6 +269,7 @@ const styles = StyleSheet.create({
   calculatedText: {
     fontSize: 16,
     color: Colors.silver,
+    fontFamily: 'Montserrat',
   },
   footer: {
     flexDirection: 'row',

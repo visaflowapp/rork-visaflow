@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     color: Colors.silver,
+    fontFamily: 'Montserrat',
   },
   header: {
     padding: 24,
@@ -156,10 +157,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.white,
     marginBottom: 4,
+    fontFamily: 'Montserrat-Bold',
   },
   profileEmail: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
+    fontFamily: 'Montserrat',
   },
   content: {
     flex: 1,
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
     marginHorizontal: 16,
     marginBottom: 12,
+    fontFamily: 'Montserrat-Bold',
   },
   card: {
     backgroundColor: Colors.white,
@@ -196,11 +200,13 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 16,
     color: Colors.silver,
+    fontFamily: 'Montserrat',
   },
   infoValue: {
     fontSize: 16,
     color: Colors.black,
     fontWeight: '500',
+    fontFamily: 'Montserrat-Medium',
   },
   buttonContainer: {
     padding: 16,

@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'white',
     fontSize: 16,
+    fontFamily: 'Montserrat',
   },
   headerButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
+    fontFamily: 'Montserrat-SemiBold',
   },
   content: {
     flex: 1,
@@ -294,11 +296,13 @@ const styles = StyleSheet.create({
     fontSize: 44,
     fontWeight: 'bold',
     color: 'white',
+    fontFamily: 'Montserrat-Bold',
   },
   daysLabel: {
     fontSize: 15,
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: -2,
+    fontFamily: 'Montserrat',
   },
   cardContainer: {
     paddingHorizontal: 20,
@@ -349,6 +353,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.text,
     flex: 1,
+    fontFamily: 'Montserrat-Bold',
   },
   visaTypeBadge: {
     backgroundColor: colors.primary,
@@ -362,6 +367,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 12,
+    fontFamily: 'Montserrat-SemiBold',
   },
   progressBar: {
     height: 5,
@@ -377,6 +383,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textSecondary,
     marginBottom: 10,
+    fontFamily: 'Montserrat',
   },
   divider: {
     height: 1,
@@ -395,11 +402,13 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 14,
     color: colors.textSecondary,
+    fontFamily: 'Montserrat',
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
     color: colors.text,
+    fontFamily: 'Montserrat-SemiBold',
   },
   extensionDeadline: {
     backgroundColor: '#FFF3CD',
@@ -412,6 +421,7 @@ const styles = StyleSheet.create({
     color: '#856404',
     textAlign: 'center',
     fontWeight: '500',
+    fontFamily: 'Montserrat-Medium',
   },
   emptyState: {
     alignItems: 'center',
@@ -425,10 +435,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     marginBottom: 8,
+    fontFamily: 'Montserrat-Bold',
   },
   emptySubtitle: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
+    fontFamily: 'Montserrat',
   },
 });

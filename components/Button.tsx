@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: '600',
     textAlign: 'center',
+    fontFamily: 'Montserrat-SemiBold',
   },
 });
 
