@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingTop: 20,
-    height: height * 0.35,
+    height: height * 0.32,
     justifyContent: 'center',
   },
   visaStatusTitle: {
@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     paddingBottom: 40,
+    paddingTop: 24,
   },
   visaCard: {
     width: CARD_WIDTH,
