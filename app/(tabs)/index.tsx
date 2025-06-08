@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 40,
+    paddingBottom: 16,
     paddingTop: 24,
   },
   visaCard: {
