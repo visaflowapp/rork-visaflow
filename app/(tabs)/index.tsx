@@ -168,9 +168,6 @@ export default function TrackerScreen() {
                   <Text style={styles.visaTypeText}>{currentVisa.visa_type}</Text>
                 </View>
 
-                {/* Blue Divider */}
-                <View style={styles.blueDivider} />
-
                 {/* Progress Bar */}
                 <View style={styles.progressBar}>
                   <View 
@@ -284,7 +281,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingTop: 16,
     position: 'relative',
-    height: height * 0.4, // Take up 40% of screen height
+    height: height * 0.35, // Reduced from 0.4 to 0.35
   },
   progressContent: {
     position: 'absolute',
@@ -308,6 +305,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     justifyContent: 'flex-start',
+    paddingBottom: 100, // Add padding to ensure card sits above navigation
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -320,7 +318,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
-    maxHeight: height * 0.5, // Limit to 50% of screen height
+    maxHeight: height * 0.45, // Reduced from 0.5 to 0.45
   },
   removeButton: {
     position: 'absolute',
@@ -361,7 +359,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 16,
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 12, // Reduced from 8
   },
   visaTypeText: {
     color: 'white',
@@ -369,14 +367,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   progressBar: {
-    height: 12,
+    height: 14, // Increased from 12
     backgroundColor: colors.lightGray,
-    borderRadius: 6,
+    borderRadius: 7, // Increased from 6
     marginBottom: 4,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: 7, // Increased from 6
   },
   progressText: {
     fontSize: 12,
