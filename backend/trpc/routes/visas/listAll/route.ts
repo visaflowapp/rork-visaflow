@@ -1,4 +1,4 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 
 type Visa = {
   id: string;
@@ -14,11 +14,12 @@ type Visa = {
   is_active: boolean;
 };
 
-export const listAllVisasProcedure = publicProcedure
+export default publicProcedure
   .query(async ({ ctx }) => {
     const { data, error } = await ctx.supabase
       .from('visas')
       .select('*')
+      .eq('is_active', true)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -27,6 +28,6 @@ export const listAllVisasProcedure = publicProcedure
 
     return data.map((visa: Visa) => ({
       ...visa,
-      daysRemaining: Math.max(0, Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+      daysLeft: Math.max(0, Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
     }));
   });

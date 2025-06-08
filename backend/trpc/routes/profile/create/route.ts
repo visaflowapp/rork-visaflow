@@ -1,7 +1,7 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 import { z } from 'zod';
 
-export const createProfileProcedure = publicProcedure
+export default publicProcedure
   .input(z.object({
     id: z.string(),
     name: z.string(),

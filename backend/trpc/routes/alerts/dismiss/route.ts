@@ -1,13 +1,17 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 import { z } from 'zod';
 
-export const dismissAlertProcedure = publicProcedure
-  .input(z.object({ id: z.string() }))
+export default publicProcedure
+  .input(z.object({ 
+    userId: z.string(),
+    alertId: z.string() 
+  }))
   .mutation(async ({ input, ctx }) => {
     const { data, error } = await ctx.supabase
       .from('alerts')
       .delete()
-      .eq('id', input.id)
+      .eq('id', input.alertId)
+      .eq('user_id', input.userId)
       .select('*')
       .single();
 

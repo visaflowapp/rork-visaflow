@@ -1,21 +1,27 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 import { z } from 'zod';
 
-export const createVisaProcedure = publicProcedure
+export default publicProcedure
   .input(z.object({
-    user_id: z.string(),
+    userId: z.string(),
     country: z.string(),
     visa_type: z.string(),
     entry_date: z.string(),
     duration: z.number(),
     exit_date: z.string(),
     extensions_available: z.number().optional(),
-    is_active: z.boolean().optional(),
   }))
   .mutation(async ({ input, ctx }) => {
+    const { userId, ...visaData } = input;
+    
     const { data, error } = await ctx.supabase
       .from('visas')
-      .insert(input)
+      .insert({
+        user_id: userId,
+        ...visaData,
+        extensions_available: visaData.extensions_available || 0,
+        is_active: true,
+      })
       .select('*')
       .single();
 

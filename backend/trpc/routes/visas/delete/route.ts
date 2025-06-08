@@ -1,13 +1,17 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 import { z } from 'zod';
 
-export const deleteVisaProcedure = publicProcedure
-  .input(z.object({ id: z.string() }))
+export default publicProcedure
+  .input(z.object({ 
+    userId: z.string(),
+    visaId: z.string() 
+  }))
   .mutation(async ({ input, ctx }) => {
     const { data, error } = await ctx.supabase
       .from('visas')
       .delete()
-      .eq('id', input.id)
+      .eq('id', input.visaId)
+      .eq('user_id', input.userId)
       .select('*')
       .single();
 

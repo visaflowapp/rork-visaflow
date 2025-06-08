@@ -1,7 +1,7 @@
-import { publicProcedure } from '../../../trpc';
+import { publicProcedure } from '../../../create-context';
 import { z } from 'zod';
 
-export const listAlertsProcedure = publicProcedure
+export default publicProcedure
   .input(z.object({ userId: z.string() }))
   .query(async ({ input, ctx }) => {
     const { data, error } = await ctx.supabase

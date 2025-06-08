@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
-import { Plus, Check, X } from 'lucide-react-native';
+import { Plus, Check } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
 import { CircularProgress } from '@/components/CircularProgress';
 import { AddVisaModal } from '@/components/AddVisaModal';
@@ -17,7 +17,8 @@ export default function TrackerScreen() {
     userId, 
     setUserId, 
     loadUserData,
-    isBackendAvailable 
+    isBackendAvailable,
+    addVisa 
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -83,6 +84,10 @@ export default function TrackerScreen() {
 
   const currentVisa = activeVisas.length > 0 ? activeVisas[0] : null;
 
+  const handleAddVisa = async (visaData: any) => {
+    await addVisa(visaData);
+  };
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -116,7 +121,7 @@ export default function TrackerScreen() {
                 strokeWidth={12}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
-                backgroundColor={colors.lightGray}
+                backgroundColor="rgba(255, 255, 255, 0.2)"
               />
               <View style={styles.progressContent}>
                 <Text style={styles.daysNumber}>{currentVisa.daysLeft}</Text>
@@ -223,6 +228,7 @@ export default function TrackerScreen() {
       <AddVisaModal 
         visible={showAddModal}
         onClose={() => setShowAddModal(false)}
+        onSave={handleAddVisa}
       />
     </View>
   );
@@ -334,7 +340,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   visaTypeBadge: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -406,7 +412,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   addButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -415,6 +421,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 16,
     gap: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   addButtonText: {
     color: 'white',

@@ -1,24 +1,24 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Clock, Globe, Bell, User } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { colors } from '@/constants/colors';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.silver,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
-          backgroundColor: Colors.white,
+          backgroundColor: colors.white,
           borderTopWidth: 1,
-          borderTopColor: Colors.border,
-          height: 84,
-          paddingBottom: 20,
+          borderTopColor: colors.border,
+          height: 88,
+          paddingBottom: 24,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           marginTop: 4,
         },
@@ -26,9 +26,9 @@ export default function TabLayout() {
           marginTop: 4,
         },
         headerStyle: {
-          backgroundColor: Colors.primary,
+          backgroundColor: colors.primary,
         },
-        headerTintColor: Colors.white,
+        headerTintColor: colors.white,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -40,7 +40,7 @@ export default function TabLayout() {
           title: 'Tracker',
           tabBarLabel: 'Tracker',
           tabBarIcon: ({ color, size }) => (
-            <Clock size={24} color={color} />
+            <Clock size={26} color={color} />
           ),
           headerTitle: 'VisaFlow',
         }}
@@ -51,7 +51,7 @@ export default function TabLayout() {
           title: 'Requirements',
           tabBarLabel: 'Requirements',
           tabBarIcon: ({ color, size }) => (
-            <Globe size={24} color={color} />
+            <Globe size={26} color={color} />
           ),
         }}
       />
@@ -61,7 +61,7 @@ export default function TabLayout() {
           title: 'Alerts',
           tabBarLabel: 'Alerts',
           tabBarIcon: ({ color, size }) => (
-            <Bell size={24} color={color} />
+            <Bell size={26} color={color} />
           ),
         }}
       />
@@ -71,7 +71,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color, size }) => (
-            <User size={24} color={color} />
+            <User size={26} color={color} />
           ),
         }}
       />
