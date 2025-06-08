@@ -122,7 +122,6 @@ export default function TrackerScreen() {
               style={styles.headerButton}
               onPress={() => setShowAddModal(true)}
             >
-              <Plus size={20} color="white" />
               <Text style={styles.headerButtonText}>New Visa</Text>
             </TouchableOpacity>
           ),
@@ -135,8 +134,8 @@ export default function TrackerScreen() {
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
               <CircularProgress
-                size={200}
-                strokeWidth={14}
+                size={180}
+                strokeWidth={16}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
                 backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -261,19 +260,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   headerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
     marginRight: 4,
   },
   headerButtonText: {
-    color: 'white',
+    color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
-    marginLeft: 4,
   },
   content: {
     flex: 1,
@@ -281,37 +277,39 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 40,
+    paddingVertical: 24,
+    paddingTop: 16,
     position: 'relative',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 40,
+    top: 16,
     left: 0,
     right: 0,
     bottom: 0,
   },
   daysNumber: {
-    fontSize: 48,
+    fontSize: 44,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 16,
+    fontSize: 15,
     color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: -4,
+    marginTop: -2,
   },
   cardContainer: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 8,
+    flex: 1,
   },
   visaCard: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 18,
+    padding: 16,
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
@@ -321,8 +319,8 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     position: 'absolute',
-    top: 14,
-    right: 14,
+    top: 12,
+    right: 12,
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -339,78 +337,78 @@ const styles = StyleSheet.create({
   countryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    marginTop: 4,
+    marginBottom: 10,
+    marginTop: 2,
   },
   countryFlag: {
-    fontSize: 28,
+    fontSize: 26,
     marginRight: 10,
   },
   countryName: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.text,
     flex: 1,
   },
   visaTypeBadge: {
     backgroundColor: colors.primary,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 18,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 16,
     alignSelf: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   visaTypeText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 13,
+    fontSize: 12,
   },
   progressBar: {
-    height: 6,
+    height: 5,
     backgroundColor: colors.lightGray,
     borderRadius: 3,
-    marginBottom: 6,
+    marginBottom: 5,
   },
   progressFill: {
     height: '100%',
     borderRadius: 3,
   },
   progressText: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textSecondary,
-    marginBottom: 12,
+    marginBottom: 10,
   },
   divider: {
     height: 1,
     backgroundColor: colors.border,
-    marginVertical: 8,
+    marginVertical: 6,
   },
   visaDetails: {
-    gap: 8,
+    gap: 6,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 2,
+    paddingVertical: 1,
   },
   detailLabel: {
-    fontSize: 15,
+    fontSize: 14,
     color: colors.textSecondary,
   },
   detailValue: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     color: colors.text,
   },
   extensionDeadline: {
     backgroundColor: '#FFF3CD',
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 10,
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 8,
   },
   extensionText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#856404',
     textAlign: 'center',
     fontWeight: '500',
