@@ -131,12 +131,6 @@ export default function TrackerScreen() {
       <View style={styles.content}>
         {currentVisa ? (
           <>
-            {/* Country Name and Flag - Top Center */}
-            <View style={styles.countrySection}>
-              <Text style={styles.countryFlag}>{getCountryFlag(currentVisa.country)}</Text>
-              <Text style={styles.countryName}>{currentVisa.country}</Text>
-            </View>
-
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
               <CircularProgress
@@ -163,7 +157,13 @@ export default function TrackerScreen() {
                   <X size={18} color="#666" />
                 </TouchableOpacity>
 
-                {/* Visa Type Badge - Top Left */}
+                {/* Country Header */}
+                <View style={styles.countryHeader}>
+                  <Text style={styles.countryFlag}>{getCountryFlag(currentVisa.country)}</Text>
+                  <Text style={styles.countryName}>{currentVisa.country}</Text>
+                </View>
+
+                {/* Visa Type Badge */}
                 <View style={styles.visaTypeBadge}>
                   <Text style={styles.visaTypeText}>{currentVisa.visa_type}</Text>
                 </View>
@@ -199,6 +199,12 @@ export default function TrackerScreen() {
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Exit</Text>
                     <Text style={styles.detailValue}>{formatDate(currentVisa.exit_date)}</Text>
+                  </View>
+                  <View style={styles.divider} />
+                  
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Duration</Text>
+                    <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
                   </View>
                 </View>
 
@@ -255,7 +261,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 18,
   },
   headerButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -266,30 +272,17 @@ const styles = StyleSheet.create({
   },
   headerButtonText: {
     color: colors.primary,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
   content: {
     flex: 1,
     justifyContent: 'flex-start',
   },
-  countrySection: {
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingTop: 20,
-  },
-  countryFlag: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  countryName: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: 'white',
-  },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 24,
+    paddingTop: 16,
     position: 'relative',
   },
   progressContent: {
@@ -298,15 +291,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -90 }, { translateY: -10 }],
+    transform: [{ translateX: -90 }, { translateY: -20 }],
   },
   daysNumber: {
-    fontSize: 48,
+    fontSize: 46,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 17,
+    fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: -2,
   },
@@ -319,7 +312,7 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 20,
+    padding: 18,
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
@@ -344,38 +337,54 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  countryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    marginTop: 2,
+  },
+  countryFlag: {
+    fontSize: 28,
+    marginRight: 12,
+  },
+  countryName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.text,
+    flex: 1,
+  },
   visaTypeBadge: {
     backgroundColor: colors.primary,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
     alignSelf: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   visaTypeText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 13,
   },
   progressBar: {
-    height: 12,
+    height: 10,
     backgroundColor: colors.lightGray,
-    borderRadius: 6,
-    marginBottom: 8,
+    borderRadius: 5,
+    marginBottom: 6,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: 5,
   },
   progressText: {
-    fontSize: 15,
+    fontSize: 13,
     color: colors.textSecondary,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   divider: {
     height: 1,
     backgroundColor: colors.border,
-    marginVertical: 10,
+    marginVertical: 8,
   },
   visaDetails: {
     gap: 0,
@@ -384,25 +393,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   detailLabel: {
-    fontSize: 17,
+    fontSize: 15,
     color: colors.textSecondary,
   },
   detailValue: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '600',
     color: colors.text,
   },
   extensionDeadline: {
-    backgroundColor: '#FFEBEE',
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 10,
+    backgroundColor: colors.lightRed,
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 8,
   },
   extensionText: {
-    fontSize: 15,
+    fontSize: 13,
     color: '#C62828',
     textAlign: 'center',
     fontWeight: '500',
@@ -415,13 +424,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   emptySubtitle: {
-    fontSize: 18,
+    fontSize: 17,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
   },
