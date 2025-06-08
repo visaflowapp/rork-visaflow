@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { Stack } from 'expo-router';
-import { Plus, Check, X } from 'lucide-react-native';
+import { Plus, X } from 'lucide-react-native';
 import { useVisaStore } from '@/store/visaStore';
 import { CircularProgress } from '@/components/CircularProgress';
 import AddVisaModal from '@/components/AddVisaModal';
@@ -114,10 +114,9 @@ export default function TrackerScreen() {
     <View style={styles.container}>
       <Stack.Screen 
         options={{ 
-          title: 'VisaFlow',
+          title: '',
           headerStyle: { backgroundColor: colors.primary },
           headerTintColor: 'white',
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 20 },
           headerRight: () => (
             <TouchableOpacity 
               style={styles.headerButton}
@@ -146,11 +145,6 @@ export default function TrackerScreen() {
                 <Text style={styles.daysNumber}>{currentVisa.daysLeft}</Text>
                 <Text style={styles.daysLabel}>days left</Text>
               </View>
-              
-              {/* Status Badge */}
-              <View style={[styles.statusBadge, { backgroundColor: getStatusColor(currentVisa.daysLeft) }]}>
-                <Check size={14} color="white" />
-              </View>
             </View>
 
             {/* Single Visa Card */}
@@ -174,6 +168,9 @@ export default function TrackerScreen() {
                 <View style={styles.visaTypeBadge}>
                   <Text style={styles.visaTypeText}>{currentVisa.visa_type}</Text>
                 </View>
+
+                {/* Divider */}
+                <View style={styles.divider} />
 
                 {/* Progress Bar */}
                 <View style={styles.progressBar}>
@@ -206,23 +203,27 @@ export default function TrackerScreen() {
                     <Text style={styles.detailLabel}>Duration</Text>
                     <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
                   </View>
-                  
-                  {/* Divider */}
-                  <View style={styles.divider} />
-                  
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Extensions</Text>
-                    <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
-                  </View>
+                </View>
+
+                {/* Divider */}
+                <View style={styles.divider} />
+                
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Extensions</Text>
+                  <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
                 </View>
 
                 {/* Extension Deadline */}
                 {currentVisa.extensions_available > 0 && (
-                  <View style={styles.extensionDeadline}>
-                    <Text style={styles.extensionText}>
-                      Extension deadline: {getExtensionDeadline(currentVisa)}
-                    </Text>
-                  </View>
+                  <>
+                    {/* Divider */}
+                    <View style={styles.divider} />
+                    <View style={styles.extensionDeadline}>
+                      <Text style={styles.extensionText}>
+                        Extension deadline: {getExtensionDeadline(currentVisa)}
+                      </Text>
+                    </View>
+                  </>
                 )}
               </View>
             </View>
@@ -276,18 +277,18 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 40,
     position: 'relative',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 20,
+    top: 40,
     left: 0,
     right: 0,
     bottom: 0,
@@ -302,23 +303,9 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: -4,
   },
-  statusBadge: {
-    position: 'absolute',
-    top: 40,
-    right: width / 2 - 80,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: colors.primary,
-  },
   cardContainer: {
     paddingHorizontal: 20,
-    flex: 1,
-    justifyContent: 'center',
-    paddingBottom: 40,
+    paddingTop: 20,
   },
   visaCard: {
     width: CARD_WIDTH,
