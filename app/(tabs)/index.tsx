@@ -285,10 +285,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 16,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -90 }, { translateY: -20 }],
   },
   daysNumber: {
     fontSize: 44,
@@ -364,14 +363,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   progressBar: {
-    height: 5,
+    height: 8,
     backgroundColor: colors.lightGray,
-    borderRadius: 3,
+    borderRadius: 4,
     marginBottom: 5,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   progressText: {
     fontSize: 12,
