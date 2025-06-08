@@ -14,12 +14,12 @@ export default function AlertsScreen() {
     }
   }, [userId, loadUserData]);
   
-  const handleDismiss = async (id: string) => {
-    await dismissAlert(id);
+  const handleDismiss = (id: string) => {
+    dismissAlert(id);
   };
   
-  const handlePress = async (id: string) => {
-    await markAlertAsRead(id);
+  const handlePress = (id: string) => {
+    markAlertAsRead(id);
   };
 
   const renderEmptyState = () => (
@@ -98,16 +98,16 @@ const styles = StyleSheet.create({
   emptyContainer: {
     padding: 24,
     backgroundColor: Colors.white,
-    borderRadius: 16,
+    borderRadius: 20,
     marginHorizontal: 16,
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 20,
+    elevation: 8,
   },
   emptyTitle: {
     fontSize: 18,

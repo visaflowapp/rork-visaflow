@@ -141,6 +141,11 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: Colors.white,
     marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
   profileImage: {
     width: '100%',
@@ -172,14 +177,14 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: Colors.white,
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
     marginHorizontal: 16,
     shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 20,
+    elevation: 8,
   },
   infoRow: {
     flexDirection: 'row',
@@ -203,5 +208,10 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: Colors.white,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 6,
   },
 });

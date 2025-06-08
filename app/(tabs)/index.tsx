@@ -17,7 +17,6 @@ export default function TrackerScreen() {
     userId, 
     setUserId, 
     loadUserData,
-    isBackendAvailable,
     addVisa 
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState(false);
@@ -84,8 +83,8 @@ export default function TrackerScreen() {
 
   const currentVisa = activeVisas.length > 0 ? activeVisas[0] : null;
 
-  const handleAddVisa = async (visaData: any) => {
-    await addVisa(visaData);
+  const handleAddVisa = (visaData: any) => {
+    addVisa(visaData);
   };
 
   if (isLoading) {
@@ -216,13 +215,6 @@ export default function TrackerScreen() {
           <Plus size={24} color="white" />
           <Text style={styles.addButtonText}>Add Visa Record</Text>
         </TouchableOpacity>
-
-        {/* Backend Status Indicator (for development) */}
-        {!isBackendAvailable && __DEV__ && (
-          <View style={styles.devIndicator}>
-            <Text style={styles.devText}>Demo Mode - Backend Unavailable</Text>
-          </View>
-        )}
       </ScrollView>
 
       <AddVisaModal 
@@ -304,10 +296,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
   },
   activeCard: {
     borderWidth: 2,
@@ -423,21 +415,15 @@ const styles = StyleSheet.create({
     gap: 8,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
   },
   addButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
-  },
-  devIndicator: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 8,
-    margin: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  devText: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 12,
   },
 });
