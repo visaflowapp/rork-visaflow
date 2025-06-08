@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 100,
+    paddingBottom: 80,
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: '#000',
   },
   detailValue: {
     fontSize: 14,
