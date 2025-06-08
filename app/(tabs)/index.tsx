@@ -133,17 +133,18 @@ export default function TrackerScreen() {
           <>
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
+              <Text style={styles.visaStatusTitle}>Visa Status</Text>
               <View style={styles.progressContainer}>
                 <CircularProgress
-                  size={200}
-                  strokeWidth={16}
+                  size={240}
+                  strokeWidth={18}
                   progress={getProgressPercentage(currentVisa)}
                   color={getStatusColor(currentVisa.daysLeft)}
                   backgroundColor="rgba(255, 255, 255, 0.2)"
                 />
                 <View style={styles.progressContent}>
                   <Text style={styles.daysNumber}>{currentVisa.daysLeft}</Text>
-                  <Text style={styles.daysLabel}>days left</Text>
+                  <Text style={styles.daysLabel}>DAYS LEFT</Text>
                 </View>
               </View>
             </View>
@@ -196,7 +197,7 @@ export default function TrackerScreen() {
                   <View style={styles.blueDivider} />
                   
                   <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Exit</Text>
+                    <Text style={styles.detailLabel}>Exit By</Text>
                     <Text style={styles.detailValue}>{formatDate(currentVisa.exit_date)}</Text>
                   </View>
                   <View style={styles.blueDivider} />
@@ -286,9 +287,16 @@ const styles = StyleSheet.create({
   progressSection: {
     alignItems: 'center',
     paddingVertical: 16,
-    paddingTop: 12,
-    height: height * 0.32,
+    paddingTop: 20,
+    height: height * 0.35,
     justifyContent: 'center',
+  },
+  visaStatusTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   progressContainer: {
     position: 'relative',
@@ -299,16 +307,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 200,
-    height: 200,
+    width: 240,
+    height: 240,
   },
   daysNumber: {
-    fontSize: 48,
+    fontSize: 56,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
     marginTop: -4,

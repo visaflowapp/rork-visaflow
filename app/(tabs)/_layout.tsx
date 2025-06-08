@@ -13,9 +13,9 @@ export default function TabLayout() {
           backgroundColor: colors.white,
           borderTopWidth: 1,
           borderTopColor: colors.border,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 6,
+          height: 50,
+          paddingBottom: 4,
+          paddingTop: 4,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.1,
@@ -23,12 +23,12 @@ export default function TabLayout() {
           elevation: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
-          marginTop: 2,
+          marginTop: 1,
         },
         tabBarIconStyle: {
-          marginTop: 2,
+          marginTop: 1,
         },
         headerStyle: {
           backgroundColor: colors.primary,
@@ -45,7 +45,7 @@ export default function TabLayout() {
           title: 'Tracker',
           tabBarLabel: 'Tracker',
           tabBarIcon: ({ color, size }) => (
-            <Clock size={26} color={color} />
+            <Clock size={24} color={color} />
           ),
           headerTitle: '',
         }}
@@ -56,7 +56,7 @@ export default function TabLayout() {
           title: 'Requirements',
           tabBarLabel: 'Requirements',
           tabBarIcon: ({ color, size }) => (
-            <Globe size={26} color={color} />
+            <Globe size={24} color={color} />
           ),
         }}
       />
@@ -66,7 +66,7 @@ export default function TabLayout() {
           title: 'Alerts',
           tabBarLabel: 'Alerts',
           tabBarIcon: ({ color, size }) => (
-            <Bell size={26} color={color} />
+            <Bell size={24} color={color} />
           ),
         }}
       />
@@ -76,7 +76,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color, size }) => (
-            <User size={26} color={color} />
+            <User size={24} color={color} />
           ),
         }}
       />
