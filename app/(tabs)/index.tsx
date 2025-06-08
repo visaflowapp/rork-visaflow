@@ -134,8 +134,8 @@ export default function TrackerScreen() {
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
               <CircularProgress
-                size={160}
-                strokeWidth={14}
+                size={180}
+                strokeWidth={16}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
                 backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -203,7 +203,7 @@ export default function TrackerScreen() {
                   <View style={styles.divider} />
                   
                   <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Extend by</Text>
+                    <Text style={styles.detailLabel}>Duration</Text>
                     <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
                   </View>
                 </View>
@@ -281,8 +281,8 @@ const styles = StyleSheet.create({
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 20,
-    paddingTop: 12,
+    paddingVertical: 24,
+    paddingTop: 16,
     position: 'relative',
   },
   progressContent: {
@@ -291,23 +291,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -80 }, { translateY: -16 }],
+    transform: [{ translateX: -90 }, { translateY: -20 }],
   },
   daysNumber: {
-    fontSize: 42,
+    fontSize: 46,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 15,
+    fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: -2,
   },
   cardContainer: {
     paddingHorizontal: 20,
-    paddingTop: 4,
+    paddingTop: 8,
     flex: 1,
-    paddingBottom: 20,
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -320,7 +319,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
-    marginBottom: 20,
   },
   removeButton: {
     position: 'absolute',
@@ -369,14 +367,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   progressBar: {
-    height: 12,
+    height: 10,
     backgroundColor: colors.lightGray,
-    borderRadius: 6,
+    borderRadius: 5,
     marginBottom: 6,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: 5,
   },
   progressText: {
     fontSize: 13,
