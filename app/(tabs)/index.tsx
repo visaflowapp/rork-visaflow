@@ -93,7 +93,6 @@ export default function TrackerScreen() {
   };
 
   const currentVisa = activeVisas.length > 0 ? activeVisas[0] : null;
-  const hasActiveVisa = activeVisas.length > 0;
 
   const handleAddVisa = (visaData: any) => {
     addVisa(visaData);
@@ -102,6 +101,15 @@ export default function TrackerScreen() {
   const handleRemoveVisa = (visaId: string) => {
     removeVisa(visaId);
   };
+
+  const NewVisaButton = () => (
+    <TouchableOpacity 
+      style={styles.headerButton}
+      onPress={() => setShowAddModal(true)}
+    >
+      <Text style={styles.headerButtonText}>New Visa</Text>
+    </TouchableOpacity>
+  );
 
   if (isLoading) {
     return (
@@ -119,6 +127,7 @@ export default function TrackerScreen() {
           headerStyle: { backgroundColor: colors.primary },
           headerTintColor: 'white',
           headerTitleStyle: { fontWeight: 'bold', fontSize: 20 },
+          headerRight: () => <NewVisaButton />,
         }} 
       />
 
@@ -128,8 +137,8 @@ export default function TrackerScreen() {
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
               <CircularProgress
-                size={240}
-                strokeWidth={16}
+                size={260}
+                strokeWidth={18}
                 progress={getProgressPercentage(currentVisa)}
                 color={getStatusColor(currentVisa.daysLeft)}
                 backgroundColor="rgba(255, 255, 255, 0.2)"
@@ -181,6 +190,9 @@ export default function TrackerScreen() {
                 </View>
                 <Text style={styles.progressText}>{Math.round(getProgressPercentage(currentVisa))}% used</Text>
 
+                {/* Divider */}
+                <View style={styles.divider} />
+
                 {/* Visa Details */}
                 <View style={styles.visaDetails}>
                   <View style={styles.detailRow}>
@@ -195,6 +207,10 @@ export default function TrackerScreen() {
                     <Text style={styles.detailLabel}>Duration</Text>
                     <Text style={styles.detailValue}>{currentVisa.duration} days</Text>
                   </View>
+
+                  {/* Divider */}
+                  <View style={styles.divider} />
+
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Extensions</Text>
                     <Text style={styles.detailValue}>{currentVisa.extensions_available}</Text>
@@ -218,21 +234,6 @@ export default function TrackerScreen() {
             <Text style={styles.emptySubtitle}>Add your first visa to start tracking</Text>
           </View>
         )}
-
-        {/* Add Visa Button - Always show but disable when there's an active visa */}
-        <TouchableOpacity 
-          style={[
-            styles.addButton,
-            hasActiveVisa && styles.addButtonDisabled
-          ]}
-          onPress={() => setShowAddModal(true)}
-          disabled={hasActiveVisa}
-        >
-          <Plus size={24} color="white" />
-          <Text style={styles.addButtonText}>
-            {hasActiveVisa ? 'Replace Visa Record' : 'Add Visa Record'}
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <AddVisaModal 
@@ -259,39 +260,50 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  headerButton: {
+    backgroundColor: 'white',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  headerButtonText: {
+    color: colors.primary,
+    fontWeight: '600',
+    fontSize: 14,
+  },
   content: {
     flex: 1,
-    justifyContent: 'space-between',
     paddingBottom: 20,
   },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 30,
+    paddingVertical: 40,
     position: 'relative',
   },
   progressContent: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 30,
+    top: 40,
     left: 0,
     right: 0,
     bottom: 0,
   },
   daysNumber: {
-    fontSize: 56,
+    fontSize: 64,
     fontWeight: 'bold',
     color: 'white',
   },
   daysLabel: {
-    fontSize: 18,
+    fontSize: 20,
     color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: -5,
+    marginTop: -8,
   },
   statusBadge: {
     position: 'absolute',
-    top: 50,
-    right: width / 2 - 100,
+    top: 60,
+    right: width / 2 - 110,
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -303,13 +315,14 @@ const styles = StyleSheet.create({
   cardContainer: {
     paddingHorizontal: 20,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 20,
   },
   visaCard: {
     width: CARD_WIDTH,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 20,
+    padding: 24,
     position: 'relative',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
@@ -319,8 +332,8 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     position: 'absolute',
-    top: 16,
-    right: 16,
+    top: 20,
+    right: 20,
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -337,7 +350,7 @@ const styles = StyleSheet.create({
   countryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
     marginTop: 8,
   },
   countryFlag: {
@@ -356,7 +369,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     alignSelf: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   visaTypeText: {
     color: 'white',
@@ -376,15 +389,21 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: 16,
+    marginBottom: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: 16,
   },
   visaDetails: {
-    gap: 10,
+    gap: 12,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 4,
   },
   detailLabel: {
     fontSize: 16,
@@ -399,7 +418,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF3CD',
     padding: 12,
     borderRadius: 8,
-    marginTop: 12,
+    marginTop: 16,
   },
   extensionText: {
     fontSize: 14,
@@ -424,30 +443,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
-  },
-  addButton: {
-    backgroundColor: colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    marginHorizontal: 20,
-    borderRadius: 16,
-    gap: 8,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  addButtonDisabled: {
-    opacity: 0.6,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
   },
 });
