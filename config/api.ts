@@ -104,9 +104,9 @@ export const checkVisaRequirements = async (nationality: string, destination: st
     console.log('API Response data:', data);
     return data;
   } catch (err: unknown) {
-    const error = err instanceof Error ? err : new Error(String(err));
-    console.error('Visa requirements API error:', error);
-    throw error;
+    const errorObj = err instanceof Error ? err : new Error(String(err));
+    console.error('Visa requirements API error:', errorObj);
+    throw errorObj;
   }
 };
 
@@ -137,9 +137,9 @@ export const checkVisaRequirementsAlternative = async (nationality: string, dest
     console.log('Alternative API Response data:', data);
     return data;
   } catch (err: unknown) {
-    const error = err instanceof Error ? err : new Error(String(err));
-    console.error('Alternative visa requirements API error:', error);
-    throw error;
+    const errorObj = err instanceof Error ? err : new Error(String(err));
+    console.error('Alternative visa requirements API error:', errorObj);
+    throw errorObj;
   }
 };
 
@@ -174,10 +174,10 @@ export const testApiConnection = async () => {
       config: config
     };
   } catch (err: unknown) {
-    const error = err instanceof Error ? err : new Error(String(err));
+    const errorObj = err instanceof Error ? err : new Error(String(err));
     return {
       success: false,
-      error: error.message,
+      error: errorObj.message,
       config: debugApiConfig()
     };
   }

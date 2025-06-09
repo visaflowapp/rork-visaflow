@@ -1,12 +1,51 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import Dropdown from '@/components/Dropdown';
+import SimpleDropdown from '@/components/SimpleDropdown';
 import Button from '@/components/Button';
 import RequirementsResult from '@/components/RequirementsResult';
 import Colors from '@/constants/colors';
-import { countries, tripPurposes } from '@/constants/mockData';
 import { useVisaStore } from '@/store/visaStore';
 import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig, testApiConnection } from '@/config/api';
+
+// Hardcoded options for testing
+const NATIONALITY_OPTIONS = [
+  'United States',
+  'United Kingdom', 
+  'Canada',
+  'Australia',
+  'Germany',
+  'France',
+  'Japan',
+  'Thailand',
+  'Indonesia',
+  'Singapore',
+  'Malaysia',
+  'Philippines'
+];
+
+const DESTINATION_OPTIONS = [
+  'United States',
+  'United Kingdom',
+  'Canada', 
+  'Australia',
+  'Germany',
+  'France',
+  'Japan',
+  'Thailand',
+  'Indonesia',
+  'Singapore',
+  'Malaysia',
+  'Philippines'
+];
+
+const PURPOSE_OPTIONS = [
+  'Tourism',
+  'Business',
+  'Work',
+  'Study',
+  'Transit',
+  'Family Visit'
+];
 
 export default function RequirementsScreen() {
   const { userProfile } = useVisaStore();
@@ -49,7 +88,8 @@ export default function RequirementsScreen() {
       } catch (primaryError) {
         console.log('Primary API method failed, trying alternative...');
         // If primary fails, try the alternative method
-        const error = primaryError instanceof Error ? primaryError : new Error(String(primaryError));
+        const errorMessage = primaryError instanceof Error ? primaryError.message : String(primaryError);
+        console.error('Primary API error:', errorMessage);
         data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
       }
       
@@ -60,17 +100,17 @@ export default function RequirementsScreen() {
       
       let errorMessage = 'Failed to fetch visa requirements. ';
       
-      const error = err instanceof Error ? err : new Error(String(err));
+      const errorObj = err instanceof Error ? err : new Error(String(err));
       
-      if (error.message?.includes('API configuration incomplete')) {
+      if (errorObj.message?.includes('API configuration incomplete')) {
         errorMessage = 'API not configured. Please check your environment variables are set correctly.';
-      } else if (error.message?.includes('Invalid API key')) {
+      } else if (errorObj.message?.includes('Invalid API key')) {
         errorMessage = 'Invalid API key. Please verify your RapidAPI credentials.';
-      } else if (error.message?.includes('Access forbidden')) {
+      } else if (errorObj.message?.includes('Access forbidden')) {
         errorMessage = 'Access forbidden. Please check your RapidAPI subscription and endpoint access.';
-      } else if (error.message?.includes('Rate limit exceeded')) {
+      } else if (errorObj.message?.includes('Rate limit exceeded')) {
         errorMessage = 'Rate limit exceeded. Please try again later.';
-      } else if (error.message?.includes('Network request failed')) {
+      } else if (errorObj.message?.includes('Network request failed')) {
         errorMessage = 'Network error. Please check your internet connection.';
       } else {
         errorMessage += 'Please check your internet connection and try again.';
@@ -83,7 +123,7 @@ export default function RequirementsScreen() {
         'API Error',
         `${errorMessage}
 
-Technical details: ${error.message}`,
+Technical details: ${errorObj.message}`,
         [
           { text: 'OK' },
           { 
@@ -130,8 +170,8 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
         [{ text: 'OK' }]
       );
     } catch (err: unknown) {
-      const error = err instanceof Error ? err : new Error(String(err));
-      Alert.alert('Test Failed', `Unable to test API connection: ${error.message}`);
+      const errorObj = err instanceof Error ? err : new Error(String(err));
+      Alert.alert('Test Failed', `Unable to test API connection: ${errorObj.message}`);
     } finally {
       setLoading(false);
     }
@@ -161,27 +201,25 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
           <Text style={styles.formTitle}>Check Visa Requirements</Text>
           <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
           
-          <Dropdown
+          <SimpleDropdown
             label="Your Nationality"
-            options={countries}
+            options={NATIONALITY_OPTIONS}
             value={nationality}
             onSelect={setNationality}
             placeholder="Select your nationality"
-            showFlags={true}
           />
 
-          <Dropdown
+          <SimpleDropdown
             label="Destination Country"
-            options={countries.filter(country => country !== nationality)}
+            options={DESTINATION_OPTIONS.filter(country => country !== nationality)}
             value={destination}
             onSelect={setDestination}
             placeholder="Where are you traveling to?"
-            showFlags={true}
           />
 
-          <Dropdown
+          <SimpleDropdown
             label="Travel Purpose"
-            options={tripPurposes}
+            options={PURPOSE_OPTIONS}
             value={purpose}
             onSelect={setPurpose}
             placeholder="Why are you traveling?"
