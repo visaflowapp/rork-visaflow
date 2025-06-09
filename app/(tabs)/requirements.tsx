@@ -9,7 +9,9 @@ import {
   ActivityIndicator,
   Modal,
   FlatList,
-  Pressable
+  Pressable,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
@@ -192,9 +194,7 @@ export default function RequirementsScreen() {
           closeDropdown();
         }}
       >
-        {item === passportCountry || item === fromCountry || item === transitCountry || item === toCountry ? (
-          <Text style={styles.countryFlag}>{getCountryFlag(item)}</Text>
-        ) : null}
+        <Text style={styles.countryFlag}>{getCountryFlag(item)}</Text>
         <Text style={styles.dropdownItemText}>{item}</Text>
       </TouchableOpacity>
     );
@@ -214,7 +214,10 @@ export default function RequirementsScreen() {
         animationType="slide"
         onRequestClose={onClose}
       >
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.modalOverlay}
+        >
           <View style={styles.modalContent}>
             <View style={styles.searchContainer}>
               <Search size={20} color={colors.textSecondary} style={styles.searchIcon} />
@@ -237,9 +240,10 @@ export default function RequirementsScreen() {
               style={styles.dropdownList}
               showsVerticalScrollIndicator={true}
               initialNumToRender={20}
+              keyboardShouldPersistTaps="handled"
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   };
@@ -359,7 +363,13 @@ export default function RequirementsScreen() {
                   styles.dropdownButtonText,
                   !fromCountry && styles.placeholderText
                 ]}>
-                  {fromCountry || 'Select origin country'}
+                  {fromCountry ? (
+                    <>
+                      {getCountryFlag(fromCountry)} {fromCountry}
+                    </>
+                  ) : (
+                    'Select origin country'
+                  )}
                 </Text>
               </View>
               <ChevronDown size={20} color={colors.primary} />
@@ -379,7 +389,13 @@ export default function RequirementsScreen() {
                   styles.dropdownButtonText,
                   !transitCountry && styles.placeholderText
                 ]}>
-                  {transitCountry || 'Select transit country (optional)'}
+                  {transitCountry ? (
+                    <>
+                      {getCountryFlag(transitCountry)} {transitCountry}
+                    </>
+                  ) : (
+                    'Select transit country (optional)'
+                  )}
                 </Text>
               </View>
               <ChevronDown size={20} color={colors.primary} />
@@ -399,7 +415,13 @@ export default function RequirementsScreen() {
                   styles.dropdownButtonText,
                   !toCountry && styles.placeholderText
                 ]}>
-                  {toCountry || 'Select destination country'}
+                  {toCountry ? (
+                    <>
+                      {getCountryFlag(toCountry)} {toCountry}
+                    </>
+                  ) : (
+                    'Select destination country'
+                  )}
                 </Text>
               </View>
               <ChevronDown size={20} color={colors.primary} />
@@ -423,26 +445,39 @@ export default function RequirementsScreen() {
 
           {/* Date Range */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Enter a Date Range</Text>
-            <View style={styles.dateRangeContainer}>
+            <Text style={styles.formLabel}>
+              {tripType === 'One Way' ? 'Select Departure Date' : 'Enter a Date Range'}
+            </Text>
+            
+            {tripType === 'One Way' ? (
               <TouchableOpacity 
-                style={styles.dateButton}
+                style={styles.singleDateButton}
                 onPress={() => setShowStartDatePicker(true)}
               >
                 <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
                 <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
               </TouchableOpacity>
-              
-              <Text style={styles.dateRangeSeparator}>—</Text>
-              
-              <TouchableOpacity 
-                style={styles.dateButton}
-                onPress={() => setShowEndDatePicker(true)}
-              >
-                <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
-                <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
-              </TouchableOpacity>
-            </View>
+            ) : (
+              <View style={styles.dateRangeContainer}>
+                <TouchableOpacity 
+                  style={styles.dateButton}
+                  onPress={() => setShowStartDatePicker(true)}
+                >
+                  <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
+                  <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                </TouchableOpacity>
+                
+                <Text style={styles.dateRangeSeparator}>—</Text>
+                
+                <TouchableOpacity 
+                  style={styles.dateButton}
+                  onPress={() => setShowEndDatePicker(true)}
+                >
+                  <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
+                  <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           {/* Check Requirements Button */}
@@ -512,28 +547,40 @@ export default function RequirementsScreen() {
       {/* Dropdowns */}
       {renderCountryDropdown(
         showPassportDropdown,
-        () => setShowPassportDropdown(false),
+        () => {
+          setShowPassportDropdown(false);
+          setSearchQuery('');
+        },
         setPassportCountry,
         'Select passport country'
       )}
       
       {renderCountryDropdown(
         showFromDropdown,
-        () => setShowFromDropdown(false),
+        () => {
+          setShowFromDropdown(false);
+          setSearchQuery('');
+        },
         setFromCountry,
         'Select origin country'
       )}
       
       {renderCountryDropdown(
         showTransitDropdown,
-        () => setShowTransitDropdown(false),
+        () => {
+          setShowTransitDropdown(false);
+          setSearchQuery('');
+        },
         setTransitCountry,
         'Select transit country'
       )}
       
       {renderCountryDropdown(
         showToDropdown,
-        () => setShowToDropdown(false),
+        () => {
+          setShowToDropdown(false);
+          setSearchQuery('');
+        },
         setToCountry,
         'Select destination country'
       )}
@@ -642,7 +689,7 @@ function renderResults(data: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.primary,
   },
   scrollView: {
     flex: 1,
@@ -676,9 +723,9 @@ const styles = StyleSheet.create({
     marginTop: -20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 15,
-    elevation: 10,
+    elevation: 8,
   },
   formGroup: {
     marginBottom: 16,
@@ -733,6 +780,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     flex: 1,
+    backgroundColor: 'white',
+  },
+  singleDateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     backgroundColor: 'white',
   },
   dateButtonText: {
@@ -849,6 +906,11 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   errorTitle: {
     fontSize: 16,
@@ -871,9 +933,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 15,
-    elevation: 10,
+    elevation: 8,
   },
   resultSection: {
     padding: 20,
@@ -943,6 +1005,11 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginTop: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   helpHeader: {
     flexDirection: 'row',
