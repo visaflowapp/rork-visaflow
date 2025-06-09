@@ -12,7 +12,7 @@ import {
   Pressable
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Calendar, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, Passport, ExternalLink, Info, Search } from 'lucide-react-native';
+import { Calendar, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { colors } from '@/constants/colors';
 import { countries } from '@/constants/mockData';
@@ -414,7 +414,7 @@ export default function RequirementsScreen() {
               onPress={() => setShowPurposeDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <Passport size={20} color={colors.primary} style={styles.inputIcon} />
+                <CreditCard size={20} color={colors.primary} style={styles.inputIcon} />
                 <Text style={styles.dropdownButtonText}>{tripPurpose}</Text>
               </View>
               <ChevronDown size={20} color={colors.primary} />
