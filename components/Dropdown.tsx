@@ -265,9 +265,8 @@ const Dropdown: React.FC<DropdownProps> = ({
     return flagMap[countryName] || "🏳️";
   };
 
-  const renderItem = ({ item, index }: { item: string; index: number }) => (
+  const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity 
-      key={`${item}-${index}`}
       style={[
         styles.item,
         item === value && styles.selectedItem
@@ -347,6 +346,11 @@ const Dropdown: React.FC<DropdownProps> = ({
                     initialNumToRender={20}
                     maxToRenderPerBatch={20}
                     windowSize={10}
+                    getItemLayout={(data, index) => ({
+                      length: 60,
+                      offset: 60 * index,
+                      index,
+                    })}
                     ListEmptyComponent={
                       <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>No results found</Text>
@@ -461,6 +465,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+    height: 60,
   },
   selectedItem: {
     backgroundColor: 'rgba(0, 122, 255, 0.1)',

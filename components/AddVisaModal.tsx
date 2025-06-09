@@ -36,7 +36,8 @@ const visaTypes = [
   'Work Visa',
   'Student Visa',
   'Transit Visa',
-  'eVisa'
+  'eVisa',
+  'B211A Visa (Single-Entry Tourist/Business Visa)'
 ];
 
 const AddVisaModal: React.FC<AddVisaModalProps> = ({
@@ -104,7 +105,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.formContainer}>
+          <ScrollView style={styles.formContainer} keyboardShouldPersistTaps="handled">
             <Dropdown
               label="Country"
               options={countries}
@@ -129,7 +130,11 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text style={styles.dateText}>
-                  {entryDate.toLocaleDateString()}
+                  {entryDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
                 </Text>
               </TouchableOpacity>
               {showDatePicker && (
@@ -167,7 +172,13 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Exit Date (Calculated)</Text>
               <View style={styles.calculatedField}>
-                <Text style={styles.calculatedText}>{calculateExitDate()}</Text>
+                <Text style={styles.calculatedText}>
+                  {new Date(calculateExitDate()).toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </Text>
               </View>
             </View>
           </ScrollView>

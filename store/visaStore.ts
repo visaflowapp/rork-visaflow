@@ -54,18 +54,18 @@ interface VisaState {
   toggleTravelMode: (enabled: boolean) => void;
 }
 
-// Dummy data - only one visa for single tracking
+// Updated dummy data with Indonesia B211A Visa
 const dummyVisas: VisaRecord[] = [
   {
     id: '1',
-    country: 'Portugal',
-    visa_type: 'Digital Nomad Visa',
-    entry_date: '2024-03-14',
-    duration: 180,
-    exit_date: '2024-09-10',
-    extensions_available: 1,
+    country: 'Indonesia',
+    visa_type: 'B211A Visa (Single-Entry Tourist/Business Visa)',
+    entry_date: '2025-03-13',
+    duration: 60,
+    exit_date: '2025-05-12',
+    extensions_available: 2,
     is_active: true,
-    daysLeft: 96,
+    daysLeft: 34,
   }
 ];
 
@@ -74,7 +74,7 @@ const dummyAlerts: Alert[] = [
     id: '1',
     type: 'deadline',
     title: 'Visa Expiring Soon',
-    description: 'Your Portugal Digital Nomad Visa expires in 96 days',
+    description: 'Your Indonesia B211A Visa expires in 34 days',
     timestamp: new Date().toISOString(),
     is_read: false,
     icon: 'clock',

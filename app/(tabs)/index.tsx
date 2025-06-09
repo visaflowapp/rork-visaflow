@@ -86,7 +86,7 @@ export default function TrackerScreen() {
   const getExtensionDeadline = (visa: any) => {
     if (visa.extensions_available === 0) return null;
     const exitDate = new Date(visa.exit_date);
-    exitDate.setDate(exitDate.getDate() - 30); // 30 days before expiry
+    exitDate.setDate(exitDate.getDate() - 7); // 7 days before expiry for Indonesia B211A
     return exitDate.toLocaleDateString('en-US', { 
       month: 'short', 
       day: 'numeric',
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingTop: 20,
-    height: height * 0.32,
+    height: height * 0.35,
     justifyContent: 'center',
   },
   visaStatusTitle: {
@@ -327,8 +327,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     justifyContent: 'flex-start',
-    paddingBottom: 16,
-    paddingTop: 24,
+    paddingBottom: 8,
+    paddingTop: 32,
   },
   visaCard: {
     width: CARD_WIDTH,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
-    maxHeight: height * 0.38,
+    maxHeight: height * 0.42,
   },
   removeButton: {
     position: 'absolute',
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#000',
   },
   extensionDeadline: {
