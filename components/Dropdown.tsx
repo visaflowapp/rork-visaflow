@@ -8,7 +8,7 @@ import {
   FlatList,
   SafeAreaView,
   TextInput,
-  Pressable
+  TouchableWithoutFeedback
 } from 'react-native';
 import { ChevronDown, Search } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -47,14 +47,23 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const toggleDropdown = () => {
     setVisible(!visible);
-    setSearchQuery('');
-    setFilteredOptions(options);
+    if (!visible) {
+      setSearchQuery('');
+      setFilteredOptions(options);
+    }
   };
 
   const handleItemSelect = (item: string) => {
     onSelect(item);
     setVisible(false);
     setSearchQuery('');
+    setFilteredOptions(options);
+  };
+
+  const closeModal = () => {
+    setVisible(false);
+    setSearchQuery('');
+    setFilteredOptions(options);
   };
 
   const getCountryFlag = (countryName: string) => {
@@ -256,13 +265,15 @@ const Dropdown: React.FC<DropdownProps> = ({
     return flagMap[countryName] || "🏳️";
   };
 
-  const renderItem = ({ item }: { item: string }) => (
-    <Pressable 
-      style={({ pressed }) => [
+  const renderItem = ({ item, index }: { item: string; index: number }) => (
+    <TouchableOpacity 
+      key={`${item}-${index}`}
+      style={[
         styles.item,
-        pressed && styles.itemPressed
+        item === value && styles.selectedItem
       ]} 
       onPress={() => handleItemSelect(item)}
+      activeOpacity={0.7}
     >
       {showFlags && (
         <Text style={styles.flagEmoji}>{getCountryFlag(item)}</Text>
@@ -273,7 +284,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       ]}>
         {item}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 
   return (
@@ -300,48 +311,53 @@ const Dropdown: React.FC<DropdownProps> = ({
         visible={visible}
         transparent={true}
         animationType="slide"
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={closeModal}
       >
-        <View style={styles.overlay}>
-          <Pressable 
-            style={styles.overlayBackground}
-            onPress={() => setVisible(false)}
-          />
-          <SafeAreaView style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{label}</Text>
-                <TouchableOpacity onPress={() => setVisible(false)}>
-                  <Text style={styles.closeText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-              
-              <View style={styles.searchContainer}>
-                <Search size={20} color={Colors.silver} style={styles.searchIcon} />
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  autoCapitalize="none"
-                  clearButtonMode="while-editing"
-                />
-              </View>
-              
-              <FlatList
-                data={filteredOptions}
-                renderItem={renderItem}
-                keyExtractor={(item) => item}
-                style={styles.listContainer}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={true}
-                ListEmptyComponent={
-                  <Text style={styles.emptyText}>No results found</Text>
-                }
-              />
-            </View>
-          </SafeAreaView>
-        </View>
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <SafeAreaView style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>{label}</Text>
+                    <TouchableOpacity onPress={closeModal}>
+                      <Text style={styles.closeText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                  
+                  <View style={styles.searchContainer}>
+                    <Search size={20} color={Colors.silver} style={styles.searchIcon} />
+                    <TextInput
+                      style={styles.searchInput}
+                      placeholder="Search..."
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      autoCapitalize="none"
+                      clearButtonMode="while-editing"
+                    />
+                  </View>
+                  
+                  <FlatList
+                    data={filteredOptions}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => `${item}-${index}`}
+                    style={styles.listContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={true}
+                    initialNumToRender={20}
+                    maxToRenderPerBatch={20}
+                    windowSize={10}
+                    ListEmptyComponent={
+                      <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No results found</Text>
+                      </View>
+                    }
+                  />
+                </View>
+              </SafeAreaView>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -387,13 +403,6 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
-  },
-  overlayBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
@@ -453,8 +462,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
-  itemPressed: {
-    backgroundColor: Colors.lightGray,
+  selectedItem: {
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
   },
   flagEmoji: {
     fontSize: 18,
@@ -468,9 +477,12 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontWeight: '600',
   },
+  emptyContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
   emptyText: {
     textAlign: 'center',
-    padding: 20,
     color: Colors.silver,
     fontSize: 16,
   },
