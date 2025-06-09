@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Info } from 'lucide-react-native';
 import Dropdown from '@/components/Dropdown';
 import Button from '@/components/Button';
 import RequirementsResult from '@/components/RequirementsResult';
@@ -32,18 +31,18 @@ export default function RequirementsScreen() {
   const isFormValid = nationality && destination && purpose;
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.primary, '#0055B3']}
-        style={styles.header}
-      >
+    <LinearGradient
+      colors={[Colors.primary, '#0055B3']}
+      style={styles.container}
+    >
+      <View style={styles.header}>
         <Text style={styles.headerTitle}>Visa Requirements</Text>
         <Text style={styles.headerSubtitle}>
           Check entry requirements for your next destination
         </Text>
-      </LinearGradient>
+      </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <View style={styles.content}>
         <View style={styles.formCard}>
           <Dropdown
             label="Your Nationality"
@@ -91,25 +90,14 @@ export default function RequirementsScreen() {
             purpose={purpose}
           />
         )}
-
-        <View style={styles.infoCard}>
-          <View style={styles.infoHeader}>
-            <Info size={20} color={Colors.primary} />
-            <Text style={styles.infoTitle}>Need Help?</Text>
-          </View>
-          <Text style={styles.infoText}>
-            Our visa requirement data is updated regularly, but regulations can change quickly. For the most accurate information, always check with the embassy or consulate of your destination country.
-          </Text>
-        </View>
-      </ScrollView>
-    </View>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.lightGray,
   },
   header: {
     padding: 24,
@@ -138,50 +126,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 24,
     shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
   button: {
     marginTop: 32,
     height: 56,
     backgroundColor: Colors.silver,
     shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   buttonEnabled: {
     backgroundColor: Colors.primary,
-  },
-  infoCard: {
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    padding: 20,
-    marginHorizontal: 16,
-    marginBottom: 32,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-  infoHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  infoTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginLeft: 8,
-  },
-  infoText: {
-    fontSize: 15,
-    color: '#404040',
-    lineHeight: 22,
   },
 });

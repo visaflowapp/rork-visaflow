@@ -37,7 +37,7 @@ const visaTypes = [
   'Student Visa',
   'Transit Visa',
   'eVisa',
-  'B211A Visa (Single-Entry Tourist/Business Visa)'
+  'B211A Visa'
 ];
 
 const AddVisaModal: React.FC<AddVisaModalProps> = ({

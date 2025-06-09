@@ -59,7 +59,7 @@ const dummyVisas: VisaRecord[] = [
   {
     id: '1',
     country: 'Indonesia',
-    visa_type: 'B211A Visa (Single-Entry Tourist/Business Visa)',
+    visa_type: 'B211A Visa',
     entry_date: '2025-03-13',
     duration: 60,
     exit_date: '2025-05-12',
