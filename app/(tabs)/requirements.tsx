@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.error,
+    color: Colors.red,
     marginBottom: 8,
     textAlign: 'center',
   },

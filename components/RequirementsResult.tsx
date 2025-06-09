@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: Colors.error,
+    color: Colors.red,
     textAlign: 'center',
   },
 });
