@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Dropdown from '@/components/Dropdown';
 import Button from '@/components/Button';
 import RequirementsResult from '@/components/RequirementsResult';
@@ -31,17 +30,7 @@ export default function RequirementsScreen() {
   const isFormValid = nationality && destination && purpose;
 
   return (
-    <LinearGradient
-      colors={[Colors.primary, '#0055B3']}
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Visa Requirements</Text>
-        <Text style={styles.headerSubtitle}>
-          Check entry requirements for your next destination
-        </Text>
-      </View>
-
+    <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.formCard}>
           <Dropdown
@@ -91,32 +80,17 @@ export default function RequirementsScreen() {
           />
         )}
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    padding: 24,
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: Colors.primary,
   },
   content: {
     flex: 1,
-    marginTop: -20,
     paddingTop: 24,
   },
   formCard: {
@@ -125,7 +99,7 @@ const styles = StyleSheet.create({
     padding: 24,
     marginHorizontal: 16,
     marginBottom: 24,
-    shadowColor: Colors.black,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.25,
     shadowRadius: 25,

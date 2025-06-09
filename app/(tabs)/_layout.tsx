@@ -36,18 +36,20 @@ export default function TabLayout() {
         headerTintColor: colors.white,
         headerTitleStyle: {
           fontWeight: 'bold',
+          textAlign: 'center',
         },
+        headerTitleAlign: 'center',
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tracker',
-          tabBarLabel: 'Tracker',
+          title: 'Countdown',
+          tabBarLabel: 'Countdown',
           tabBarIcon: ({ color, size }) => (
             <Clock size={24} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'Countdown',
         }}
       />
       <Tabs.Screen
@@ -58,16 +60,18 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Globe size={24} color={color} />
           ),
+          headerTitle: 'Requirements',
         }}
       />
       <Tabs.Screen
         name="alerts"
         options={{
-          title: 'Alerts',
-          tabBarLabel: 'Alerts',
+          title: 'Notifications',
+          tabBarLabel: 'Notifications',
           tabBarIcon: ({ color, size }) => (
             <Bell size={24} color={color} />
           ),
+          headerTitle: 'Notifications',
         }}
       />
       <Tabs.Screen
@@ -78,6 +82,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <User size={24} color={color} />
           ),
+          headerTitle: 'Profile',
         }}
       />
     </Tabs>

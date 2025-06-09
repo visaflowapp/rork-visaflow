@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import ProfileField from '@/components/ProfileField';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
@@ -33,10 +32,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.primary, '#0055B3']}
-        style={styles.header}
-      >
+      <View style={styles.header}>
         <View style={styles.profileImageContainer}>
           <Image
             source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60' }}
@@ -45,7 +41,7 @@ export default function ProfileScreen() {
         </View>
         <Text style={styles.profileName}>{userProfile.name}</Text>
         <Text style={styles.profileEmail}>{userProfile.email}</Text>
-      </LinearGradient>
+      </View>
 
       <ScrollView style={styles.content}>
         <View style={styles.section}>
@@ -117,7 +113,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: Colors.primary,
   },
   loadingContainer: {
     justifyContent: 'center',
@@ -125,7 +121,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 18,
-    color: Colors.silver,
+    color: Colors.white,
   },
   header: {
     padding: 24,
@@ -171,7 +167,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: Colors.white,
     marginHorizontal: 16,
     marginBottom: 12,
   },
@@ -180,11 +176,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 16,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
   infoRow: {
     flexDirection: 'row',
@@ -208,10 +204,10 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: Colors.white,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
 });

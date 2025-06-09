@@ -217,7 +217,6 @@ const RequirementsResult: React.FC<RequirementsResultProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Visa Requirements</Text>
         <View style={styles.tripDetails}>
           <Text style={styles.tripDetailText}>
             {getCountryFlag(nationality)} {nationality} → {getCountryFlag(destination)} {destination}
@@ -287,22 +286,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginHorizontal: 16,
     marginVertical: 16,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
   header: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginBottom: 8,
   },
   tripDetails: {
     flexDirection: 'row',

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import AlertCard from '@/components/AlertCard';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
@@ -24,7 +23,7 @@ export default function AlertsScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <Text style={styles.emptyTitle}>No Alerts</Text>
+      <Text style={styles.emptyTitle}>No Notifications</Text>
       <Text style={styles.emptyText}>
         You're all caught up! We'll notify you when there are new visa alerts or policy changes.
       </Text>
@@ -33,36 +32,24 @@ export default function AlertsScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={[Colors.primary, '#0055B3']}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Alerts</Text>
-        <Text style={styles.headerSubtitle}>
-          Stay updated on visa changes and deadlines
-        </Text>
-      </LinearGradient>
-
-      <View style={styles.content}>
-        <FlatList
-          data={alerts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <AlertCard
-              id={item.id}
-              type={item.type}
-              title={item.title}
-              description={item.description}
-              timestamp={item.timestamp}
-              isRead={item.is_read}
-              icon={item.icon}
-              onDismiss={handleDismiss}
-            />
-          )}
-          contentContainerStyle={styles.listContainer}
-          ListEmptyComponent={renderEmptyState}
-        />
-      </View>
+      <FlatList
+        data={alerts}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <AlertCard
+            id={item.id}
+            type={item.type}
+            title={item.title}
+            description={item.description}
+            timestamp={item.timestamp}
+            isRead={item.is_read}
+            icon={item.icon}
+            onDismiss={handleDismiss}
+          />
+        )}
+        contentContainerStyle={styles.listContainer}
+        ListEmptyComponent={renderEmptyState}
+      />
     </View>
   );
 }
@@ -70,29 +57,10 @@ export default function AlertsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.lightGray,
-  },
-  header: {
-    padding: 24,
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  content: {
-    flex: 1,
-    marginTop: -20,
+    backgroundColor: Colors.primary,
   },
   listContainer: {
-    paddingTop: 8,
+    paddingTop: 16,
     paddingBottom: 24,
   },
   emptyContainer: {
@@ -103,11 +71,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 15,
   },
   emptyTitle: {
     fontSize: 18,
