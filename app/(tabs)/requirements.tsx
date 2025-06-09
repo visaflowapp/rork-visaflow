@@ -49,6 +49,7 @@ export default function RequirementsScreen() {
       } catch (primaryError) {
         console.log('Primary API method failed, trying alternative...');
         // If primary fails, try the alternative method
+        const error = primaryError instanceof Error ? primaryError : new Error(String(primaryError));
         data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
       }
       
