@@ -15,6 +15,19 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   value,
   onValueChange,
 }) => {
+  // If no label, just return the switch (for inline use)
+  if (!label) {
+    return (
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        trackColor={{ false: Colors.lightGray, true: Colors.primary }}
+        thumbColor={Colors.white}
+        ios_backgroundColor={Colors.lightGray}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>

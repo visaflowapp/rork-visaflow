@@ -135,7 +135,6 @@ export default function TrackerScreen() {
           <>
             {/* Circular Progress Section */}
             <View style={styles.progressSection}>
-              <Text style={styles.visaStatusTitle}>Visa Status</Text>
               <View style={styles.progressContainer}>
                 <CircularProgress
                   size={240}
@@ -292,13 +291,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     height: height * 0.35,
     justifyContent: 'center',
-  },
-  visaStatusTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 20,
-    textAlign: 'center',
   },
   progressContainer: {
     position: 'relative',

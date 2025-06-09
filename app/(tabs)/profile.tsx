@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import ProfileField from '@/components/ProfileField';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
   const { 
     userProfile, 
-    updateProfile, 
-    toggleNotifications, 
-    toggleTravelMode,
+    toggleNotifications,
     userId,
     loadUserData 
   } = useVisaStore();
@@ -25,87 +23,105 @@ export default function ProfileScreen() {
   if (!userProfile) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Loading profile...</Text>
+        <Text style={styles.loadingText}>Loading settings...</Text>
       </View>
     );
   }
 
+  const SettingsItem = ({ 
+    icon, 
+    title, 
+    onPress, 
+    showToggle = false, 
+    toggleValue = false, 
+    onToggle 
+  }: {
+    icon: React.ReactNode;
+    title: string;
+    onPress?: () => void;
+    showToggle?: boolean;
+    toggleValue?: boolean;
+    onToggle?: (value: boolean) => void;
+  }) => (
+    <TouchableOpacity 
+      style={styles.settingsItem} 
+      onPress={onPress}
+      disabled={showToggle}
+      activeOpacity={showToggle ? 1 : 0.7}
+    >
+      <View style={styles.settingsItemLeft}>
+        <View style={styles.iconContainer}>
+          {icon}
+        </View>
+        <Text style={styles.settingsItemText}>{title}</Text>
+      </View>
+      {showToggle ? (
+        <ToggleSwitch
+          label=""
+          value={toggleValue}
+          onValueChange={onToggle || (() => {})}
+        />
+      ) : (
+        <ChevronRight size={20} color={Colors.silver} />
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.profileImageContainer}>
-          <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60' }}
-            style={styles.profileImage}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.settingsCard}>
+          <SettingsItem
+            icon={<Bell size={20} color={Colors.primary} />}
+            title="Push Notifications"
+            showToggle={true}
+            toggleValue={userProfile.notifications}
+            onToggle={toggleNotifications}
           />
-        </View>
-        <Text style={styles.profileName}>{userProfile.name}</Text>
-        <Text style={styles.profileEmail}>{userProfile.email}</Text>
-      </View>
-
-      <ScrollView style={styles.content}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
-          <View style={styles.card}>
-            <ProfileField
-              label="Name"
-              value={userProfile.name}
-              onSave={(value) => updateProfile({ name: value })}
-            />
-            <ProfileField
-              label="Nationality"
-              value={userProfile.nationality}
-              onSave={(value) => updateProfile({ nationality: value })}
-            />
-            <ProfileField
-              label="Email"
-              value={userProfile.email}
-              onSave={(value) => updateProfile({ email: value })}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <View style={styles.card}>
-            <ToggleSwitch
-              label="Push Notifications"
-              description="Receive alerts about visa deadlines and policy changes"
-              value={userProfile.notifications}
-              onValueChange={toggleNotifications}
-            />
-            <ToggleSwitch
-              label="Travel Mode"
-              description="Optimize app for low data usage while traveling"
-              value={userProfile.travel_mode}
-              onValueChange={toggleTravelMode}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>App Information</Text>
-          <View style={styles.card}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Version</Text>
-              <Text style={styles.infoValue}>1.0.0</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Last Updated</Text>
-              <Text style={styles.infoValue}>June 7, 2025</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Log Out"
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
+            icon={<Globe size={20} color={Colors.primary} />}
+            title="Language"
             onPress={() => {}}
-            variant="outline"
-            style={styles.logoutButton}
+          />
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
+            icon={<User size={20} color={Colors.primary} />}
+            title="Passport Information"
+            onPress={() => {}}
+          />
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
+            icon={<Shield size={20} color={Colors.primary} />}
+            title="Privacy & Security"
+            onPress={() => {}}
+          />
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
+            icon={<HelpCircle size={20} color={Colors.primary} />}
+            title="Help & Support"
+            onPress={() => {}}
           />
         </View>
       </ScrollView>
+
+      <View style={styles.logoutContainer}>
+        <Button
+          title="Log Out"
+          onPress={() => {}}
+          variant="outline"
+          style={styles.logoutButton}
+          icon={<LogOut size={18} color={Colors.primary} style={styles.logoutIcon} />}
+        />
+      </View>
     </View>
   );
 }
@@ -123,58 +139,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.white,
   },
-  header: {
-    padding: 24,
-    paddingTop: 40,
-    paddingBottom: 40,
-    alignItems: 'center',
-  },
-  profileImageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    overflow: 'hidden',
-    borderWidth: 3,
-    borderColor: Colors.white,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginBottom: 4,
-  },
-  profileEmail: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
   content: {
     flex: 1,
-    marginTop: -20,
+    paddingTop: 24,
   },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginHorizontal: 16,
-    marginBottom: 12,
-  },
-  card: {
+  settingsCard: {
     backgroundColor: Colors.white,
     borderRadius: 20,
-    padding: 20,
     marginHorizontal: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
@@ -182,25 +153,41 @@ const styles = StyleSheet.create({
     shadowRadius: 25,
     elevation: 15,
   },
-  infoRow: {
+  settingsItem: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
-  infoLabel: {
-    fontSize: 16,
-    color: Colors.silver,
+  settingsItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
-  infoValue: {
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  settingsItemText: {
     fontSize: 16,
-    color: Colors.black,
     fontWeight: '500',
+    color: Colors.black,
+    flex: 1,
   },
-  buttonContainer: {
+  divider: {
+    height: 1,
+    backgroundColor: Colors.border,
+    marginLeft: 72,
+  },
+  logoutContainer: {
     padding: 16,
-    marginBottom: 24,
+    paddingBottom: 32,
   },
   logoutButton: {
     backgroundColor: Colors.white,
@@ -209,5 +196,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 25,
     elevation: 15,
+    height: 56,
+  },
+  logoutIcon: {
+    marginRight: 8,
   },
 });

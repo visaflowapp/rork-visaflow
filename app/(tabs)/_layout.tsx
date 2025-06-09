@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Clock, Globe, Bell, User } from 'lucide-react-native';
+import { Clock, Globe, Bell, Settings } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 
 export default function TabLayout() {
@@ -77,12 +77,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          tabBarLabel: 'Profile',
+          title: 'Settings',
+          tabBarLabel: 'Settings',
           tabBarIcon: ({ color, size }) => (
-            <User size={24} color={color} />
+            <Settings size={24} color={color} />
           ),
-          headerTitle: 'Profile',
+          headerTitle: 'Settings',
         }}
       />
     </Tabs>
