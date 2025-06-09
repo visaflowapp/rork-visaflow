@@ -5,7 +5,7 @@ import Button from '@/components/Button';
 import RequirementsResult from '@/components/RequirementsResult';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
-import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig, testApiConnection } from '@/config/api';
+import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig } from '@/config/api';
 
 // Hardcoded options for immediate testing
 const NATIONALITY_OPTIONS = [
@@ -126,60 +126,12 @@ export default function RequirementsScreen() {
       
       setError(errorMessage);
       
-      // Show detailed error alert for debugging
+      // Show error alert
       Alert.alert(
-        'API Error',
-        `${errorMessage}
-
-Technical details: ${errorObj.message}`,
-        [
-          { text: 'OK' },
-          { 
-            text: 'Debug Info', 
-            onPress: () => {
-              const config = debugApiConfig();
-              Alert.alert(
-                'Debug Information',
-                `Environment Variables Status:
-• Endpoint: ${config.endpointSet ? '✅ Set' : '❌ Missing'}
-• API Key: ${config.apiKeySet ? '✅ Set' : '❌ Missing'}
-• API Key Length: ${config.apiKeyLength} chars
-• Ready: ${config.ready ? '✅ Yes' : '❌ No'}
-
-Endpoint: ${process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || 'Not set'}`,
-                [{ text: 'OK' }]
-              );
-            }
-          }
-        ]
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTestApiConfig = async () => {
-    setLoading(true);
-    
-    try {
-      const result = await testApiConnection();
-      
-      Alert.alert(
-        'API Configuration Test',
-        `Status: ${result.success ? '✅ Connected' : '❌ Failed'}
-        
-Environment Variables:
-• Endpoint: ${result.config?.endpointSet ? '✅ Set' : '❌ Missing'}
-• API Key: ${result.config?.apiKeySet ? '✅ Set' : '❌ Missing'}
-• Ready: ${result.config?.ready ? '✅ Yes' : '❌ No'}
-
-${result.error ? `Error: ${result.error}` : ''}
-${result.status ? `HTTP Status: ${result.status}` : ''}`,
+        'Unable to Load Requirements',
+        errorMessage,
         [{ text: 'OK' }]
       );
-    } catch (err: unknown) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      Alert.alert('Test Failed', `Unable to test API connection: ${errorObj.message}`);
     } finally {
       setLoading(false);
     }
@@ -233,16 +185,6 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
             placeholder="Why are you traveling?"
           />
 
-          <View style={styles.selectionSummary}>
-            <Text style={styles.summaryTitle}>Your Selection:</Text>
-            <Text style={styles.summaryText}>
-              {nationality || 'No nationality selected'} → {destination || 'No destination selected'}
-            </Text>
-            <Text style={styles.summaryText}>
-              Purpose: {purpose || 'No purpose selected'}
-            </Text>
-          </View>
-
           <View style={styles.buttonContainer}>
             <Button
               title="Check Requirements"
@@ -266,16 +208,6 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
               />
             )}
           </View>
-          
-          {/* API Configuration Test Button */}
-          <Button
-            title="Test API Configuration"
-            onPress={handleTestApiConfig}
-            variant="outline"
-            style={styles.testButton}
-            size="medium"
-            loading={loading}
-          />
         </View>
 
         {error && (
@@ -338,23 +270,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
-  selectionSummary: {
-    backgroundColor: Colors.lightGray,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-  },
-  summaryTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginBottom: 8,
-  },
-  summaryText: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    marginBottom: 4,
-  },
   buttonContainer: {
     gap: 12,
   },
@@ -371,10 +286,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   clearButton: {
-    height: 44,
-  },
-  testButton: {
-    marginTop: 12,
     height: 44,
   },
   errorCard: {
