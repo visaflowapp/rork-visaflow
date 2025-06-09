@@ -27,13 +27,22 @@ export const debugApiConfig = () => {
   console.log('Environment check:');
   console.log('- EXPO_PUBLIC_VISA_API_ENDPOINT:', process.env.EXPO_PUBLIC_VISA_API_ENDPOINT);
   console.log('- EXPO_PUBLIC_VISA_API_KEY exists:', !!process.env.EXPO_PUBLIC_VISA_API_KEY);
+  
+  // Additional runtime check
+  const runtimeEndpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT;
+  const runtimeApiKey = process.env.EXPO_PUBLIC_VISA_API_KEY;
+  
+  console.log('Runtime environment variables:');
+  console.log('- Runtime endpoint:', runtimeEndpoint);
+  console.log('- Runtime API key exists:', !!runtimeApiKey);
+  console.log('- Runtime API key length:', runtimeApiKey?.length || 0);
   console.log('===============================');
   
   return {
-    endpointSet: !!API_CONFIG.VISA_REQUIREMENTS_ENDPOINT,
-    apiKeySet: !!API_CONFIG.API_KEY,
-    apiKeyLength: API_CONFIG.API_KEY?.length || 0,
-    ready: !!(API_CONFIG.VISA_REQUIREMENTS_ENDPOINT && API_CONFIG.API_KEY)
+    endpointSet: !!(runtimeEndpoint || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT),
+    apiKeySet: !!(runtimeApiKey || API_CONFIG.API_KEY),
+    apiKeyLength: (runtimeApiKey || API_CONFIG.API_KEY)?.length || 0,
+    ready: !!(runtimeEndpoint || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT) && !!(runtimeApiKey || API_CONFIG.API_KEY)
   };
 };
 
@@ -47,21 +56,26 @@ export const checkVisaRequirements = async (nationality: string, destination: st
       throw new Error('API configuration incomplete. Please check environment variables.');
     }
     
-    // Construct the API endpoint - RapidAPI visa-requirement typically uses specific endpoints
-    const endpoint = `${API_CONFIG.VISA_REQUIREMENTS_ENDPOINT.replace(/\/$/, '')}/visa-requirements`;
+    // Use runtime environment variables if available
+    const endpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
+    const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
     
-    console.log('Making API request to:', endpoint);
+    // Construct the API endpoint - RapidAPI visa-requirement typically uses specific endpoints
+    const fullEndpoint = `${endpoint.replace(/\/$/, '')}/visa-requirements`;
+    
+    console.log('Making API request to:', fullEndpoint);
+    console.log('Using API key length:', apiKey.length);
     console.log('Request payload:', { 
       from_country: nationality, 
       to_country: destination, 
       purpose: purpose.toLowerCase() 
     });
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(fullEndpoint, {
       method: 'POST',
       headers: {
         ...API_CONFIG.HEADERS,
-        'X-RapidAPI-Key': API_CONFIG.API_KEY,
+        'X-RapidAPI-Key': apiKey,
       },
       body: JSON.stringify({
         from_country: nationality,
@@ -113,15 +127,19 @@ export const checkVisaRequirements = async (nationality: string, destination: st
 // Alternative API request function with different endpoint structure
 export const checkVisaRequirementsAlternative = async (nationality: string, destination: string, purpose: string) => {
   try {
+    // Use runtime environment variables if available
+    const endpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
+    const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
+    
     // Try different endpoint structure that some RapidAPI services use
-    const endpoint = `${API_CONFIG.VISA_REQUIREMENTS_ENDPOINT.replace(/\/$/, '')}/check`;
+    const fullEndpoint = `${endpoint.replace(/\/$/, '')}/check`;
     
-    console.log('Making alternative API request to:', endpoint);
+    console.log('Making alternative API request to:', fullEndpoint);
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(fullEndpoint, {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': API_CONFIG.API_KEY,
+        'X-RapidAPI-Key': apiKey,
         'X-RapidAPI-Host': API_CONFIG.RAPIDAPI_HOST,
         'Content-Type': 'application/json',
       },
@@ -156,13 +174,17 @@ export const testApiConnection = async () => {
       };
     }
     
+    // Use runtime environment variables if available
+    const endpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
+    const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
+    
     // Simple test request to verify API is accessible
-    const testEndpoint = `${API_CONFIG.VISA_REQUIREMENTS_ENDPOINT.replace(/\/$/, '')}/health`;
+    const testEndpoint = `${endpoint.replace(/\/$/, '')}/health`;
     
     const response = await fetch(testEndpoint, {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': API_CONFIG.API_KEY,
+        'X-RapidAPI-Key': apiKey,
         'X-RapidAPI-Host': API_CONFIG.RAPIDAPI_HOST,
       },
     });

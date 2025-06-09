@@ -7,7 +7,7 @@ import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig, testApiConnection } from '@/config/api';
 
-// Hardcoded options for testing
+// Hardcoded options for immediate testing
 const NATIONALITY_OPTIONS = [
   'United States',
   'United Kingdom', 
@@ -20,7 +20,11 @@ const NATIONALITY_OPTIONS = [
   'Indonesia',
   'Singapore',
   'Malaysia',
-  'Philippines'
+  'Philippines',
+  'Brazil',
+  'Mexico',
+  'India',
+  'South Korea'
 ];
 
 const DESTINATION_OPTIONS = [
@@ -35,7 +39,11 @@ const DESTINATION_OPTIONS = [
   'Indonesia',
   'Singapore',
   'Malaysia',
-  'Philippines'
+  'Philippines',
+  'Brazil',
+  'Mexico',
+  'India',
+  'South Korea'
 ];
 
 const PURPOSE_OPTIONS = [
@@ -85,7 +93,7 @@ export default function RequirementsScreen() {
       try {
         // Try the primary API method first
         data = await checkVisaRequirements(nationality, destination, purpose);
-      } catch (primaryError) {
+      } catch (primaryError: unknown) {
         console.log('Primary API method failed, trying alternative...');
         // If primary fails, try the alternative method
         const errorMessage = primaryError instanceof Error ? primaryError.message : String(primaryError);

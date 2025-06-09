@@ -27,13 +27,19 @@ const AlertCard: React.FC<AlertCardProps> = ({
 }) => {
   // Format timestamp
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (error: unknown) {
+      const errorObj = error instanceof Error ? error : new Error(String(error));
+      console.error('Error formatting timestamp:', errorObj.message);
+      return 'Invalid date';
+    }
   };
 
   // Render icon based on type

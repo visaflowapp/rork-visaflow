@@ -30,7 +30,7 @@ export default function AlertsScreen() {
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyTitle}>No Notifications</Text>
       <Text style={styles.emptyText}>
-        You're all caught up! We'll notify you when there are new visa alerts or policy changes.
+        You are all caught up! We will notify you when there are new visa alerts or policy changes.
       </Text>
     </View>
   );

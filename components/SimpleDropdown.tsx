@@ -5,7 +5,8 @@ import {
   TouchableOpacity, 
   StyleSheet,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Modal
 } from 'react-native';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -45,8 +46,7 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       <TouchableOpacity 
         style={[
           styles.button,
-          value && styles.buttonSelected,
-          isOpen && styles.buttonOpen
+          value && styles.buttonSelected
         ]} 
         onPress={toggleDropdown}
         activeOpacity={0.8}
@@ -65,34 +65,54 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         )}
       </TouchableOpacity>
 
-      {isOpen && (
-        <View style={styles.optionsContainer}>
-          <ScrollView 
-            style={styles.optionsList}
-            showsVerticalScrollIndicator={true}
-            nestedScrollEnabled={true}
-          >
-            {options.map((option, index) => (
-              <TouchableOpacity
-                key={`${option}-${index}`}
-                style={[
-                  styles.option,
-                  option === value && styles.selectedOption
-                ]}
-                onPress={() => handleSelect(option)}
-                activeOpacity={0.7}
-              >
-                <Text style={[
-                  styles.optionText,
-                  option === value && styles.selectedOptionText
-                ]}>
-                  {option}
-                </Text>
+      <Modal
+        visible={isOpen}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsOpen(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setIsOpen(false)}
+        >
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{label}</Text>
+              <TouchableOpacity onPress={() => setIsOpen(false)}>
+                <Text style={styles.closeButton}>✕</Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
+            </View>
+            
+            <ScrollView 
+              style={styles.optionsList}
+              showsVerticalScrollIndicator={true}
+            >
+              {options.map((option, index) => (
+                <TouchableOpacity
+                  key={`${option}-${index}`}
+                  style={[
+                    styles.option,
+                    option === value && styles.selectedOption
+                  ]}
+                  onPress={() => handleSelect(option)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    option === value && styles.selectedOptionText
+                  ]}>
+                    {option}
+                  </Text>
+                  {option === value && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -100,7 +120,6 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    zIndex: 1000,
   },
   label: {
     fontSize: 16,
@@ -128,11 +147,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     backgroundColor: 'rgba(0, 122, 255, 0.05)',
   },
-  buttonOpen: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    borderBottomWidth: 0,
-  },
   buttonText: {
     flex: 1,
     fontSize: 16,
@@ -144,26 +158,51 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontWeight: '500',
   },
-  optionsContainer: {
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
     backgroundColor: Colors.white,
-    borderWidth: 2,
-    borderTopWidth: 0,
-    borderColor: Colors.primary,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    maxHeight: height * 0.3,
+    borderRadius: 16,
+    width: '100%',
+    maxHeight: height * 0.7,
     shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 15,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.black,
+  },
+  closeButton: {
+    fontSize: 20,
+    color: Colors.silver,
+    fontWeight: 'bold',
   },
   optionsList: {
     flex: 1,
   },
   option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
@@ -173,10 +212,16 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     color: Colors.black,
+    flex: 1,
   },
   selectedOptionText: {
     color: Colors.primary,
     fontWeight: '600',
+  },
+  checkmark: {
+    fontSize: 16,
+    color: Colors.primary,
+    fontWeight: 'bold',
   },
 });
 
