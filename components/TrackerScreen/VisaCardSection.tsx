@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   blueDivider: {
-    height: 2,
+    height: 1,
     backgroundColor: colors.primary,
     marginVertical: 6,
     borderRadius: 1,

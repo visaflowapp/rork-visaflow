@@ -1,35 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
-import { checkVisaRequirements, checkVisaRequirementsAlternative, getMockVisaRequirements } from '@/config/api';
 
-// Hardcoded options for reliable testing
-const NATIONALITY_OPTIONS = [
-  { label: 'Select your nationality', value: '' },
-  { label: 'USA', value: 'USA' },
-  { label: 'UK', value: 'UK' },
-  { label: 'Thailand', value: 'Thailand' },
-  { label: 'Indonesia', value: 'Indonesia' },
-  { label: 'Canada', value: 'Canada' }
-];
-
-const DESTINATION_OPTIONS = [
-  { label: 'Select destination', value: '' },
-  { label: 'Thailand', value: 'Thailand' },
-  { label: 'Indonesia', value: 'Indonesia' },
-  { label: 'Vietnam', value: 'Vietnam' },
-  { label: 'Malaysia', value: 'Malaysia' },
-  { label: 'Singapore', value: 'Singapore' }
-];
-
-const PURPOSE_OPTIONS = [
-  { label: 'Select travel purpose', value: '' },
-  { label: 'Tourism', value: 'Tourism' },
-  { label: 'Business', value: 'Business' },
-  { label: 'Transit', value: 'Transit' }
-];
+// Hard-coded options for reliable testing
+const NATIONALITIES = ['', 'USA', 'UK', 'Canada', 'Thailand', 'Indonesia'];
+const DESTINATIONS = ['', 'Thailand', 'Indonesia', 'Vietnam', 'Malaysia'];
+const PURPOSES = ['', 'Tourism', 'Business', 'Transit'];
 
 export default function RequirementsScreen() {
   const [nationality, setNationality] = useState('');
@@ -41,12 +19,12 @@ export default function RequirementsScreen() {
 
   const handleCheckRequirements = async () => {
     if (!nationality || !destination || !purpose) {
-      Alert.alert('Missing Information', 'Please select your nationality, destination, and travel purpose.');
+      setError('Please select all three fields');
       return;
     }
 
     if (nationality === destination) {
-      Alert.alert('Invalid Selection', 'Your nationality and destination cannot be the same.');
+      setError('Nationality and destination cannot be the same');
       return;
     }
 
@@ -55,62 +33,70 @@ export default function RequirementsScreen() {
     setApiResponse(null);
     
     try {
-      let data;
-      try {
-        // Try the primary API method first
-        console.log('Attempting primary API call...');
-        data = await checkVisaRequirements(nationality, destination, purpose);
-      } catch (primaryError: unknown) {
-        console.log('Primary API method failed, trying alternative...');
-        // If primary fails, try the alternative method
-        const errorMessage = primaryError instanceof Error ? primaryError.message : String(primaryError);
-        console.error('Primary API error:', errorMessage);
-        
+      // Test different RapidAPI endpoints systematically
+      const endpoints = [
+        '',
+        'requirements',
+        'visa',
+        'api/visa-requirements',
+        `country?from_country=${nationality}&to_country=${destination}&purpose=${purpose}`
+      ];
+      
+      const baseUrl = 'https://visa-requirement.p.rapidapi.com';
+      const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY;
+      
+      if (!apiKey) {
+        throw new Error('API key not configured');
+      }
+      
+      console.log('Testing API endpoints...');
+      
+      for (const endpoint of endpoints) {
         try {
-          data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
-        } catch (altError: unknown) {
-          console.log('Alternative API also failed, using mock data...');
-          // If both APIs fail, use mock data for demonstration
-          data = getMockVisaRequirements(nationality, destination, purpose);
-          console.log('Using mock data:', data);
+          const url = endpoint ? `${baseUrl}/${endpoint}` : baseUrl;
+          console.log(`Testing endpoint: ${url}`);
+          
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'X-RapidAPI-Key': apiKey,
+              'X-RapidAPI-Host': 'visa-requirement.p.rapidapi.com',
+            },
+          });
+          
+          console.log(`Response status: ${response.status}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Success! Response data:', data);
+            setApiResponse(data);
+            setLoading(false);
+            return;
+          } else {
+            const errorText = await response.text();
+            console.log(`Endpoint ${endpoint || 'root'} failed: ${response.status} - ${errorText}`);
+          }
+        } catch (endpointError) {
+          console.log(`Endpoint ${endpoint || 'root'} error:`, endpointError);
         }
       }
       
-      setApiResponse(data);
-    } catch (err: unknown) {
-      console.error('Failed to fetch visa requirements:', err);
+      // If all endpoints fail, show mock data
+      console.log('All endpoints failed, showing mock data');
+      setApiResponse({
+        passport_of: nationality,
+        destination: destination,
+        visa: 'Visa required',
+        stay_of: '30 days',
+        color: 'yellow',
+        pass_valid: '6 months',
+        link: `https://embassy.${destination.toLowerCase()}.com`,
+        mock: true
+      });
       
-      let errorMessage = 'Failed to fetch visa requirements. ';
-      
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      
-      if (errorObj.message?.includes('API configuration incomplete')) {
-        errorMessage = 'API not configured. Please check your environment variables are set correctly.';
-      } else if (errorObj.message?.includes('Invalid API key')) {
-        errorMessage = 'Invalid API key. Please verify your RapidAPI credentials.';
-      } else if (errorObj.message?.includes('Access forbidden')) {
-        errorMessage = 'Access forbidden. Please check your RapidAPI subscription and endpoint access.';
-      } else if (errorObj.message?.includes('Rate limit exceeded')) {
-        errorMessage = 'Rate limit exceeded. Please try again later.';
-      } else if (errorObj.message?.includes('Network request failed')) {
-        errorMessage = 'Network error. Please check your internet connection.';
-      } else {
-        errorMessage += 'Using mock data for demonstration.';
-        // Fallback to mock data
-        const mockData = getMockVisaRequirements(nationality, destination, purpose);
-        setApiResponse(mockData);
-        setLoading(false);
-        return;
-      }
-      
-      setError(errorMessage);
-      
-      // Show error alert
-      Alert.alert(
-        'Unable to Load Requirements',
-        errorMessage,
-        [{ text: 'OK' }]
-      );
+    } catch (err) {
+      console.error('API error:', err);
+      setError('Failed to fetch visa requirements. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -125,90 +111,6 @@ export default function RequirementsScreen() {
   };
 
   const isFormValid = nationality && destination && purpose && nationality !== destination;
-
-  const renderApiResponse = () => {
-    if (!apiResponse) return null;
-
-    return (
-      <View style={styles.responseCard}>
-        <Text style={styles.responseTitle}>Visa Requirements</Text>
-        
-        {apiResponse.mock && (
-          <View style={styles.mockNotice}>
-            <Text style={styles.mockText}>📝 Mock Data (API unavailable)</Text>
-          </View>
-        )}
-        
-        {/* Display specific RapidAPI fields */}
-        {apiResponse.passport_of && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Passport Of:</Text>
-            <Text style={styles.responseValue}>{apiResponse.passport_of}</Text>
-          </View>
-        )}
-        
-        {apiResponse.passport_code && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Passport Code:</Text>
-            <Text style={styles.responseValue}>{apiResponse.passport_code}</Text>
-          </View>
-        )}
-        
-        {apiResponse.destination && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Destination:</Text>
-            <Text style={styles.responseValue}>{apiResponse.destination}</Text>
-          </View>
-        )}
-        
-        {apiResponse.visa && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Visa Required:</Text>
-            <Text style={styles.responseValue}>{apiResponse.visa}</Text>
-          </View>
-        )}
-        
-        {apiResponse.stay_of && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Stay Duration:</Text>
-            <Text style={styles.responseValue}>{apiResponse.stay_of}</Text>
-          </View>
-        )}
-        
-        {apiResponse.color && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Status Color:</Text>
-            <Text style={styles.responseValue}>{apiResponse.color}</Text>
-          </View>
-        )}
-        
-        {apiResponse.pass_valid && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Passport Validity:</Text>
-            <Text style={styles.responseValue}>{apiResponse.pass_valid}</Text>
-          </View>
-        )}
-        
-        {apiResponse.link && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>More Info:</Text>
-            <Text style={styles.responseValue}>{apiResponse.link}</Text>
-          </View>
-        )}
-        
-        {apiResponse.except_text && (
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Exceptions:</Text>
-            <Text style={styles.responseValue}>{apiResponse.except_text}</Text>
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  const getFilteredDestinations = () => {
-    return DESTINATION_OPTIONS.filter(option => option.value !== nationality);
-  };
 
   return (
     <View style={styles.container}>
@@ -225,19 +127,15 @@ export default function RequirementsScreen() {
                 selectedValue={nationality}
                 onValueChange={(itemValue) => {
                   setNationality(itemValue);
-                  // Clear destination if it's the same as nationality
                   if (itemValue === destination) {
                     setDestination('');
                   }
                 }}
                 style={styles.picker}
               >
-                {NATIONALITY_OPTIONS.map((option) => (
-                  <Picker.Item 
-                    key={option.value} 
-                    label={option.label} 
-                    value={option.value} 
-                  />
+                <Picker.Item label="Select your nationality" value="" />
+                {NATIONALITIES.slice(1).map((country) => (
+                  <Picker.Item key={country} label={country} value={country} />
                 ))}
               </Picker>
             </View>
@@ -253,12 +151,9 @@ export default function RequirementsScreen() {
                 style={styles.picker}
                 enabled={!!nationality}
               >
-                {getFilteredDestinations().map((option) => (
-                  <Picker.Item 
-                    key={option.value} 
-                    label={option.label} 
-                    value={option.value} 
-                  />
+                <Picker.Item label="Select destination" value="" />
+                {DESTINATIONS.slice(1).filter(country => country !== nationality).map((country) => (
+                  <Picker.Item key={country} label={country} value={country} />
                 ))}
               </Picker>
             </View>
@@ -273,16 +168,23 @@ export default function RequirementsScreen() {
                 onValueChange={(itemValue) => setPurpose(itemValue)}
                 style={styles.picker}
               >
-                {PURPOSE_OPTIONS.map((option) => (
-                  <Picker.Item 
-                    key={option.value} 
-                    label={option.label} 
-                    value={option.value} 
-                  />
+                <Picker.Item label="Select travel purpose" value="" />
+                {PURPOSES.slice(1).map((purposeOption) => (
+                  <Picker.Item key={purposeOption} label={purposeOption} value={purposeOption} />
                 ))}
               </Picker>
             </View>
           </View>
+
+          {/* Selected Values Display */}
+          {(nationality || destination || purpose) && (
+            <View style={styles.selectionCard}>
+              <Text style={styles.selectionTitle}>Current Selection:</Text>
+              <Text style={styles.selectionText}>Nationality: {nationality || 'Not selected'}</Text>
+              <Text style={styles.selectionText}>Destination: {destination || 'Not selected'}</Text>
+              <Text style={styles.selectionText}>Purpose: {purpose || 'Not selected'}</Text>
+            </View>
+          )}
 
           <View style={styles.buttonContainer}>
             <Button
@@ -311,12 +213,59 @@ export default function RequirementsScreen() {
 
         {error && (
           <View style={styles.errorCard}>
-            <Text style={styles.errorTitle}>Unable to Load Requirements</Text>
+            <Text style={styles.errorTitle}>Error</Text>
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
-        {renderApiResponse()}
+        {apiResponse && (
+          <View style={styles.responseCard}>
+            <Text style={styles.responseTitle}>Visa Requirements</Text>
+            
+            {apiResponse.mock && (
+              <View style={styles.mockNotice}>
+                <Text style={styles.mockText}>📝 Mock Data (API endpoints failed)</Text>
+              </View>
+            )}
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Passport Of:</Text>
+              <Text style={styles.responseValue}>{apiResponse.passport_of || 'N/A'}</Text>
+            </View>
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Destination:</Text>
+              <Text style={styles.responseValue}>{apiResponse.destination || 'N/A'}</Text>
+            </View>
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Visa Required:</Text>
+              <Text style={styles.responseValue}>{apiResponse.visa || 'N/A'}</Text>
+            </View>
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Stay Duration:</Text>
+              <Text style={styles.responseValue}>{apiResponse.stay_of || 'N/A'}</Text>
+            </View>
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Status Color:</Text>
+              <Text style={styles.responseValue}>{apiResponse.color || 'N/A'}</Text>
+            </View>
+            
+            <View style={styles.responseRow}>
+              <Text style={styles.responseLabel}>Passport Validity:</Text>
+              <Text style={styles.responseValue}>{apiResponse.pass_valid || 'N/A'}</Text>
+            </View>
+            
+            {apiResponse.link && (
+              <View style={styles.responseRow}>
+                <Text style={styles.responseLabel}>More Info:</Text>
+                <Text style={styles.responseValue}>{apiResponse.link}</Text>
+              </View>
+            )}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -375,6 +324,23 @@ const styles = StyleSheet.create({
   picker: {
     height: 56,
     color: Colors.black,
+  },
+  selectionCard: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  selectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 8,
+  },
+  selectionText: {
+    fontSize: 14,
+    color: Colors.black,
+    marginBottom: 4,
   },
   buttonContainer: {
     gap: 12,
