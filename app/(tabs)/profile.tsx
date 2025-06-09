@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
@@ -19,6 +19,12 @@ export default function SettingsScreen() {
       loadUserData();
     }
   }, [userId, loadUserData]);
+
+  const copyReferralLink = () => {
+    const referralLink = 'https://visaflow.app/ref/alex-johnson';
+    // In a real app, you would copy to clipboard
+    Alert.alert('Referral Link Copied', referralLink);
+  };
 
   if (!userProfile) {
     return (
@@ -106,6 +112,22 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
+            icon={<CreditCard size={20} color={Colors.primary} />}
+            title="Billing & Subscription"
+            onPress={() => {}}
+          />
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
+            icon={<Link size={20} color={Colors.primary} />}
+            title="Affiliate Program"
+            onPress={copyReferralLink}
+          />
+          
+          <View style={styles.divider} />
+          
+          <SettingsItem
             icon={<HelpCircle size={20} color={Colors.primary} />}
             title="Help & Support"
             onPress={() => {}}
@@ -148,10 +170,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 25,
-    elevation: 15,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
   },
   settingsItem: {
     flexDirection: 'row',
@@ -192,10 +214,10 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: Colors.white,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 25,
-    elevation: 15,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
     height: 56,
   },
   logoutIcon: {

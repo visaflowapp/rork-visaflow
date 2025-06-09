@@ -60,7 +60,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
 
   const handleSave = () => {
     if (!country || !visaType || !duration) {
-      // Show validation error
       return;
     }
 
@@ -105,7 +104,11 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.formContainer} keyboardShouldPersistTaps="handled">
+          <ScrollView 
+            style={styles.formContainer} 
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <Dropdown
               label="Country"
               options={countries}
@@ -233,6 +236,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     marginBottom: 16,
+    flex: 1,
   },
   formGroup: {
     marginBottom: 16,
@@ -241,34 +245,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
     color: Colors.black,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   input: {
-    height: 50,
+    height: 56,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 16,
     color: Colors.black,
+    backgroundColor: Colors.white,
   },
   dateInput: {
-    height: 50,
+    height: 56,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
     justifyContent: 'center',
+    backgroundColor: Colors.white,
   },
   dateText: {
     fontSize: 16,
     color: Colors.black,
   },
   calculatedField: {
-    height: 50,
+    height: 56,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
     backgroundColor: Colors.lightGray,
     justifyContent: 'center',

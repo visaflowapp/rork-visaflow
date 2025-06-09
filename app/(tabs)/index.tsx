@@ -33,7 +33,7 @@ export default function TrackerScreen() {
   const getStatusColor = (daysLeft: number) => {
     if (daysLeft <= 7) return colors.error;
     if (daysLeft <= 30) return colors.warning;
-    return colors.success;
+    return colors.neonGreen;
   };
 
   const getProgressPercentage = (visa: any) => {

@@ -8,10 +8,13 @@ import {
   FlatList,
   SafeAreaView,
   TextInput,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native';
 import { ChevronDown, Search } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+
+const { height } = Dimensions.get('window');
 
 interface DropdownProps {
   label: string;
@@ -343,12 +346,12 @@ const Dropdown: React.FC<DropdownProps> = ({
                     style={styles.listContainer}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={true}
-                    initialNumToRender={20}
-                    maxToRenderPerBatch={20}
+                    initialNumToRender={15}
+                    maxToRenderPerBatch={15}
                     windowSize={10}
                     getItemLayout={(data, index) => ({
-                      length: 60,
-                      offset: 60 * index,
+                      length: 56,
+                      offset: 56 * index,
                       index,
                     })}
                     ListEmptyComponent={
@@ -413,7 +416,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '80%',
+    maxHeight: height * 0.8,
   },
   modalContent: {
     padding: 16,
@@ -457,6 +460,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     marginTop: 8,
+    flex: 1,
   },
   item: {
     flexDirection: 'row',
@@ -465,7 +469,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-    height: 60,
+    height: 56,
   },
   selectedItem: {
     backgroundColor: 'rgba(0, 122, 255, 0.1)',

@@ -12,6 +12,7 @@ export const colors = {
   lightGray: "#F2F2F7",
   border: "#E5E5EA",
   background: "#F2F2F7",
+  neonGreen: "#39FF14",
 };
 
 export default {
@@ -28,4 +29,5 @@ export default {
   textPrimary: "#000000",
   textSecondary: "#A9A9A9",
   border: "#E5E5E5",
+  neonGreen: "#39FF14",
 };

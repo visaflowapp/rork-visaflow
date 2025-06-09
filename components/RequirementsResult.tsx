@@ -227,12 +227,6 @@ const RequirementsResult: React.FC<RequirementsResultProps> = ({
         </View>
       </View>
 
-      <View style={styles.disclaimer}>
-        <Text style={styles.disclaimerText}>
-          Information is for reference only. Requirements may change. Always verify with official sources.
-        </Text>
-      </View>
-
       <ScrollView style={styles.content}>
         {visaRequirements.visaTypes.map((visa, index) => (
           <View key={index} style={styles.visaTypeCard}>
@@ -287,10 +281,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginVertical: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 25,
-    elevation: 15,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
   },
   header: {
     padding: 16,
@@ -316,17 +310,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '600',
     fontSize: 12,
-  },
-  disclaimer: {
-    backgroundColor: 'rgba(255, 204, 0, 0.1)',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: Colors.black,
-    textAlign: 'center',
   },
   content: {
     padding: 16,
