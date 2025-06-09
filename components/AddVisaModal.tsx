@@ -12,9 +12,8 @@ import {
 import { X } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
-import InlineDropdown from './InlineDropdown';
+import SimpleDropdown from './SimpleDropdown';
 import Colors from '@/constants/colors';
-import { countries } from '@/constants/mockData';
 
 interface AddVisaModalProps {
   visible: boolean;
@@ -28,6 +27,19 @@ interface AddVisaModalProps {
     extensions_available: number;
   }) => void;
 }
+
+const countries = [
+  'Thailand',
+  'Indonesia', 
+  'Vietnam',
+  'Malaysia',
+  'Singapore',
+  'Philippines',
+  'Cambodia',
+  'Laos',
+  'Myanmar',
+  'Brunei'
+];
 
 const visaTypes = [
   'Tourist Visa',
@@ -109,7 +121,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <InlineDropdown
+            <SimpleDropdown
               label="Country"
               options={countries}
               value={country}
@@ -117,7 +129,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               placeholder="Select country"
             />
 
-            <InlineDropdown
+            <SimpleDropdown
               label="Visa Type"
               options={visaTypes}
               value={visaType}

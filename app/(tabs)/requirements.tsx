@@ -1,48 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import InlineDropdown from '@/components/InlineDropdown';
+import SimpleDropdown from '@/components/SimpleDropdown';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
 import { checkVisaRequirements, checkVisaRequirementsAlternative } from '@/config/api';
 
-// Hardcoded mock options for immediate testing
+// Hardcoded options for reliable testing
 const NATIONALITY_OPTIONS = [
-  'United States',
+  'USA',
+  'UK', 
   'Thailand',
   'Indonesia',
-  'United Kingdom',
-  'Canada',
-  'Australia',
-  'Germany',
-  'France',
-  'Japan',
-  'Singapore',
-  'Malaysia',
-  'Philippines'
+  'Canada'
 ];
 
 const DESTINATION_OPTIONS = [
-  'United States',
-  'Thailand', 
-  'Indonesia',
-  'United Kingdom',
-  'Canada',
-  'Australia',
-  'Germany',
-  'France',
-  'Japan',
-  'Singapore',
+  'Thailand',
+  'Indonesia', 
+  'Vietnam',
   'Malaysia',
-  'Philippines'
+  'Singapore'
 ];
 
 const PURPOSE_OPTIONS = [
   'Tourism',
   'Business',
-  'Transit',
-  'Work',
-  'Study',
-  'Family Visit'
+  'Transit'
 ];
 
 export default function RequirementsScreen() {
@@ -131,7 +114,7 @@ export default function RequirementsScreen() {
 
     return (
       <View style={styles.responseCard}>
-        <Text style={styles.responseTitle}>API Response</Text>
+        <Text style={styles.responseTitle}>Visa Requirements</Text>
         
         {/* Display specific RapidAPI fields */}
         {apiResponse.passport_of && (
@@ -196,12 +179,6 @@ export default function RequirementsScreen() {
             <Text style={styles.responseValue}>{apiResponse.except_text}</Text>
           </View>
         )}
-        
-        {/* Show raw response for debugging */}
-        <View style={styles.rawResponse}>
-          <Text style={styles.rawResponseTitle}>Raw Response:</Text>
-          <Text style={styles.rawResponseText}>{JSON.stringify(apiResponse, null, 2)}</Text>
-        </View>
       </View>
     );
   };
@@ -213,7 +190,7 @@ export default function RequirementsScreen() {
           <Text style={styles.formTitle}>Check Visa Requirements</Text>
           <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
           
-          <InlineDropdown
+          <SimpleDropdown
             label="Your Nationality"
             options={NATIONALITY_OPTIONS}
             value={nationality}
@@ -221,7 +198,7 @@ export default function RequirementsScreen() {
             placeholder="Select your nationality"
           />
 
-          <InlineDropdown
+          <SimpleDropdown
             label="Destination Country"
             options={DESTINATION_OPTIONS.filter(country => country !== nationality)}
             value={destination}
@@ -229,7 +206,7 @@ export default function RequirementsScreen() {
             placeholder="Where are you traveling to?"
           />
 
-          <InlineDropdown
+          <SimpleDropdown
             label="Travel Purpose"
             options={PURPOSE_OPTIONS}
             value={purpose}
@@ -391,22 +368,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 2,
     textAlign: 'right',
-  },
-  rawResponse: {
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: Colors.lightGray,
-    borderRadius: 8,
-  },
-  rawResponseTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginBottom: 8,
-  },
-  rawResponseText: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-    fontFamily: 'monospace',
   },
 });

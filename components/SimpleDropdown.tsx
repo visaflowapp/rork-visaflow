@@ -4,14 +4,12 @@ import {
   Text, 
   TouchableOpacity, 
   StyleSheet,
-  ScrollView,
-  Dimensions,
-  Modal
+  Modal,
+  FlatList,
+  Pressable
 } from 'react-native';
-import { ChevronDown, ChevronUp } from 'lucide-react-native';
+import { ChevronDown, Check } from 'lucide-react-native';
 import Colors from '@/constants/colors';
-
-const { height } = Dimensions.get('window');
 
 interface SimpleDropdownProps {
   label: string;
@@ -28,16 +26,32 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   onSelect,
   placeholder = 'Select an option'
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleSelect = (item: string) => {
     onSelect(item);
-    setIsOpen(false);
+    setIsVisible(false);
   };
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const renderOption = ({ item }: { item: string }) => (
+    <TouchableOpacity
+      style={[
+        styles.option,
+        item === value && styles.selectedOption
+      ]}
+      onPress={() => handleSelect(item)}
+    >
+      <Text style={[
+        styles.optionText,
+        item === value && styles.selectedOptionText
+      ]}>
+        {item}
+      </Text>
+      {item === value && (
+        <Check size={20} color={Colors.primary} />
+      )}
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -48,70 +62,38 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
           styles.button,
           value && styles.buttonSelected
         ]} 
-        onPress={toggleDropdown}
-        activeOpacity={0.8}
+        onPress={() => setIsVisible(true)}
       >
         <Text style={[
           styles.buttonText,
-          !value && styles.placeholderText,
-          value && styles.selectedText
+          !value && styles.placeholderText
         ]}>
           {value || placeholder}
         </Text>
-        {isOpen ? (
-          <ChevronUp size={20} color={value ? Colors.primary : Colors.silver} />
-        ) : (
-          <ChevronDown size={20} color={value ? Colors.primary : Colors.silver} />
-        )}
+        <ChevronDown size={20} color={Colors.primary} />
       </TouchableOpacity>
 
       <Modal
-        visible={isOpen}
+        visible={isVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setIsOpen(false)}
+        onRequestClose={() => setIsVisible(false)}
       >
-        <TouchableOpacity 
+        <Pressable 
           style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setIsOpen(false)}
+          onPress={() => setIsVisible(false)}
         >
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{label}</Text>
-              <TouchableOpacity onPress={() => setIsOpen(false)}>
-                <Text style={styles.closeButton}>✕</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <ScrollView 
+            <Text style={styles.modalTitle}>{label}</Text>
+            <FlatList
+              data={options}
+              renderItem={renderOption}
+              keyExtractor={(item) => item}
               style={styles.optionsList}
-              showsVerticalScrollIndicator={true}
-            >
-              {options.map((option, index) => (
-                <TouchableOpacity
-                  key={`${option}-${index}`}
-                  style={[
-                    styles.option,
-                    option === value && styles.selectedOption
-                  ]}
-                  onPress={() => handleSelect(option)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[
-                    styles.optionText,
-                    option === value && styles.selectedOptionText
-                  ]}>
-                    {option}
-                  </Text>
-                  {option === value && (
-                    <Text style={styles.checkmark}>✓</Text>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+              showsVerticalScrollIndicator={false}
+            />
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Modal>
     </View>
   );
@@ -135,74 +117,49 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: Colors.white,
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: Colors.border,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
   },
   buttonSelected: {
     borderColor: Colors.primary,
     backgroundColor: 'rgba(0, 122, 255, 0.05)',
   },
   buttonText: {
-    flex: 1,
     fontSize: 16,
+    flex: 1,
   },
   placeholderText: {
     color: Colors.silver,
-  },
-  selectedText: {
-    color: Colors.black,
-    fontWeight: '500',
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   modalContent: {
     backgroundColor: Colors.white,
     borderRadius: 16,
-    width: '100%',
-    maxHeight: height * 0.7,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 15,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    width: '80%',
+    maxHeight: '60%',
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.black,
-  },
-  closeButton: {
-    fontSize: 20,
-    color: Colors.silver,
-    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   optionsList: {
-    flex: 1,
+    maxHeight: 300,
   },
   option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
@@ -217,11 +174,6 @@ const styles = StyleSheet.create({
   selectedOptionText: {
     color: Colors.primary,
     fontWeight: '600',
-  },
-  checkmark: {
-    fontSize: 16,
-    color: Colors.primary,
-    fontWeight: 'bold',
   },
 });
 
