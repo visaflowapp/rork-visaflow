@@ -101,30 +101,23 @@ export default function RequirementsScreen() {
   <Picker.Item label="Australia" value="Australia" />
 </Picker>
 		
-            {nationality ? (
-              <Text style={styles.selectedValue}>Selected: {nationality}</Text>
-            ) : null}
-          </View>
-
-          {/* Destination Picker */}
-          <View style={styles.pickerContainer}>
-            <Text style={styles.pickerLabel}>Destination Country</Text>
-            <View style={styles.pickerWrapper}>
-              <Picker
-                selectedValue={destination}
-                onValueChange={(itemValue) => setDestination(itemValue)}
-                style={styles.picker}
-                enabled={!!nationality}
-              >
-                {DESTINATIONS.filter(item => item.value !== nationality).map((item) => (
-                  <Picker.Item key={item.value} label={item.label} value={item.value} />
-                ))}
-              </Picker>
-            </View>
-            {destination ? (
-              <Text style={styles.selectedValue}>Selected: {destination}</Text>
-            ) : null}
-          </View>
+   <View style={styles.pickerContainer}>
+  <Text style={styles.pickerLabel}>Your Nationality</Text>
+  <Picker
+    selectedValue={nationality}
+    onValueChange={(itemValue) => setNationality(itemValue)}
+    style={{ backgroundColor: 'white', color: 'black', height: 56 }}
+  >
+    <Picker.Item label="Select your nationality" value="" />
+    <Picker.Item label="USA" value="USA" />
+    <Picker.Item label="UK" value="UK" />
+    <Picker.Item label="Canada" value="Canada" />
+    <Picker.Item label="Australia" value="Australia" />
+  </Picker>
+  {nationality ? (
+    <Text style={styles.selectedValue}>Selected: {nationality}</Text>
+  ) : null}
+</View>
 
           {/* Purpose Picker */}
           <View style={styles.pickerContainer}>
