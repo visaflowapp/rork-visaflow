@@ -51,10 +51,10 @@ const VisaCardSection: React.FC<VisaCardSectionProps> = ({ visa, onRemove }) => 
         </View>
         <Text style={styles.progressText}>{Math.round(getProgressPercentage(visa))}% used</Text>
 
-        {/* Blue Divider */}
+        {/* Main Blue Divider */}
         <View style={styles.blueDivider} />
 
-        {/* Visa Details with individual blue dividers */}
+        {/* Visa Details with consistent blue dividers */}
         <View style={styles.visaDetails}>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Entry</Text>
@@ -83,7 +83,7 @@ const VisaCardSection: React.FC<VisaCardSectionProps> = ({ visa, onRemove }) => 
         {/* Extension Deadline */}
         {visa.extensions_available > 0 && (
           <>
-            {/* Blue Divider */}
+            {/* Final Blue Divider */}
             <View style={styles.blueDivider} />
             <View style={styles.extensionDeadline}>
               <Text style={styles.extensionText}>
@@ -181,9 +181,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   blueDivider: {
-    height: 1,
+    height: 2,
     backgroundColor: colors.primary,
-    marginVertical: 4,
+    marginVertical: 6,
+    borderRadius: 1,
   },
   visaDetails: {
     gap: 0,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   detailLabel: {
     fontSize: 14,
