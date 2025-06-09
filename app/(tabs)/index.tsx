@@ -46,7 +46,8 @@ export default function TrackerScreen() {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
       month: 'short', 
-      day: 'numeric' 
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -88,7 +89,8 @@ export default function TrackerScreen() {
     exitDate.setDate(exitDate.getDate() - 30); // 30 days before expiry
     return exitDate.toLocaleDateString('en-US', { 
       month: 'short', 
-      day: 'numeric' 
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -401,6 +403,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.textSecondary,
     marginBottom: 6,
+    fontWeight: 'bold',
   },
   blueDivider: {
     height: 1,
@@ -419,6 +422,7 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 14,
     color: '#000',
+    fontWeight: 'bold',
   },
   detailValue: {
     fontSize: 14,
@@ -435,7 +439,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#C62828',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: 'bold',
   },
   emptyState: {
     alignItems: 'center',
