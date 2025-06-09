@@ -49,6 +49,7 @@ interface VisaState {
   removeVisa: (id: string) => void;
   dismissAlert: (id: string) => void;
   markAlertAsRead: (id: string) => void;
+  markAllAlertsAsRead: () => void;
   updateProfile: (profile: Partial<UserProfile>) => void;
   toggleNotifications: (enabled: boolean) => void;
   toggleTravelMode: (enabled: boolean) => void;
@@ -78,6 +79,33 @@ const dummyAlerts: Alert[] = [
     timestamp: new Date().toISOString(),
     is_read: false,
     icon: 'clock',
+  },
+  {
+    id: '2',
+    type: 'deadline',
+    title: 'Upcoming Extension Deadline',
+    description: 'Your Indonesia B211A visa extension deadline is in 7 days. Submit required documents to avoid penalties.',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    is_read: false,
+    icon: 'calendar',
+  },
+  {
+    id: '3',
+    type: 'embassy',
+    title: 'Embassy Closure Notice',
+    description: 'All Indonesian immigration offices will be closed August 17th for Independence Day. Plan visits accordingly.',
+    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+    is_read: false,
+    icon: 'building',
+  },
+  {
+    id: '4',
+    type: 'policy',
+    title: 'Policy Change Update',
+    description: 'Indonesia has updated its re-entry rules for B211A holders. You must now wait 60 days before reapplying.',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    is_read: true,
+    icon: 'file-text',
   }
 ];
 
@@ -155,6 +183,12 @@ export const useVisaStore = create<VisaState>()(
           alerts: state.alerts.map(alert => 
             alert.id === alertId ? { ...alert, is_read: true } : alert
           ),
+        }));
+      },
+      
+      markAllAlertsAsRead: () => {
+        set(state => ({
+          alerts: state.alerts.map(alert => ({ ...alert, is_read: true })),
         }));
       },
       

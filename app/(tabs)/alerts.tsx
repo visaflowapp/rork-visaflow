@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { Stack } from 'expo-router';
 import AlertCard from '@/components/AlertCard';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 
 export default function AlertsScreen() {
-  const { alerts, dismissAlert, markAlertAsRead, userId, loadUserData } = useVisaStore();
+  const { alerts, dismissAlert, markAlertAsRead, markAllAlertsAsRead, userId, loadUserData } = useVisaStore();
   
   useEffect(() => {
     if (userId) {
@@ -21,6 +22,10 @@ export default function AlertsScreen() {
     markAlertAsRead(id);
   };
 
+  const handleMarkAllAsRead = () => {
+    markAllAlertsAsRead();
+  };
+
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyTitle}>No Notifications</Text>
@@ -30,8 +35,33 @@ export default function AlertsScreen() {
     </View>
   );
 
+  const hasUnreadAlerts = alerts.some(alert => !alert.is_read);
+
   return (
     <View style={styles.container}>
+      <Stack.Screen 
+        options={{ 
+          title: 'Notifications',
+          headerStyle: { backgroundColor: Colors.primary },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+          headerTitleAlign: 'center',
+          headerRight: () => (
+            hasUnreadAlerts ? (
+              <TouchableOpacity 
+                style={styles.markAllButton}
+                onPress={handleMarkAllAsRead}
+              >
+                <Text style={styles.markAllButtonText}>Mark all as read</Text>
+              </TouchableOpacity>
+            ) : null
+          ),
+        }} 
+      />
+      
       <FlatList
         data={alerts}
         keyExtractor={(item) => item.id}
@@ -62,6 +92,18 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingTop: 16,
     paddingBottom: 24,
+  },
+  markAllButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 4,
+  },
+  markAllButtonText: {
+    color: Colors.primary,
+    fontSize: 13,
+    fontWeight: '600',
   },
   emptyContainer: {
     padding: 24,

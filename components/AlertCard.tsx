@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Clock, FileText, Building, CreditCard } from 'lucide-react-native';
+import { Clock, FileText, Building, CreditCard, Calendar } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { Swipeable } from 'react-native-gesture-handler';
 
@@ -47,6 +47,8 @@ const AlertCard: React.FC<AlertCardProps> = ({
         return <Building size={24} color={Colors.primary} />;
       case 'credit-card':
         return <CreditCard size={24} color={Colors.primary} />;
+      case 'calendar':
+        return <Calendar size={24} color={Colors.primary} />;
       default:
         return <Clock size={24} color={Colors.primary} />;
     }
@@ -126,8 +128,9 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: Colors.silver,
+    color: Colors.black,
     marginBottom: 8,
+    lineHeight: 20,
   },
   timestamp: {
     fontSize: 12,
