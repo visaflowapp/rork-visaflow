@@ -89,31 +89,18 @@ export default function RequirementsScreen() {
   const isFormValid = nationality && destination && purpose && nationality !== destination;
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.formCard}>
-          <Text style={styles.formTitle}>Check Visa Requirements</Text>
-          <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
-          
-          {/* Nationality Picker */}
-          <View style={styles.pickerContainer}>
-            <Text style={styles.pickerLabel}>Your Nationality</Text>
-            <View style={styles.pickerWrapper}>
-              <Picker
-                selectedValue={nationality}
-                onValueChange={(itemValue) => {
-                  setNationality(itemValue);
-                  if (itemValue === destination) {
-                    setDestination('');
-                  }
-                }}
-                style={styles.picker}
-              >
-                {NATIONALITIES.map((item) => (
-                  <Picker.Item key={item.value} label={item.label} value={item.value} />
-                ))}
-              </Picker>
-            </View>
+ <Picker
+  selectedValue={nationality}
+  onValueChange={(itemValue) => setNationality(itemValue)}
+  style={{ backgroundColor: 'white', color: 'black', height: 56 }}
+>
+  <Picker.Item label="Select your nationality" value="" />
+  <Picker.Item label="USA" value="USA" />
+  <Picker.Item label="UK" value="UK" />
+  <Picker.Item label="Canada" value="Canada" />
+  <Picker.Item label="Australia" value="Australia" />
+</Picker>
+		
             {nationality ? (
               <Text style={styles.selectedValue}>Selected: {nationality}</Text>
             ) : null}
