@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import Dropdown from '@/components/Dropdown';
 import Button from '@/components/Button';
 import RequirementsResult from '@/components/RequirementsResult';
 import Colors from '@/constants/colors';
 import { countries, tripPurposes } from '@/constants/mockData';
 import { useVisaStore } from '@/store/visaStore';
+import { checkVisaRequirements } from '@/config/api';
 
 export default function RequirementsScreen() {
   const { userProfile } = useVisaStore();
@@ -14,17 +15,40 @@ export default function RequirementsScreen() {
   const [purpose, setPurpose] = useState('');
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [requirementsData, setRequirementsData] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCheckRequirements = () => {
+  const handleCheckRequirements = async () => {
     if (!nationality || !destination || !purpose) {
       return;
     }
 
     setLoading(true);
-    setTimeout(() => {
+    setError(null);
+    
+    try {
+      const data = await checkVisaRequirements(nationality, destination, purpose);
+      setRequirementsData(data);
       setShowResults(true);
+    } catch (err) {
+      console.error('Failed to fetch visa requirements:', err);
+      setError('Failed to fetch visa requirements. Please check your internet connection and try again.');
+      
+      // Show error alert
+      Alert.alert(
+        'Error',
+        'Unable to fetch visa requirements. Please check your internet connection and try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    setShowResults(false);
+    handleCheckRequirements();
   };
 
   const isFormValid = nationality && destination && purpose;
@@ -72,11 +96,25 @@ export default function RequirementsScreen() {
           />
         </View>
 
-        {showResults && (
+        {error && (
+          <View style={styles.errorCard}>
+            <Text style={styles.errorTitle}>Unable to Load Requirements</Text>
+            <Text style={styles.errorText}>{error}</Text>
+            <Button
+              title="Try Again"
+              onPress={handleRetry}
+              style={styles.retryButton}
+              size="medium"
+            />
+          </View>
+        )}
+
+        {showResults && !error && requirementsData && (
           <RequirementsResult
             nationality={nationality}
             destination={destination}
             purpose={purpose}
+            data={requirementsData}
           />
         )}
       </View>
@@ -117,5 +155,36 @@ const styles = StyleSheet.create({
   },
   buttonEnabled: {
     backgroundColor: Colors.primary,
+  },
+  errorCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 24,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
+    alignItems: 'center',
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.error,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
   },
 });

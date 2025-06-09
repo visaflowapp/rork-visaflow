@@ -1,18 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Colors from '@/constants/colors';
-import { visaRequirements } from '@/constants/mockData';
 
 interface RequirementsResultProps {
   nationality: string;
   destination: string;
   purpose: string;
+  data: any; // API response data
 }
 
 const RequirementsResult: React.FC<RequirementsResultProps> = ({
   nationality,
   destination,
   purpose,
+  data,
 }) => {
   // Get country flag emoji
   const getCountryFlag = (countryName: string) => {
@@ -214,6 +215,36 @@ const RequirementsResult: React.FC<RequirementsResultProps> = ({
     return flagMap[countryName] || "🏳️";
   };
 
+  // Parse API response data
+  const parseVisaRequirements = () => {
+    // Adapt this based on your API response structure
+    if (!data) return null;
+
+    // Example structure - adjust based on your API
+    return {
+      visaRequired: data.visa_required || data.visaRequired || false,
+      visaTypes: data.visa_types || data.visaTypes || [],
+      entryRules: data.entry_rules || data.entryRules || [],
+      maxStay: data.max_stay || data.maxStay || null,
+      processingTime: data.processing_time || data.processingTime || null,
+      fee: data.fee || null,
+      requirements: data.requirements || [],
+      notes: data.notes || data.additional_info || null,
+    };
+  };
+
+  const requirements = parseVisaRequirements();
+
+  if (!requirements) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.errorText}>Unable to parse requirements data</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -227,54 +258,109 @@ const RequirementsResult: React.FC<RequirementsResultProps> = ({
         </View>
       </View>
 
-      <ScrollView style={styles.content}>
-        {visaRequirements.visaTypes.map((visa, index) => (
-          <View key={index} style={styles.visaTypeCard}>
-            <View style={styles.visaTypeHeader}>
-              <Text style={styles.visaTypeTitle}>{visa.type}</Text>
-              <View style={styles.visaTypeBadge}>
-                <Text style={styles.visaTypeBadgeText}>{visa.duration}</Text>
+      <View style={styles.content}>
+        {/* Visa Status */}
+        <View style={styles.statusCard}>
+          <Text style={styles.statusTitle}>
+            {requirements.visaRequired ? 'Visa Required' : 'No Visa Required'}
+          </Text>
+          {requirements.maxStay && (
+            <Text style={styles.statusSubtitle}>
+              Maximum stay: {requirements.maxStay}
+            </Text>
+          )}
+        </View>
+
+        {/* Visa Types */}
+        {requirements.visaTypes && requirements.visaTypes.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Available Visa Types</Text>
+            {requirements.visaTypes.map((visa: any, index: number) => (
+              <View key={index} style={styles.visaTypeCard}>
+                <View style={styles.visaTypeHeader}>
+                  <Text style={styles.visaTypeTitle}>
+                    {visa.type || visa.name || `Visa Type ${index + 1}`}
+                  </Text>
+                  {visa.duration && (
+                    <View style={styles.visaTypeBadge}>
+                      <Text style={styles.visaTypeBadgeText}>{visa.duration}</Text>
+                    </View>
+                  )}
+                </View>
+                
+                {(visa.fee || visa.processing_time) && (
+                  <View style={styles.visaTypeDetails}>
+                    {visa.fee && (
+                      <View style={styles.detailRow}>
+                        <Text style={styles.detailLabel}>Fee</Text>
+                        <Text style={styles.detailValue}>{visa.fee}</Text>
+                      </View>
+                    )}
+                    {visa.processing_time && (
+                      <View style={styles.detailRow}>
+                        <Text style={styles.detailLabel}>Processing Time</Text>
+                        <Text style={styles.detailValue}>{visa.processing_time}</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+                
+                {visa.requirements && visa.requirements.length > 0 && (
+                  <>
+                    <Text style={styles.requirementsTitle}>Requirements</Text>
+                    {visa.requirements.map((req: string, reqIndex: number) => (
+                      <View key={reqIndex} style={styles.requirementItem}>
+                        <View style={styles.bullet} />
+                        <Text style={styles.requirementText}>{req}</Text>
+                      </View>
+                    ))}
+                  </>
+                )}
               </View>
-            </View>
-            
-            <View style={styles.visaTypeDetails}>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Fee</Text>
-                <Text style={styles.detailValue}>{visa.fee}</Text>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Processing Time</Text>
-                <Text style={styles.detailValue}>{visa.processingTime}</Text>
-              </View>
-            </View>
-            
-            <Text style={styles.requirementsTitle}>Requirements</Text>
-            {visa.requirements.map((req, reqIndex) => (
-              <View key={reqIndex} style={styles.requirementItem}>
+            ))}
+          </View>
+        )}
+
+        {/* General Requirements */}
+        {requirements.requirements && requirements.requirements.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>General Requirements</Text>
+            {requirements.requirements.map((req: string, index: number) => (
+              <View key={index} style={styles.requirementItem}>
                 <View style={styles.bullet} />
                 <Text style={styles.requirementText}>{req}</Text>
               </View>
             ))}
           </View>
-        ))}
+        )}
 
-        <View style={styles.entryRulesCard}>
-          <Text style={styles.entryRulesTitle}>Entry Rules</Text>
-          {visaRequirements.entryRules.map((rule, index) => (
-            <View key={index} style={styles.requirementItem}>
-              <View style={styles.bullet} />
-              <Text style={styles.requirementText}>{rule}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+        {/* Entry Rules */}
+        {requirements.entryRules && requirements.entryRules.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Entry Rules</Text>
+            {requirements.entryRules.map((rule: string, index: number) => (
+              <View key={index} style={styles.requirementItem}>
+                <View style={styles.bullet} />
+                <Text style={styles.requirementText}>{rule}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Additional Notes */}
+        {requirements.notes && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Additional Information</Text>
+            <Text style={styles.notesText}>{requirements.notes}</Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Colors.white,
     borderRadius: 16,
     overflow: 'hidden',
@@ -285,6 +371,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 30,
     elevation: 20,
+    maxHeight: 600, // Prevent scrolling
   },
   header: {
     padding: 16,
@@ -299,6 +386,7 @@ const styles = StyleSheet.create({
   tripDetailText: {
     fontSize: 16,
     color: Colors.black,
+    fontWeight: '500',
   },
   purposeBadge: {
     backgroundColor: Colors.primary,
@@ -313,12 +401,39 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    maxHeight: 500, // Ensure no scrolling
+  },
+  statusCard: {
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  statusTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    marginBottom: 4,
+  },
+  statusSubtitle: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+  },
+  section: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 12,
   },
   visaTypeCard: {
-    marginBottom: 24,
     backgroundColor: Colors.white,
     borderRadius: 12,
     padding: 16,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: Colors.border,
   },
@@ -326,12 +441,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   visaTypeTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.black,
+    flex: 1,
   },
   visaTypeBadge: {
     backgroundColor: 'rgba(0, 122, 255, 0.1)',
@@ -345,18 +461,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   visaTypeDetails: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    paddingVertical: 4,
   },
   detailLabel: {
     fontSize: 14,
-    color: Colors.silver,
+    color: Colors.textSecondary,
   },
   detailValue: {
     fontSize: 14,
@@ -364,43 +478,40 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   requirementsTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: Colors.black,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   requirementItem: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 6,
     alignItems: 'flex-start',
   },
   bullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
     backgroundColor: Colors.primary,
     marginTop: 6,
     marginRight: 8,
   },
   requirementText: {
     flex: 1,
+    fontSize: 13,
+    color: Colors.black,
+    lineHeight: 18,
+  },
+  notesText: {
     fontSize: 14,
-    color: Colors.black,
+    color: Colors.textSecondary,
     lineHeight: 20,
+    fontStyle: 'italic',
   },
-  entryRulesCard: {
-    marginBottom: 24,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  entryRulesTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginBottom: 12,
+  errorText: {
+    fontSize: 16,
+    color: Colors.error,
+    textAlign: 'center',
   },
 });
 
