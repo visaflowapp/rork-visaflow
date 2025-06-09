@@ -30,4 +30,5 @@ export default {
   textSecondary: "#A9A9A9",
   border: "#E5E5E5",
   neonGreen: "#39FF14",
+  error: "#FF3B30",
 };

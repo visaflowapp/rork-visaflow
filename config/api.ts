@@ -1,17 +1,18 @@
 // API Configuration
-// Add your visa requirements API credentials here
+// The actual credentials are loaded from environment variables
+// Edit the .env file to add your real API endpoint and key
 
 export const API_CONFIG = {
-  // Replace with your actual API endpoint
+  // Replace with your actual API endpoint in .env file
   VISA_REQUIREMENTS_ENDPOINT: process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || 'https://your-visa-api-endpoint.com/requirements',
   
-  // Replace with your actual API key
+  // Replace with your actual API key in .env file
   API_KEY: process.env.EXPO_PUBLIC_VISA_API_KEY || 'your-api-key-here',
   
   // Additional headers if needed
   HEADERS: {
     'Content-Type': 'application/json',
-    // Add any other required headers
+    // Add any other required headers your API needs
   }
 };
 
@@ -23,13 +24,16 @@ export const checkVisaRequirements = async (nationality: string, destination: st
       headers: {
         ...API_CONFIG.HEADERS,
         'Authorization': `Bearer ${API_CONFIG.API_KEY}`,
-        // or 'X-API-Key': API_CONFIG.API_KEY, depending on your API
+        // Alternative header format if your API uses this instead:
+        // 'X-API-Key': API_CONFIG.API_KEY,
+        // 'X-RapidAPI-Key': API_CONFIG.API_KEY,
+        // 'X-RapidAPI-Host': 'your-rapidapi-host.com',
       },
       body: JSON.stringify({
         nationality,
         destination,
         purpose,
-        // Add any other required parameters
+        // Add any other required parameters your API needs
       }),
     });
 
