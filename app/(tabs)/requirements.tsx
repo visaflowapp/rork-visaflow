@@ -47,20 +47,22 @@ export default function RequirementsScreen() {
       
       setRequirementsData(data);
       setShowResults(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch visa requirements:', err);
       
       let errorMessage = 'Failed to fetch visa requirements. ';
       
-      if (err.message?.includes('API configuration incomplete')) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      
+      if (error.message?.includes('API configuration incomplete')) {
         errorMessage = 'API not configured. Please check your environment variables are set correctly.';
-      } else if (err.message?.includes('Invalid API key')) {
+      } else if (error.message?.includes('Invalid API key')) {
         errorMessage = 'Invalid API key. Please verify your RapidAPI credentials.';
-      } else if (err.message?.includes('Access forbidden')) {
+      } else if (error.message?.includes('Access forbidden')) {
         errorMessage = 'Access forbidden. Please check your RapidAPI subscription and endpoint access.';
-      } else if (err.message?.includes('Rate limit exceeded')) {
+      } else if (error.message?.includes('Rate limit exceeded')) {
         errorMessage = 'Rate limit exceeded. Please try again later.';
-      } else if (err.message?.includes('Network request failed')) {
+      } else if (error.message?.includes('Network request failed')) {
         errorMessage = 'Network error. Please check your internet connection.';
       } else {
         errorMessage += 'Please check your internet connection and try again.';
@@ -73,7 +75,7 @@ export default function RequirementsScreen() {
         'API Error',
         `${errorMessage}
 
-Technical details: ${err.message}`,
+Technical details: ${error.message}`,
         [
           { text: 'OK' },
           { 
@@ -119,7 +121,8 @@ ${result.error ? `Error: ${result.error}` : ''}
 ${result.status ? `HTTP Status: ${result.status}` : ''}`,
         [{ text: 'OK' }]
       );
-    } catch (error) {
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
       Alert.alert('Test Failed', `Unable to test API connection: ${error.message}`);
     } finally {
       setLoading(false);

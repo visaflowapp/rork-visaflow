@@ -103,7 +103,8 @@ export const checkVisaRequirements = async (nationality: string, destination: st
     const data = await response.json();
     console.log('API Response data:', data);
     return data;
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
     console.error('Visa requirements API error:', error);
     throw error;
   }
@@ -135,7 +136,8 @@ export const checkVisaRequirementsAlternative = async (nationality: string, dest
     const data = await response.json();
     console.log('Alternative API Response data:', data);
     return data;
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
     console.error('Alternative visa requirements API error:', error);
     throw error;
   }
@@ -150,7 +152,7 @@ export const testApiConnection = async () => {
       return {
         success: false,
         error: 'API configuration incomplete',
-        details: config
+        config: config
       };
     }
     
@@ -171,7 +173,8 @@ export const testApiConnection = async () => {
       statusText: response.statusText,
       config: config
     };
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
     return {
       success: false,
       error: error.message,
