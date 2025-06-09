@@ -93,7 +93,7 @@ const dummyAlerts: Alert[] = [
     id: '3',
     type: 'embassy',
     title: 'Embassy Closure Notice',
-    description: 'All Indonesian immigration offices will be closed August 17th for Independence Day. Plan visits accordingly.',
+    description: 'Indonesian immigration offices will be closed August 17th for Independence Day.',
     timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
     is_read: false,
     icon: 'building',
