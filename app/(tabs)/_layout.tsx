@@ -44,45 +44,45 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: '',
+          title: 'Countdown',
           tabBarLabel: 'Countdown',
           tabBarIcon: ({ color, size }) => (
             <Clock size={24} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'Countdown',
         }}
       />
       <Tabs.Screen
         name="requirements"
         options={{
-          title: '',
+          title: 'Requirements',
           tabBarLabel: 'Requirements',
           tabBarIcon: ({ color, size }) => (
             <Globe size={24} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'Requirements',
         }}
       />
       <Tabs.Screen
         name="alerts"
         options={{
-          title: '',
+          title: 'Notifications',
           tabBarLabel: 'Notifications',
           tabBarIcon: ({ color, size }) => (
             <Bell size={24} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'Notifications',
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: '',
+          title: 'Settings',
           tabBarLabel: 'Settings',
           tabBarIcon: ({ color, size }) => (
             <Settings size={24} color={color} />
           ),
-          headerTitle: '',
+          headerTitle: 'Settings',
         }}
       />
     </Tabs>
