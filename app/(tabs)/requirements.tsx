@@ -10,7 +10,7 @@ import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig
 
 export default function RequirementsScreen() {
   const { userProfile } = useVisaStore();
-  const [nationality, setNationality] = useState(userProfile?.nationality || 'United States');
+  const [nationality, setNationality] = useState('');
   const [destination, setDestination] = useState('');
   const [purpose, setPurpose] = useState('');
   const [showResults, setShowResults] = useState(false);
@@ -20,11 +20,18 @@ export default function RequirementsScreen() {
 
   const handleCheckRequirements = async () => {
     if (!nationality || !destination || !purpose) {
+      Alert.alert('Missing Information', 'Please select your nationality, destination, and travel purpose.');
+      return;
+    }
+
+    if (nationality === destination) {
+      Alert.alert('Invalid Selection', 'Your nationality and destination cannot be the same.');
       return;
     }
 
     setLoading(true);
     setError(null);
+    setShowResults(false);
     
     try {
       // First, debug the API configuration
@@ -135,12 +142,24 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
     handleCheckRequirements();
   };
 
-  const isFormValid = nationality && destination && purpose;
+  const handleClearForm = () => {
+    setNationality('');
+    setDestination('');
+    setPurpose('');
+    setShowResults(false);
+    setError(null);
+    setRequirementsData(null);
+  };
+
+  const isFormValid = nationality && destination && purpose && nationality !== destination;
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.formCard}>
+          <Text style={styles.formTitle}>Check Visa Requirements</Text>
+          <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
+          
           <Dropdown
             label="Your Nationality"
             options={countries}
@@ -152,32 +171,54 @@ ${result.status ? `HTTP Status: ${result.status}` : ''}`,
 
           <Dropdown
             label="Destination Country"
-            options={countries}
+            options={countries.filter(country => country !== nationality)}
             value={destination}
             onSelect={setDestination}
-            placeholder="Select destination"
+            placeholder="Where are you traveling to?"
             showFlags={true}
           />
 
           <Dropdown
-            label="Trip Purpose"
+            label="Travel Purpose"
             options={tripPurposes}
             value={purpose}
             onSelect={setPurpose}
-            placeholder="Select purpose"
+            placeholder="Why are you traveling?"
           />
 
-          <Button
-            title="Check Requirements"
-            onPress={handleCheckRequirements}
-            loading={loading}
-            style={[
-              styles.button,
-              isFormValid && styles.buttonEnabled
-            ]}
-            size="large"
-            disabled={!isFormValid}
-          />
+          <View style={styles.selectionSummary}>
+            <Text style={styles.summaryTitle}>Your Selection:</Text>
+            <Text style={styles.summaryText}>
+              {nationality || 'No nationality selected'} → {destination || 'No destination selected'}
+            </Text>
+            <Text style={styles.summaryText}>
+              Purpose: {purpose || 'No purpose selected'}
+            </Text>
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Check Requirements"
+              onPress={handleCheckRequirements}
+              loading={loading}
+              style={[
+                styles.button,
+                isFormValid && styles.buttonEnabled
+              ]}
+              size="large"
+              disabled={!isFormValid}
+            />
+            
+            {(nationality || destination || purpose) && (
+              <Button
+                title="Clear Form"
+                onPress={handleClearForm}
+                variant="outline"
+                style={styles.clearButton}
+                size="medium"
+              />
+            )}
+          </View>
           
           {/* API Configuration Test Button */}
           <Button
@@ -237,8 +278,40 @@ const styles = StyleSheet.create({
     shadowRadius: 30,
     elevation: 20,
   },
+  formTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  formSubtitle: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  selectionSummary: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  summaryTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 8,
+  },
+  summaryText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    marginBottom: 4,
+  },
+  buttonContainer: {
+    gap: 12,
+  },
   button: {
-    marginTop: 32,
     height: 56,
     backgroundColor: Colors.silver,
     shadowColor: Colors.black,
@@ -249,6 +322,9 @@ const styles = StyleSheet.create({
   },
   buttonEnabled: {
     backgroundColor: Colors.primary,
+  },
+  clearButton: {
+    height: 44,
   },
   testButton: {
     marginTop: 12,

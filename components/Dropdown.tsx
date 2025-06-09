@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions
 } from 'react-native';
-import { ChevronDown, Search } from 'lucide-react-native';
+import { ChevronDown, Search, Check } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
 const { height } = Dimensions.get('window');
@@ -70,7 +70,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const getCountryFlag = (countryName: string) => {
-    const flagMap: {[key: string]: string} = {
+    const flagMap: { [key: string]: string } = {
       "Afghanistan": "🇦🇫",
       "Albania": "🇦🇱",
       "Algeria": "🇩🇿",
@@ -286,6 +286,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       ]}>
         {item}
       </Text>
+      {item === value && (
+        <Check size={18} color={Colors.primary} style={styles.checkIcon} />
+      )}
     </TouchableOpacity>
   );
 
@@ -293,7 +296,10 @@ const Dropdown: React.FC<DropdownProps> = ({
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity 
-        style={styles.button} 
+        style={[
+          styles.button,
+          value && styles.buttonSelected
+        ]} 
         onPress={toggleDropdown}
         activeOpacity={0.8}
       >
@@ -302,11 +308,19 @@ const Dropdown: React.FC<DropdownProps> = ({
         )}
         <Text style={[
           styles.buttonText,
-          !value && styles.placeholderText
+          !value && styles.placeholderText,
+          value && styles.selectedText
         ]}>
           {value || placeholder}
         </Text>
-        <ChevronDown size={20} color={Colors.silver} />
+        <ChevronDown 
+          size={20} 
+          color={value ? Colors.primary : Colors.silver} 
+          style={[
+            styles.chevron,
+            visible && styles.chevronRotated
+          ]}
+        />
       </TouchableOpacity>
 
       <Modal
@@ -323,7 +337,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                   <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>{label}</Text>
                     <TouchableOpacity onPress={closeModal}>
-                      <Text style={styles.closeText}>Close</Text>
+                      <Text style={styles.closeText}>Done</Text>
                     </TouchableOpacity>
                   </View>
                   
@@ -387,13 +401,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: Colors.white,
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: Colors.border,
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+  },
+  buttonSelected: {
+    borderColor: Colors.primary,
+    backgroundColor: 'rgba(0, 122, 255, 0.05)',
   },
   selectedFlag: {
     fontSize: 18,
@@ -406,6 +424,16 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: Colors.silver,
+  },
+  selectedText: {
+    color: Colors.black,
+    fontWeight: '500',
+  },
+  chevron: {
+    transform: [{ rotate: '0deg' }],
+  },
+  chevronRotated: {
+    transform: [{ rotate: '180deg' }],
   },
   overlay: {
     flex: 1,
@@ -481,10 +509,14 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     color: Colors.black,
+    flex: 1,
   },
   selectedItemText: {
     color: Colors.primary,
     fontWeight: '600',
+  },
+  checkIcon: {
+    marginLeft: 8,
   },
   emptyContainer: {
     padding: 20,

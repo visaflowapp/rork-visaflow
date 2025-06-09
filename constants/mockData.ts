@@ -252,13 +252,17 @@ export const countries = [
 
 export const tripPurposes = [
   "Tourism",
-  "Digital Nomad",
   "Business",
+  "Digital Nomad",
   "Study",
   "Work",
   "Family Visit",
   "Medical",
   "Conference",
   "Volunteering",
-  "Working Holiday"
+  "Working Holiday",
+  "Transit",
+  "Investment",
+  "Retirement",
+  "Research"
 ];
