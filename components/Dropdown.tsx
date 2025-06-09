@@ -7,7 +7,8 @@ import {
   Modal, 
   FlatList,
   SafeAreaView,
-  TextInput
+  TextInput,
+  Pressable
 } from 'react-native';
 import { ChevronDown, Search } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -48,6 +49,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     setVisible(!visible);
     setSearchQuery('');
     setFilteredOptions(options);
+  };
+
+  const handleItemSelect = (item: string) => {
+    onSelect(item);
+    setVisible(false);
+    setSearchQuery('');
   };
 
   const getCountryFlag = (countryName: string) => {
@@ -250,12 +257,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const renderItem = ({ item }: { item: string }) => (
-    <TouchableOpacity 
-      style={styles.item} 
-      onPress={() => {
-        onSelect(item);
-        setVisible(false);
-      }}
+    <Pressable 
+      style={({ pressed }) => [
+        styles.item,
+        pressed && styles.itemPressed
+      ]} 
+      onPress={() => handleItemSelect(item)}
     >
       {showFlags && (
         <Text style={styles.flagEmoji}>{getCountryFlag(item)}</Text>
@@ -266,7 +273,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       ]}>
         {item}
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   return (
@@ -295,11 +302,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         animationType="slide"
         onRequestClose={() => setVisible(false)}
       >
-        <TouchableOpacity 
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setVisible(false)}
-        >
+        <View style={styles.overlay}>
+          <Pressable 
+            style={styles.overlayBackground}
+            onPress={() => setVisible(false)}
+          />
           <SafeAreaView style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
@@ -327,13 +334,14 @@ const Dropdown: React.FC<DropdownProps> = ({
                 keyExtractor={(item) => item}
                 style={styles.listContainer}
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={true}
                 ListEmptyComponent={
                   <Text style={styles.emptyText}>No results found</Text>
                 }
               />
             </View>
           </SafeAreaView>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -379,6 +387,13 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  overlayBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
@@ -433,9 +448,13 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+  },
+  itemPressed: {
+    backgroundColor: Colors.lightGray,
   },
   flagEmoji: {
     fontSize: 18,
