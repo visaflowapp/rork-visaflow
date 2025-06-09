@@ -1,68 +1,56 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import SimpleDropdown from '@/components/SimpleDropdown';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import InlineDropdown from '@/components/InlineDropdown';
 import Button from '@/components/Button';
-import RequirementsResult from '@/components/RequirementsResult';
 import Colors from '@/constants/colors';
-import { useVisaStore } from '@/store/visaStore';
-import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig } from '@/config/api';
+import { checkVisaRequirements, checkVisaRequirementsAlternative } from '@/config/api';
 
-// Hardcoded options for immediate testing
+// Hardcoded mock options for immediate testing
 const NATIONALITY_OPTIONS = [
   'United States',
-  'United Kingdom', 
+  'Thailand',
+  'Indonesia',
+  'United Kingdom',
   'Canada',
   'Australia',
   'Germany',
   'France',
   'Japan',
-  'Thailand',
-  'Indonesia',
   'Singapore',
   'Malaysia',
-  'Philippines',
-  'Brazil',
-  'Mexico',
-  'India',
-  'South Korea'
+  'Philippines'
 ];
 
 const DESTINATION_OPTIONS = [
   'United States',
+  'Thailand', 
+  'Indonesia',
   'United Kingdom',
-  'Canada', 
+  'Canada',
   'Australia',
   'Germany',
   'France',
   'Japan',
-  'Thailand',
-  'Indonesia',
   'Singapore',
   'Malaysia',
-  'Philippines',
-  'Brazil',
-  'Mexico',
-  'India',
-  'South Korea'
+  'Philippines'
 ];
 
 const PURPOSE_OPTIONS = [
   'Tourism',
   'Business',
+  'Transit',
   'Work',
   'Study',
-  'Transit',
   'Family Visit'
 ];
 
 export default function RequirementsScreen() {
-  const { userProfile } = useVisaStore();
   const [nationality, setNationality] = useState('');
   const [destination, setDestination] = useState('');
   const [purpose, setPurpose] = useState('');
-  const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [requirementsData, setRequirementsData] = useState(null);
+  const [apiResponse, setApiResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckRequirements = async () => {
@@ -78,17 +66,9 @@ export default function RequirementsScreen() {
 
     setLoading(true);
     setError(null);
-    setShowResults(false);
+    setApiResponse(null);
     
     try {
-      // First, debug the API configuration
-      const config = debugApiConfig();
-      console.log('API Configuration Status:', config);
-      
-      if (!config.ready) {
-        throw new Error('API configuration incomplete. Please check your environment variables.');
-      }
-      
       let data;
       try {
         // Try the primary API method first
@@ -101,8 +81,7 @@ export default function RequirementsScreen() {
         data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
       }
       
-      setRequirementsData(data);
-      setShowResults(true);
+      setApiResponse(data);
     } catch (err: unknown) {
       console.error('Failed to fetch visa requirements:', err);
       
@@ -137,31 +116,104 @@ export default function RequirementsScreen() {
     }
   };
 
-  const handleRetry = () => {
-    setError(null);
-    setShowResults(false);
-    handleCheckRequirements();
-  };
-
   const handleClearForm = () => {
     setNationality('');
     setDestination('');
     setPurpose('');
-    setShowResults(false);
+    setApiResponse(null);
     setError(null);
-    setRequirementsData(null);
   };
 
   const isFormValid = nationality && destination && purpose && nationality !== destination;
 
+  const renderApiResponse = () => {
+    if (!apiResponse) return null;
+
+    return (
+      <View style={styles.responseCard}>
+        <Text style={styles.responseTitle}>API Response</Text>
+        
+        {/* Display specific RapidAPI fields */}
+        {apiResponse.passport_of && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Passport Of:</Text>
+            <Text style={styles.responseValue}>{apiResponse.passport_of}</Text>
+          </View>
+        )}
+        
+        {apiResponse.passport_code && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Passport Code:</Text>
+            <Text style={styles.responseValue}>{apiResponse.passport_code}</Text>
+          </View>
+        )}
+        
+        {apiResponse.destination && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Destination:</Text>
+            <Text style={styles.responseValue}>{apiResponse.destination}</Text>
+          </View>
+        )}
+        
+        {apiResponse.visa && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Visa Required:</Text>
+            <Text style={styles.responseValue}>{apiResponse.visa}</Text>
+          </View>
+        )}
+        
+        {apiResponse.stay_of && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Stay Duration:</Text>
+            <Text style={styles.responseValue}>{apiResponse.stay_of}</Text>
+          </View>
+        )}
+        
+        {apiResponse.color && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Status Color:</Text>
+            <Text style={styles.responseValue}>{apiResponse.color}</Text>
+          </View>
+        )}
+        
+        {apiResponse.pass_valid && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Passport Validity:</Text>
+            <Text style={styles.responseValue}>{apiResponse.pass_valid}</Text>
+          </View>
+        )}
+        
+        {apiResponse.link && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>More Info:</Text>
+            <Text style={styles.responseValue}>{apiResponse.link}</Text>
+          </View>
+        )}
+        
+        {apiResponse.except_text && (
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Exceptions:</Text>
+            <Text style={styles.responseValue}>{apiResponse.except_text}</Text>
+          </View>
+        )}
+        
+        {/* Show raw response for debugging */}
+        <View style={styles.rawResponse}>
+          <Text style={styles.rawResponseTitle}>Raw Response:</Text>
+          <Text style={styles.rawResponseText}>{JSON.stringify(apiResponse, null, 2)}</Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.formCard}>
           <Text style={styles.formTitle}>Check Visa Requirements</Text>
           <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
           
-          <SimpleDropdown
+          <InlineDropdown
             label="Your Nationality"
             options={NATIONALITY_OPTIONS}
             value={nationality}
@@ -169,7 +221,7 @@ export default function RequirementsScreen() {
             placeholder="Select your nationality"
           />
 
-          <SimpleDropdown
+          <InlineDropdown
             label="Destination Country"
             options={DESTINATION_OPTIONS.filter(country => country !== nationality)}
             value={destination}
@@ -177,7 +229,7 @@ export default function RequirementsScreen() {
             placeholder="Where are you traveling to?"
           />
 
-          <SimpleDropdown
+          <InlineDropdown
             label="Travel Purpose"
             options={PURPOSE_OPTIONS}
             value={purpose}
@@ -214,24 +266,11 @@ export default function RequirementsScreen() {
           <View style={styles.errorCard}>
             <Text style={styles.errorTitle}>Unable to Load Requirements</Text>
             <Text style={styles.errorText}>{error}</Text>
-            <Button
-              title="Try Again"
-              onPress={handleRetry}
-              style={styles.retryButton}
-              size="medium"
-            />
           </View>
         )}
 
-        {showResults && !error && requirementsData && (
-          <RequirementsResult
-            nationality={nationality}
-            destination={destination}
-            purpose={purpose}
-            data={requirementsData}
-          />
-        )}
-      </View>
+        {renderApiResponse()}
+      </ScrollView>
     </View>
   );
 }
@@ -313,10 +352,61 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
-    marginBottom: 16,
   },
-  retryButton: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 24,
+  responseCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 24,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
+  },
+  responseTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  responseRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  responseLabel: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    fontWeight: '600',
+    flex: 1,
+  },
+  responseValue: {
+    fontSize: 14,
+    color: Colors.black,
+    fontWeight: '500',
+    flex: 2,
+    textAlign: 'right',
+  },
+  rawResponse: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+  },
+  rawResponseTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 8,
+  },
+  rawResponseText: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    fontFamily: 'monospace',
   },
 });

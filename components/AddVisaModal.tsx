@@ -12,7 +12,7 @@ import {
 import { X } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
-import SimpleDropdown from './SimpleDropdown';
+import InlineDropdown from './InlineDropdown';
 import Colors from '@/constants/colors';
 import { countries } from '@/constants/mockData';
 
@@ -109,7 +109,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <SimpleDropdown
+            <InlineDropdown
               label="Country"
               options={countries}
               value={country}
@@ -117,7 +117,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               placeholder="Select country"
             />
 
-            <SimpleDropdown
+            <InlineDropdown
               label="Visa Type"
               options={visaTypes}
               value={visaType}
