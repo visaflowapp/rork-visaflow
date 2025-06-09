@@ -6,7 +6,7 @@ import RequirementsResult from '@/components/RequirementsResult';
 import Colors from '@/constants/colors';
 import { countries, tripPurposes } from '@/constants/mockData';
 import { useVisaStore } from '@/store/visaStore';
-import { checkVisaRequirements } from '@/config/api';
+import { checkVisaRequirements, checkVisaRequirementsAlternative, debugApiConfig, testApiConnection } from '@/config/api';
 
 export default function RequirementsScreen() {
   const { userProfile } = useVisaStore();
@@ -27,19 +27,100 @@ export default function RequirementsScreen() {
     setError(null);
     
     try {
-      const data = await checkVisaRequirements(nationality, destination, purpose);
+      // First, debug the API configuration
+      const config = debugApiConfig();
+      console.log('API Configuration Status:', config);
+      
+      if (!config.ready) {
+        throw new Error('API configuration incomplete. Please check your environment variables.');
+      }
+      
+      let data;
+      try {
+        // Try the primary API method first
+        data = await checkVisaRequirements(nationality, destination, purpose);
+      } catch (primaryError) {
+        console.log('Primary API method failed, trying alternative...');
+        // If primary fails, try the alternative method
+        data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
+      }
+      
       setRequirementsData(data);
       setShowResults(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch visa requirements:', err);
-      setError('Failed to fetch visa requirements. Please check your internet connection and try again.');
       
-      // Show error alert
+      let errorMessage = 'Failed to fetch visa requirements. ';
+      
+      if (err.message?.includes('API configuration incomplete')) {
+        errorMessage = 'API not configured. Please check your environment variables are set correctly.';
+      } else if (err.message?.includes('Invalid API key')) {
+        errorMessage = 'Invalid API key. Please verify your RapidAPI credentials.';
+      } else if (err.message?.includes('Access forbidden')) {
+        errorMessage = 'Access forbidden. Please check your RapidAPI subscription and endpoint access.';
+      } else if (err.message?.includes('Rate limit exceeded')) {
+        errorMessage = 'Rate limit exceeded. Please try again later.';
+      } else if (err.message?.includes('Network request failed')) {
+        errorMessage = 'Network error. Please check your internet connection.';
+      } else {
+        errorMessage += 'Please check your internet connection and try again.';
+      }
+      
+      setError(errorMessage);
+      
+      // Show detailed error alert for debugging
       Alert.alert(
-        'Error',
-        'Unable to fetch visa requirements. Please check your internet connection and try again.',
+        'API Error',
+        `${errorMessage}
+
+Technical details: ${err.message}`,
+        [
+          { text: 'OK' },
+          { 
+            text: 'Debug Info', 
+            onPress: () => {
+              const config = debugApiConfig();
+              Alert.alert(
+                'Debug Information',
+                `Environment Variables Status:
+• Endpoint: ${config.endpointSet ? '✅ Set' : '❌ Missing'}
+• API Key: ${config.apiKeySet ? '✅ Set' : '❌ Missing'}
+• API Key Length: ${config.apiKeyLength} chars
+• Ready: ${config.ready ? '✅ Yes' : '❌ No'}
+
+Endpoint: ${process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || 'Not set'}`,
+                [{ text: 'OK' }]
+              );
+            }
+          }
+        ]
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestApiConfig = async () => {
+    setLoading(true);
+    
+    try {
+      const result = await testApiConnection();
+      
+      Alert.alert(
+        'API Configuration Test',
+        `Status: ${result.success ? '✅ Connected' : '❌ Failed'}
+        
+Environment Variables:
+• Endpoint: ${result.config?.endpointSet ? '✅ Set' : '❌ Missing'}
+• API Key: ${result.config?.apiKeySet ? '✅ Set' : '❌ Missing'}
+• Ready: ${result.config?.ready ? '✅ Yes' : '❌ No'}
+
+${result.error ? `Error: ${result.error}` : ''}
+${result.status ? `HTTP Status: ${result.status}` : ''}`,
         [{ text: 'OK' }]
       );
+    } catch (error) {
+      Alert.alert('Test Failed', `Unable to test API connection: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -93,6 +174,16 @@ export default function RequirementsScreen() {
             ]}
             size="large"
             disabled={!isFormValid}
+          />
+          
+          {/* API Configuration Test Button */}
+          <Button
+            title="Test API Configuration"
+            onPress={handleTestApiConfig}
+            variant="outline"
+            style={styles.testButton}
+            size="medium"
+            loading={loading}
           />
         </View>
 
@@ -155,6 +246,10 @@ const styles = StyleSheet.create({
   },
   buttonEnabled: {
     backgroundColor: Colors.primary,
+  },
+  testButton: {
+    marginTop: 12,
+    height: 44,
   },
   errorCard: {
     backgroundColor: Colors.white,
