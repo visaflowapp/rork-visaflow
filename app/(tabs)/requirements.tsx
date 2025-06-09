@@ -11,8 +11,9 @@ export default function RequirementsScreen() {
 
   // Debug environment variables
   useEffect(() => {
-    const apiKey = process.env.EXPO_PUBLIC_NOMAD_API_KEY;
-    const apiHost = process.env.EXPO_PUBLIC_NOMAD_API_HOST;
+const apiKey = '327b1b0453msh39c6030c95804bfp19cad6jsn992fe365905a';
+const apiHost = 'nomad-travel-intelligence-api.p.rapidapi.com';
+
     
     const debugInfo = `Environment Variables Debug:
 API Key: ${apiKey ? `${apiKey.substring(0, 8)}...` : 'NOT SET'}
