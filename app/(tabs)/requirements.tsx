@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import SimpleDropdown from '@/components/SimpleDropdown';
+import { Picker } from '@react-native-picker/picker';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
-import { checkVisaRequirements, checkVisaRequirementsAlternative } from '@/config/api';
+import { checkVisaRequirements, checkVisaRequirementsAlternative, getMockVisaRequirements } from '@/config/api';
 
 // Hardcoded options for reliable testing
 const NATIONALITY_OPTIONS = [
-  'USA',
-  'UK', 
-  'Thailand',
-  'Indonesia',
-  'Canada'
+  { label: 'Select your nationality', value: '' },
+  { label: 'USA', value: 'USA' },
+  { label: 'UK', value: 'UK' },
+  { label: 'Thailand', value: 'Thailand' },
+  { label: 'Indonesia', value: 'Indonesia' },
+  { label: 'Canada', value: 'Canada' }
 ];
 
 const DESTINATION_OPTIONS = [
-  'Thailand',
-  'Indonesia', 
-  'Vietnam',
-  'Malaysia',
-  'Singapore'
+  { label: 'Select destination', value: '' },
+  { label: 'Thailand', value: 'Thailand' },
+  { label: 'Indonesia', value: 'Indonesia' },
+  { label: 'Vietnam', value: 'Vietnam' },
+  { label: 'Malaysia', value: 'Malaysia' },
+  { label: 'Singapore', value: 'Singapore' }
 ];
 
 const PURPOSE_OPTIONS = [
-  'Tourism',
-  'Business',
-  'Transit'
+  { label: 'Select travel purpose', value: '' },
+  { label: 'Tourism', value: 'Tourism' },
+  { label: 'Business', value: 'Business' },
+  { label: 'Transit', value: 'Transit' }
 ];
 
 export default function RequirementsScreen() {
@@ -55,13 +58,22 @@ export default function RequirementsScreen() {
       let data;
       try {
         // Try the primary API method first
+        console.log('Attempting primary API call...');
         data = await checkVisaRequirements(nationality, destination, purpose);
       } catch (primaryError: unknown) {
         console.log('Primary API method failed, trying alternative...');
         // If primary fails, try the alternative method
         const errorMessage = primaryError instanceof Error ? primaryError.message : String(primaryError);
         console.error('Primary API error:', errorMessage);
-        data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
+        
+        try {
+          data = await checkVisaRequirementsAlternative(nationality, destination, purpose);
+        } catch (altError: unknown) {
+          console.log('Alternative API also failed, using mock data...');
+          // If both APIs fail, use mock data for demonstration
+          data = getMockVisaRequirements(nationality, destination, purpose);
+          console.log('Using mock data:', data);
+        }
       }
       
       setApiResponse(data);
@@ -83,7 +95,12 @@ export default function RequirementsScreen() {
       } else if (errorObj.message?.includes('Network request failed')) {
         errorMessage = 'Network error. Please check your internet connection.';
       } else {
-        errorMessage += 'Please check your internet connection and try again.';
+        errorMessage += 'Using mock data for demonstration.';
+        // Fallback to mock data
+        const mockData = getMockVisaRequirements(nationality, destination, purpose);
+        setApiResponse(mockData);
+        setLoading(false);
+        return;
       }
       
       setError(errorMessage);
@@ -115,6 +132,12 @@ export default function RequirementsScreen() {
     return (
       <View style={styles.responseCard}>
         <Text style={styles.responseTitle}>Visa Requirements</Text>
+        
+        {apiResponse.mock && (
+          <View style={styles.mockNotice}>
+            <Text style={styles.mockText}>📝 Mock Data (API unavailable)</Text>
+          </View>
+        )}
         
         {/* Display specific RapidAPI fields */}
         {apiResponse.passport_of && (
@@ -183,6 +206,10 @@ export default function RequirementsScreen() {
     );
   };
 
+  const getFilteredDestinations = () => {
+    return DESTINATION_OPTIONS.filter(option => option.value !== nationality);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -190,29 +217,72 @@ export default function RequirementsScreen() {
           <Text style={styles.formTitle}>Check Visa Requirements</Text>
           <Text style={styles.formSubtitle}>Select your details to get visa information</Text>
           
-          <SimpleDropdown
-            label="Your Nationality"
-            options={NATIONALITY_OPTIONS}
-            value={nationality}
-            onSelect={setNationality}
-            placeholder="Select your nationality"
-          />
+          {/* Nationality Picker */}
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerLabel}>Your Nationality</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={nationality}
+                onValueChange={(itemValue) => {
+                  setNationality(itemValue);
+                  // Clear destination if it's the same as nationality
+                  if (itemValue === destination) {
+                    setDestination('');
+                  }
+                }}
+                style={styles.picker}
+              >
+                {NATIONALITY_OPTIONS.map((option) => (
+                  <Picker.Item 
+                    key={option.value} 
+                    label={option.label} 
+                    value={option.value} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
 
-          <SimpleDropdown
-            label="Destination Country"
-            options={DESTINATION_OPTIONS.filter(country => country !== nationality)}
-            value={destination}
-            onSelect={setDestination}
-            placeholder="Where are you traveling to?"
-          />
+          {/* Destination Picker */}
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerLabel}>Destination Country</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={destination}
+                onValueChange={(itemValue) => setDestination(itemValue)}
+                style={styles.picker}
+                enabled={!!nationality}
+              >
+                {getFilteredDestinations().map((option) => (
+                  <Picker.Item 
+                    key={option.value} 
+                    label={option.label} 
+                    value={option.value} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
 
-          <SimpleDropdown
-            label="Travel Purpose"
-            options={PURPOSE_OPTIONS}
-            value={purpose}
-            onSelect={setPurpose}
-            placeholder="Why are you traveling?"
-          />
+          {/* Purpose Picker */}
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerLabel}>Travel Purpose</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={purpose}
+                onValueChange={(itemValue) => setPurpose(itemValue)}
+                style={styles.picker}
+              >
+                {PURPOSE_OPTIONS.map((option) => (
+                  <Picker.Item 
+                    key={option.value} 
+                    label={option.label} 
+                    value={option.value} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
 
           <View style={styles.buttonContainer}>
             <Button
@@ -286,6 +356,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
+  pickerContainer: {
+    marginBottom: 20,
+  },
+  pickerLabel: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: Colors.black,
+    fontWeight: '600',
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    backgroundColor: Colors.white,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 56,
+    color: Colors.black,
+  },
   buttonContainer: {
     gap: 12,
   },
@@ -347,6 +437,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.black,
     marginBottom: 16,
+    textAlign: 'center',
+  },
+  mockNotice: {
+    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFC107',
+  },
+  mockText: {
+    fontSize: 14,
+    color: '#F57C00',
+    fontWeight: '600',
     textAlign: 'center',
   },
   responseRow: {

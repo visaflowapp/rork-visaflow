@@ -46,7 +46,18 @@ export const debugApiConfig = () => {
   };
 };
 
-// API request function for RapidAPI visa requirements
+// Multiple API endpoint attempts for RapidAPI visa requirements
+const API_ENDPOINTS = [
+  '', // Root endpoint
+  'requirements',
+  'visa',
+  'api/requirements',
+  'api/visa',
+  'v1/requirements',
+  'v1/visa'
+];
+
+// API request function with multiple endpoint attempts
 export const checkVisaRequirements = async (nationality: string, destination: string, purpose: string) => {
   try {
     // Debug log to verify environment variables
@@ -57,66 +68,88 @@ export const checkVisaRequirements = async (nationality: string, destination: st
     }
     
     // Use runtime environment variables if available
-    const endpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
+    const baseEndpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
     const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
     
-    // Construct the API endpoint - RapidAPI visa-requirement typically uses specific endpoints
-    const fullEndpoint = `${endpoint.replace(/\/$/, '')}/visa-requirements`;
-    
-    console.log('Making API request to:', fullEndpoint);
+    console.log('Starting API requests with base endpoint:', baseEndpoint);
     console.log('Using API key length:', apiKey.length);
-    console.log('Request payload:', { 
-      from_country: nationality, 
-      to_country: destination, 
-      purpose: purpose.toLowerCase() 
-    });
     
-    const response = await fetch(fullEndpoint, {
-      method: 'POST',
-      headers: {
-        ...API_CONFIG.HEADERS,
-        'X-RapidAPI-Key': apiKey,
-      },
-      body: JSON.stringify({
-        from_country: nationality,
-        to_country: destination,
-        purpose: purpose.toLowerCase(),
-      }),
-    });
+    // Try different endpoint patterns
+    for (const endpoint of API_ENDPOINTS) {
+      try {
+        const fullEndpoint = endpoint 
+          ? `${baseEndpoint.replace(/\/$/, '')}/${endpoint}`
+          : baseEndpoint.replace(/\/$/, '');
+        
+        console.log(`Trying endpoint: ${fullEndpoint}`);
+        
+        // Try GET request with query parameters first
+        const queryParams = new URLSearchParams({
+          from: nationality.toLowerCase(),
+          to: destination.toLowerCase(),
+          purpose: purpose.toLowerCase()
+        });
+        
+        const getUrl = `${fullEndpoint}?${queryParams}`;
+        console.log(`GET request to: ${getUrl}`);
+        
+        const getResponse = await fetch(getUrl, {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': apiKey,
+            'X-RapidAPI-Host': API_CONFIG.RAPIDAPI_HOST,
+          },
+        });
 
-    console.log('Response status:', response.status);
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        console.log(`GET Response status: ${getResponse.status}`);
+        
+        if (getResponse.ok) {
+          const data = await getResponse.json();
+          console.log('GET Success! Response data:', data);
+          return data;
+        }
+        
+        // If GET fails, try POST
+        console.log(`GET failed, trying POST to: ${fullEndpoint}`);
+        
+        const postResponse = await fetch(fullEndpoint, {
+          method: 'POST',
+          headers: {
+            ...API_CONFIG.HEADERS,
+            'X-RapidAPI-Key': apiKey,
+          },
+          body: JSON.stringify({
+            from_country: nationality,
+            to_country: destination,
+            purpose: purpose.toLowerCase(),
+            passport_country: nationality,
+            destination_country: destination,
+            travel_purpose: purpose
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Error Response:', errorText);
-      
-      // Provide specific error messages based on status codes
-      let errorMessage = `API request failed: ${response.status} ${response.statusText}`;
-      
-      switch (response.status) {
-        case 401:
-          errorMessage = 'Invalid API key. Please check your RapidAPI credentials.';
-          break;
-        case 403:
-          errorMessage = 'Access forbidden. Please verify your RapidAPI subscription and endpoint access.';
-          break;
-        case 429:
-          errorMessage = 'Rate limit exceeded. Please wait and try again.';
-          break;
-        case 404:
-          errorMessage = 'API endpoint not found. Please verify the endpoint URL.';
-          break;
-        default:
-          errorMessage = `API error: ${response.status} - ${errorText}`;
+        console.log(`POST Response status: ${postResponse.status}`);
+        
+        if (postResponse.ok) {
+          const data = await postResponse.json();
+          console.log('POST Success! Response data:', data);
+          return data;
+        }
+        
+        // Log the error but continue to next endpoint
+        const errorText = await postResponse.text();
+        console.log(`Endpoint ${fullEndpoint} failed: ${postResponse.status} - ${errorText}`);
+        
+      } catch (endpointError: unknown) {
+        const errorObj = endpointError instanceof Error ? endpointError : new Error(String(endpointError));
+        console.log(`Endpoint ${endpoint} error:`, errorObj.message);
+        // Continue to next endpoint
       }
-      
-      throw new Error(errorMessage);
     }
-
-    const data = await response.json();
-    console.log('API Response data:', data);
-    return data;
+    
+    // If all endpoints fail, throw a comprehensive error
+    throw new Error(`All API endpoints failed. Tried: ${API_ENDPOINTS.map(ep => ep || 'root').join(', ')}`);
+    
   } catch (err: unknown) {
     const errorObj = err instanceof Error ? err : new Error(String(err));
     console.error('Visa requirements API error:', errorObj);
@@ -124,15 +157,36 @@ export const checkVisaRequirements = async (nationality: string, destination: st
   }
 };
 
-// Alternative API request function with different endpoint structure
+// Alternative API request function with different approach
 export const checkVisaRequirementsAlternative = async (nationality: string, destination: string, purpose: string) => {
   try {
     // Use runtime environment variables if available
     const endpoint = process.env.EXPO_PUBLIC_VISA_API_ENDPOINT || API_CONFIG.VISA_REQUIREMENTS_ENDPOINT;
     const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
     
-    // Try different endpoint structure that some RapidAPI services use
-    const fullEndpoint = `${endpoint.replace(/\/$/, '')}/check`;
+    // Try the most common RapidAPI pattern with country codes
+    const countryCodeMap: { [key: string]: string } = {
+      'USA': 'US',
+      'UK': 'GB', 
+      'Thailand': 'TH',
+      'Indonesia': 'ID',
+      'Canada': 'CA',
+      'Vietnam': 'VN',
+      'Malaysia': 'MY',
+      'Singapore': 'SG'
+    };
+    
+    const fromCode = countryCodeMap[nationality] || nationality;
+    const toCode = countryCodeMap[destination] || destination;
+    
+    // Try with country codes
+    const queryParams = new URLSearchParams({
+      passport: fromCode,
+      destination: toCode,
+      purpose: purpose.toLowerCase()
+    });
+    
+    const fullEndpoint = `${endpoint.replace(/\/$/, '')}?${queryParams}`;
     
     console.log('Making alternative API request to:', fullEndpoint);
     
@@ -141,7 +195,6 @@ export const checkVisaRequirementsAlternative = async (nationality: string, dest
       headers: {
         'X-RapidAPI-Key': apiKey,
         'X-RapidAPI-Host': API_CONFIG.RAPIDAPI_HOST,
-        'Content-Type': 'application/json',
       },
     });
 
@@ -159,6 +212,23 @@ export const checkVisaRequirementsAlternative = async (nationality: string, dest
     console.error('Alternative visa requirements API error:', errorObj);
     throw errorObj;
   }
+};
+
+// Mock data for testing when API is not available
+export const getMockVisaRequirements = (nationality: string, destination: string, purpose: string) => {
+  return {
+    passport_of: nationality,
+    passport_code: nationality === 'USA' ? 'US' : nationality.substring(0, 2).toUpperCase(),
+    destination: destination,
+    visa: purpose === 'Tourism' ? 'Visa required' : 'eVisa available',
+    stay_of: '30 days',
+    color: 'yellow',
+    pass_valid: '6 months',
+    link: `https://embassy.${destination.toLowerCase()}.com/visa-info`,
+    except_text: 'Transit passengers may be exempt for stays under 24 hours',
+    mock: true,
+    note: 'This is mock data for testing purposes'
+  };
 };
 
 // Function to test API connectivity
@@ -179,7 +249,7 @@ export const testApiConnection = async () => {
     const apiKey = process.env.EXPO_PUBLIC_VISA_API_KEY || API_CONFIG.API_KEY;
     
     // Simple test request to verify API is accessible
-    const testEndpoint = `${endpoint.replace(/\/$/, '')}/health`;
+    const testEndpoint = endpoint.replace(/\/$/, '');
     
     const response = await fetch(testEndpoint, {
       method: 'GET',
