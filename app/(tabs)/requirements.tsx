@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
-  Alert as RNAlert,
+  Alert,
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
@@ -159,7 +159,7 @@ export default function RequirementsScreen() {
   // Open external URL
   const openExternalLink = async (url: string) => {
     if (!url) {
-      RNAlert.alert("Link Not Available", "The application link is not available at this time.");
+      Alert.alert("Link Not Available", "The application link is not available at this time.");
       return;
     }
     
@@ -169,17 +169,17 @@ export default function RequirementsScreen() {
         await Linking.openURL(url);
       } else {
         console.error("Cannot open URL:", url);
-        RNAlert.alert("Cannot Open Link", "The link cannot be opened. Please try visiting the official website directly.");
+        Alert.alert("Cannot Open Link", "The link cannot be opened. Please try visiting the official website directly.");
       }
     } catch (error) {
       console.error("Error opening URL:", error);
-      RNAlert.alert("Error", "There was an error opening the link. Please try again later.");
+      Alert.alert("Error", "There was an error opening the link. Please try again later.");
     }
   };
 
   // Show details in an alert
   const showDetails = (title: string, description: string) => {
-    RNAlert.alert(title, description);
+    Alert.alert(title, description);
   };
 
   // Fetch visa requirements

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   View, 
   Text, 
@@ -8,7 +8,7 @@ import {
   FlatList,
   Pressable
 } from 'react-native';
-import { ChevronDown, Check } from 'lucide-react-native';
+import { Check } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
 interface SimpleDropdownProps {
@@ -26,20 +26,13 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   onSelect,
   placeholder = 'Select an option'
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const handleSelect = (item: string) => {
-    onSelect(item);
-    setIsVisible(false);
-  };
-
   const renderOption = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={[
         styles.option,
         item === value && styles.selectedOption
       ]}
-      onPress={() => handleSelect(item)}
+      onPress={() => onSelect(item)}
     >
       <Text style={[
         styles.optionText,
@@ -54,83 +47,31 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
-      
-      <TouchableOpacity 
-        style={[
-          styles.button,
-          value && styles.buttonSelected
-        ]} 
-        onPress={() => setIsVisible(true)}
+    <Modal
+      visible={true}
+      transparent={true}
+      animationType="slide"
+    >
+      <Pressable 
+        style={styles.modalOverlay}
+        onPress={() => onSelect(value)}
       >
-        <Text style={[
-          styles.buttonText,
-          !value && styles.placeholderText
-        ]}>
-          {value || placeholder}
-        </Text>
-        <ChevronDown size={20} color={Colors.primary} />
-      </TouchableOpacity>
-
-      <Modal
-        visible={isVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsVisible(false)}
-      >
-        <Pressable 
-          style={styles.modalOverlay}
-          onPress={() => setIsVisible(false)}
-        >
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{label}</Text>
-            <FlatList
-              data={options}
-              renderItem={renderOption}
-              keyExtractor={(item) => item}
-              style={styles.optionsList}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </Pressable>
-      </Modal>
-    </View>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>{label}</Text>
+          <FlatList
+            data={options}
+            renderItem={renderOption}
+            keyExtractor={(item) => item}
+            style={styles.optionsList}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      </Pressable>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: Colors.black,
-    fontWeight: '600',
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 56,
-    paddingHorizontal: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  buttonSelected: {
-    borderColor: Colors.primary,
-    backgroundColor: 'rgba(0, 122, 255, 0.05)',
-  },
-  buttonText: {
-    fontSize: 16,
-    flex: 1,
-  },
-  placeholderText: {
-    color: Colors.silver,
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

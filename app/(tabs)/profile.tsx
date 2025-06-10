@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link, Calendar } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
@@ -19,6 +20,7 @@ const languages = [
 ];
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { 
     userProfile, 
     toggleNotifications,
@@ -67,13 +69,14 @@ export default function SettingsScreen() {
 
   const handleLanguageChange = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
+    setShowLanguageDropdown(false);
     // In a real app, you would update the app's language setting
     Alert.alert('Language Changed', `App language set to ${selectedLanguage}`);
   };
 
   const navigateToPassportInfo = () => {
-    // In a real app, you would navigate to a passport info screen
-    Alert.alert('Passport Information', 'This would navigate to passport information screen');
+    // Navigate to passport info screen
+    router.push('/screens/PassportInfoScreen');
   };
 
   if (!userProfile) {
