@@ -144,7 +144,7 @@ export default function TrackerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: '#007AFF',
   },
   loadingContainer: {
     flex: 1,
