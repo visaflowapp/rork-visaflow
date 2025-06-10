@@ -38,7 +38,6 @@ export const useVisaStore = create<VisaState>()(
       },
       
       addVisa: (visa) => {
-        // Only allow one visa at a time - replace existing visa
         const newVisa = {
           id: Date.now().toString(),
           ...visa,
@@ -46,9 +45,9 @@ export const useVisaStore = create<VisaState>()(
           daysLeft: Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
         };
         
-        set({
-          activeVisas: [newVisa], // Replace with single visa
-        });
+        set(state => ({
+          activeVisas: [...state.activeVisas, newVisa].sort((a, b) => a.daysLeft - b.daysLeft),
+        }));
       },
       
       removeVisa: (visaId: string) => {

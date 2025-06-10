@@ -14,6 +14,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
 import SimpleDropdown from './SimpleDropdown';
 import Colors from '@/constants/colors';
+import { countries } from '@/constants/mockData';
 
 interface AddVisaModalProps {
   visible: boolean;
@@ -22,24 +23,12 @@ interface AddVisaModalProps {
     country: string;
     visa_type: string;
     entry_date: string;
-    duration: number;
     exit_date: string;
+    duration: number;
     extensions_available: number;
+    notes?: string;
   }) => void;
 }
-
-const countries = [
-  'Thailand',
-  'Indonesia', 
-  'Vietnam',
-  'Malaysia',
-  'Singapore',
-  'Philippines',
-  'Cambodia',
-  'Laos',
-  'Myanmar',
-  'Brunei'
-];
 
 const visaTypes = [
   'Tourist Visa',
@@ -60,18 +49,20 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   const [country, setCountry] = useState('');
   const [visaType, setVisaType] = useState('');
   const [entryDate, setEntryDate] = useState(new Date());
-  const [duration, setDuration] = useState('90');
+  const [exitDate, setExitDate] = useState(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)); // 90 days from now
   const [extensionsAvailable, setExtensionsAvailable] = useState('0');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [notes, setNotes] = useState('');
+  const [showEntryDatePicker, setShowEntryDatePicker] = useState(false);
+  const [showExitDatePicker, setShowExitDatePicker] = useState(false);
 
-  const calculateExitDate = () => {
-    const exitDate = new Date(entryDate);
-    exitDate.setDate(exitDate.getDate() + parseInt(duration || '0', 10));
-    return exitDate.toISOString().split('T')[0];
+  const calculateDuration = () => {
+    const diffTime = Math.abs(exitDate.getTime() - entryDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
   };
 
   const handleSave = () => {
-    if (!country || !visaType || !duration) {
+    if (!country || !visaType) {
       return;
     }
 
@@ -79,26 +70,69 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       country,
       visa_type: visaType,
       entry_date: entryDate.toISOString().split('T')[0],
-      duration: parseInt(duration, 10),
-      exit_date: calculateExitDate(),
+      exit_date: exitDate.toISOString().split('T')[0],
+      duration: calculateDuration(),
       extensions_available: parseInt(extensionsAvailable, 10),
+      notes: notes.trim() || undefined,
     });
 
     // Reset form
     setCountry('');
     setVisaType('');
     setEntryDate(new Date());
-    setDuration('90');
+    setExitDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
     setExtensionsAvailable('0');
+    setNotes('');
     onClose();
   };
 
-  const onDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
+  const onEntryDateChange = (event: any, selectedDate?: Date) => {
+    setShowEntryDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
       setEntryDate(selectedDate);
+      
+      // If exit date is before the new entry date, update it
+      if (exitDate < selectedDate) {
+        const newExitDate = new Date(selectedDate);
+        newExitDate.setDate(newExitDate.getDate() + 90); // Default to 90 days
+        setExitDate(newExitDate);
+      }
     }
   };
+
+  const onExitDateChange = (event: any, selectedDate?: Date) => {
+    setShowExitDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      // Ensure exit date is not before entry date
+      if (selectedDate > entryDate) {
+        setExitDate(selectedDate);
+      }
+    }
+  };
+
+  // Filter to top 20 most common countries for digital nomads
+  const popularCountries = [
+    'Thailand',
+    'Indonesia', 
+    'Vietnam',
+    'Malaysia',
+    'Singapore',
+    'Philippines',
+    'Cambodia',
+    'Japan',
+    'South Korea',
+    'Taiwan',
+    'Mexico',
+    'Colombia',
+    'Brazil',
+    'Portugal',
+    'Spain',
+    'Italy',
+    'Greece',
+    'Croatia',
+    'Georgia',
+    'Turkey'
+  ];
 
   return (
     <Modal
@@ -123,7 +157,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
           >
             <SimpleDropdown
               label="Country"
-              options={countries}
+              options={popularCountries}
               value={country}
               onSelect={setCountry}
               placeholder="Select country"
@@ -141,7 +175,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               <Text style={styles.label}>Entry Date</Text>
               <TouchableOpacity
                 style={styles.dateInput}
-                onPress={() => setShowDatePicker(true)}
+                onPress={() => setShowEntryDatePicker(true)}
               >
                 <Text style={styles.dateText}>
                   {entryDate.toLocaleDateString('en-US', { 
@@ -151,25 +185,49 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                   })}
                 </Text>
               </TouchableOpacity>
-              {showDatePicker && (
+              {showEntryDatePicker && (
                 <DateTimePicker
                   value={entryDate}
                   mode="date"
                   display="default"
-                  onChange={onDateChange}
+                  onChange={onEntryDateChange}
+                  minimumDate={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)} // Allow dates up to 30 days in the past
                 />
               )}
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Duration (days)</Text>
-              <TextInput
-                style={styles.input}
-                value={duration}
-                onChangeText={setDuration}
-                keyboardType="number-pad"
-                placeholder="Enter duration in days"
-              />
+              <Text style={styles.label}>Exit Date</Text>
+              <TouchableOpacity
+                style={styles.dateInput}
+                onPress={() => setShowExitDatePicker(true)}
+              >
+                <Text style={styles.dateText}>
+                  {exitDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </Text>
+              </TouchableOpacity>
+              {showExitDatePicker && (
+                <DateTimePicker
+                  value={exitDate}
+                  mode="date"
+                  display="default"
+                  onChange={onExitDateChange}
+                  minimumDate={entryDate}
+                />
+              )}
+            </View>
+
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Duration (Calculated)</Text>
+              <View style={styles.calculatedField}>
+                <Text style={styles.calculatedText}>
+                  {calculateDuration()} days
+                </Text>
+              </View>
             </View>
 
             <View style={styles.formGroup}>
@@ -184,16 +242,16 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Exit Date (Calculated)</Text>
-              <View style={styles.calculatedField}>
-                <Text style={styles.calculatedText}>
-                  {new Date(calculateExitDate()).toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
-                </Text>
-              </View>
+              <Text style={styles.label}>Notes (Optional)</Text>
+              <TextInput
+                style={styles.textArea}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Add any additional notes about your visa"
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+              />
             </View>
           </ScrollView>
 
@@ -268,6 +326,17 @@ const styles = StyleSheet.create({
     color: Colors.black,
     backgroundColor: Colors.white,
   },
+  textArea: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    fontSize: 16,
+    color: Colors.black,
+    backgroundColor: Colors.white,
+  },
   dateInput: {
     height: 56,
     borderWidth: 1,
@@ -292,7 +361,8 @@ const styles = StyleSheet.create({
   },
   calculatedText: {
     fontSize: 16,
-    color: Colors.silver,
+    color: Colors.textSecondary,
+    fontWeight: '500',
   },
   footer: {
     flexDirection: 'row',

@@ -8,6 +8,7 @@ export interface VisaRecord {
   extensions_available: number;
   daysLeft: number;
   is_active: boolean;
+  notes?: string;
 }
 
 export interface Alert {
