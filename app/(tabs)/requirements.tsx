@@ -80,20 +80,30 @@ export default function RequirementsScreen() {
 
   // Handle date changes
   const onStartDateChange = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(false);
+    setShowStartDatePicker(Platform.OS === 'ios' ? true : false);
     if (selectedDate) {
       setStartDate(selectedDate);
       // If end date is before start date, update it
       if (endDate < selectedDate) {
         setEndDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000));
       }
+      
+      // Close the picker after selection on iOS
+      if (Platform.OS === 'ios') {
+        setTimeout(() => setShowStartDatePicker(false), 250);
+      }
     }
   };
 
   const onEndDateChange = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(false);
+    setShowEndDatePicker(Platform.OS === 'ios' ? true : false);
     if (selectedDate) {
       setEndDate(selectedDate);
+      
+      // Close the picker after selection on iOS
+      if (Platform.OS === 'ios') {
+        setTimeout(() => setShowEndDatePicker(false), 250);
+      }
     }
   };
 
@@ -286,6 +296,46 @@ export default function RequirementsScreen() {
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // Render date picker modal for iOS
+  const renderDatePickerModal = (
+    visible: boolean,
+    onClose: () => void,
+    currentDate: Date,
+    onDateChange: (event: any, date?: Date) => void,
+    title: string
+  ) => {
+    if (Platform.OS !== 'ios') return null;
+    
+    return (
+      <Modal
+        visible={visible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={onClose}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.datePickerModalContent}>
+            <View style={styles.datePickerHeader}>
+              <Text style={styles.datePickerTitle}>{title}</Text>
+              <TouchableOpacity onPress={onClose}>
+                <Text style={styles.datePickerCloseText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <DateTimePicker
+              value={currentDate}
+              mode="date"
+              display="spinner"
+              onChange={onDateChange}
+              style={styles.iosDatePicker}
+              minimumDate={title.includes('End') ? startDate : new Date()}
+            />
           </View>
         </View>
       </Modal>
@@ -524,7 +574,8 @@ export default function RequirementsScreen() {
       </ScrollView>
 
       {/* Date Pickers */}
-      {showStartDatePicker && (
+      {/* For Android, render inline */}
+      {Platform.OS === 'android' && showStartDatePicker && (
         <DateTimePicker
           value={startDate}
           mode="date"
@@ -534,7 +585,7 @@ export default function RequirementsScreen() {
         />
       )}
       
-      {showEndDatePicker && (
+      {Platform.OS === 'android' && showEndDatePicker && (
         <DateTimePicker
           value={endDate}
           mode="date"
@@ -542,6 +593,23 @@ export default function RequirementsScreen() {
           onChange={onEndDateChange}
           minimumDate={startDate}
         />
+      )}
+
+      {/* For iOS, render in modal */}
+      {renderDatePickerModal(
+        showStartDatePicker,
+        () => setShowStartDatePicker(false),
+        startDate,
+        onStartDateChange,
+        tripType === 'One Way' ? 'Select Departure Date' : 'Select Start Date'
+      )}
+      
+      {renderDatePickerModal(
+        showEndDatePicker,
+        () => setShowEndDatePicker(false),
+        endDate,
+        onEndDateChange,
+        'Select End Date'
       )}
 
       {/* Dropdowns */}
@@ -1026,5 +1094,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
     lineHeight: 20,
+  },
+  // Date picker modal styles
+  datePickerModalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    paddingBottom: 30,
+  },
+  datePickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  datePickerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  datePickerCloseText: {
+    fontSize: 16,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  iosDatePicker: {
+    height: 200,
+    width: '100%',
   },
 });
