@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   headerButtonText: {
-    color: colors.primary,
+    color: '#007AFF',
     fontSize: 15,
     fontWeight: '600',
   },
