@@ -1,18 +1,18 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Clock, Globe, Bell, Settings } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
+import { Clock, Globe, Bell, User } from 'lucide-react-native';
+import Colors from '@/constants/colors';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
-          backgroundColor: colors.white,
+          backgroundColor: Colors.white,
           borderTopWidth: 1,
-          borderTopColor: colors.border,
+          borderTopColor: Colors.border,
           height: 44,
           paddingBottom: 2,
           paddingTop: 2,
@@ -31,9 +31,9 @@ export default function TabLayout() {
           marginTop: 0,
         },
         headerStyle: {
-          backgroundColor: colors.primary,
+          backgroundColor: Colors.primary,
         },
-        headerTintColor: colors.white,
+        headerTintColor: Colors.white,
         headerTitleStyle: {
           fontWeight: 'bold',
           textAlign: 'center',
@@ -80,7 +80,7 @@ export default function TabLayout() {
           title: 'Settings',
           tabBarLabel: 'Settings',
           tabBarIcon: ({ color, size }) => (
-            <Settings size={24} color={color} />
+            <User size={24} color={color} />
           ),
           headerTitle: 'Settings',
         }}
