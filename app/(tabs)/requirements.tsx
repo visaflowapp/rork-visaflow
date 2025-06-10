@@ -12,7 +12,8 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
-  Linking
+  Linking,
+  Alert
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
