@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
-  Alert
+  Alert as RNAlert,
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
@@ -158,16 +158,28 @@ export default function RequirementsScreen() {
 
   // Open external URL
   const openExternalLink = async (url: string) => {
+    if (!url) {
+      RNAlert.alert("Link Not Available", "The application link is not available at this time.");
+      return;
+    }
+    
     try {
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
       } else {
         console.error("Cannot open URL:", url);
+        RNAlert.alert("Cannot Open Link", "The link cannot be opened. Please try visiting the official website directly.");
       }
     } catch (error) {
       console.error("Error opening URL:", error);
+      RNAlert.alert("Error", "There was an error opening the link. Please try again later.");
     }
+  };
+
+  // Show details in an alert
+  const showDetails = (title: string, description: string) => {
+    RNAlert.alert(title, description);
   };
 
   // Fetch visa requirements
@@ -184,18 +196,9 @@ export default function RequirementsScreen() {
     try {
       // In a real app, you would make an actual API call here with the user's input
       // For example:
-      // const response = await fetch('https://api.nomadtravel.com/visa-requirements', {
-      //   method: 'POST',
+      // const response = await fetch(`/api/v1/visa/requirements/${passportCountry}/${toCountry}`, {
+      //   method: 'GET',
       //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     passport: passportCountry,
-      //     destination: toCountry,
-      //     purpose: tripPurpose,
-      //     departureDate: formatDateForCalendar(startDate),
-      //     returnDate: tripType === 'Round Trip' ? formatDateForCalendar(endDate) : null,
-      //     transit: transitCountry || null,
-      //     from: fromCountry || null
-      //   })
       // });
       // const data = await response.json();
       
@@ -227,14 +230,14 @@ export default function RequirementsScreen() {
           {
             name: "Destination Thailand Visa (DTV)",
             description: "Available for remote workers and long term travelers",
-            url: "https://www.thaievisa.go.th/visa/dtv-visa"
+            url: "https://www.thaievisa.go.th"
           }
         ],
         requirements: [
           {
             name: "Mandatory Digital Arrival Card",
             description: "Must be completed before arrival",
-            url: "https://tdac.immigration.go.th/arrival-card/#/home"
+            url: "https://tdac.immigration.go.th"
           },
           {
             name: "Passport Validity",
@@ -263,14 +266,14 @@ export default function RequirementsScreen() {
           {
             name: "B211A Visa",
             description: "For digital nomads and remote workers staying up to 60 days",
-            url: "https://www.imigrasi.go.id/en/visa-b211a/"
+            url: "https://imigrasi.go.id"
           }
         ],
         requirements: [
           {
             name: "Electronic Customs Declaration",
             description: "Must be completed before arrival",
-            url: "https://ecd.beacukai.go.id/"
+            url: "https://ecd.beacukai.go.id"
           },
           {
             name: "Passport Validity",
@@ -299,14 +302,14 @@ export default function RequirementsScreen() {
           {
             name: "E-Visa",
             description: "Available for tourists and business travelers for up to 30 days",
-            url: "https://evisa.xuatnhapcanh.gov.vn/en_US/web/guest/home"
+            url: "https://evisa.gov.vn"
           }
         ],
         requirements: [
           {
             name: "Visa Application",
             description: "Must be completed online before arrival",
-            url: "https://evisa.xuatnhapcanh.gov.vn/en_US/web/guest/home"
+            url: "https://evisa.gov.vn"
           },
           {
             name: "Passport Validity",
@@ -752,14 +755,10 @@ export default function RequirementsScreen() {
                     </Text>
                     <TouchableOpacity 
                       style={styles.seeDetailsButton}
-                      onPress={() => {
-                        // In a real app, this would navigate to a details screen
-                        // For now, we'll just show an alert
-                        Alert.alert(
-                          "Visa Details",
-                          `${passportCountry} citizens can stay in ${toCountry} for up to ${apiResponse.max_stay_days} days without a visa.`
-                        );
-                      }}
+                      onPress={() => showDetails(
+                        "Visa Details",
+                        `${passportCountry} citizens can stay in ${toCountry} for up to ${apiResponse.max_stay_days} days without a visa.`
+                      )}
                     >
                       <Text style={styles.seeDetailsText}>See Details</Text>
                     </TouchableOpacity>
@@ -779,12 +778,10 @@ export default function RequirementsScreen() {
                     </Text>
                     <TouchableOpacity 
                       style={styles.seeDetailsButton}
-                      onPress={() => {
-                        Alert.alert(
-                          "Visa Requirements",
-                          `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
-                        );
-                      }}
+                      onPress={() => showDetails(
+                        "Visa Requirements",
+                        `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
+                      )}
                     >
                       <Text style={styles.seeDetailsText}>See Details</Text>
                     </TouchableOpacity>
@@ -800,12 +797,7 @@ export default function RequirementsScreen() {
                     <Text style={styles.resultItemDescription}>{visa.description}</Text>
                     <TouchableOpacity 
                       style={styles.seeDetailsButton}
-                      onPress={() => {
-                        Alert.alert(
-                          visa.name,
-                          visa.description
-                        );
-                      }}
+                      onPress={() => showDetails(visa.name, visa.description)}
                     >
                       <Text style={styles.seeDetailsText}>See Details</Text>
                     </TouchableOpacity>
@@ -835,12 +827,7 @@ export default function RequirementsScreen() {
                     <Text style={styles.resultItemDescription}>{req.description}</Text>
                     <TouchableOpacity 
                       style={styles.seeDetailsButton}
-                      onPress={() => {
-                        Alert.alert(
-                          req.name,
-                          req.description
-                        );
-                      }}
+                      onPress={() => showDetails(req.name, req.description)}
                     >
                       <Text style={styles.seeDetailsText}>See Details</Text>
                     </TouchableOpacity>
