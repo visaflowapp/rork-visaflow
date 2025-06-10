@@ -76,7 +76,7 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
 
           <View style={styles.content}>
             <View style={styles.warningContainer}>
-              <AlertTriangle size={24} color={Colors.warning} style={styles.warningIcon} />
+              <AlertTriangle size={24} color={Colors.yellow} style={styles.warningIcon} />
               <Text style={styles.warningText}>
                 You will lose access to premium features at the end of your current billing period.
               </Text>
