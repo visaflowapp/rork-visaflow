@@ -89,6 +89,10 @@ export default function SettingsScreen() {
     router.push('/screens/BillingSubscriptionScreen');
   };
 
+  const navigateToHelpSupport = () => {
+    router.push('/screens/HelpSupportScreen');
+  };
+
   const handleContactSupport = () => {
     Linking.openURL('mailto:support@visaflow.app?subject=Support Request&body=Hello, I need assistance with...');
   };
@@ -214,7 +218,7 @@ export default function SettingsScreen() {
           <SettingsItem
             icon={<HelpCircle size={20} color={Colors.primary} />}
             title="Help & Support"
-            onPress={() => setShowReportBugModal(true)}
+            onPress={navigateToHelpSupport}
           />
         </View>
       </ScrollView>
