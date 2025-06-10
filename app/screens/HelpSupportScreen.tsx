@@ -94,7 +94,7 @@ export default function HelpSupportScreen() {
               onPress={handleContactSupport}
               variant="outline"
               style={styles.contactButton}
-              icon={<Mail size={18} color="#0066CC" style={styles.buttonIcon} />} {/* Hardcoded primary color to fix the error */}
+              icon={<Mail size={18} color="#0066CC" style={styles.buttonIcon} />} 
             />
           </View>
         </View>
