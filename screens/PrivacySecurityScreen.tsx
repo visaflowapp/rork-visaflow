@@ -1,32 +1,55 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Trash2, Fingerprint, Shield, ExternalLink } from 'lucide-react-native';
+import { Trash2, Fingerprint, Shield, ExternalLink, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PrivacySecurityScreen() {
   const router = useRouter();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
-  const handleToggleBiometric = (value: boolean) => {
+  // Load biometric setting on component mount
+  React.useEffect(() => {
+    const loadBiometricSetting = async () => {
+      try {
+        const storedSetting = await AsyncStorage.getItem('biometric_enabled');
+        if (storedSetting === 'true') {
+          setBiometricEnabled(true);
+        }
+      } catch (error) {
+        console.error('Error loading biometric setting:', error);
+      }
+    };
+    
+    loadBiometricSetting();
+  }, []);
+
+  const handleToggleBiometric = async (value: boolean) => {
     // In a real app, you would implement biometric authentication here
     setBiometricEnabled(value);
     
-    if (value) {
-      Alert.alert(
-        'Biometric Authentication',
-        'Face ID/Touch ID will be used for authentication when you open the app.',
-        [{ text: 'OK' }]
-      );
+    try {
+      await AsyncStorage.setItem('biometric_enabled', value ? 'true' : 'false');
+      
+      if (value) {
+        Alert.alert(
+          'Biometric Authentication',
+          'Face ID/Touch ID will be used for authentication when you open the app.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Error saving biometric setting:', error);
     }
   };
 
   const openPrivacyPolicy = () => {
-    Linking.openURL('https://visaflow.app/privacy-policy');
+    Linking.openURL('https://www.visaflowapp.com/privacy');
   };
 
   return (
@@ -39,6 +62,11 @@ export default function PrivacySecurityScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       
@@ -114,6 +142,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  backButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   content: {
     flex: 1,

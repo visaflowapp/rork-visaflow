@@ -30,7 +30,7 @@ export default function HelpSupportScreen() {
   };
 
   const handleContactSupport = () => {
-    Linking.openURL('mailto:support@visaflow.app?subject=Support Request&body=Hello, I need assistance with...');
+    Linking.openURL('mailto:mia@visaflowapp.com?subject=VisaFlow App Support Request&body=Hello, I need assistance with...');
   };
 
   return (

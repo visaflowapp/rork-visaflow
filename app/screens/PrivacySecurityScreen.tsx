@@ -49,7 +49,7 @@ export default function PrivacySecurityScreen() {
   };
 
   const openPrivacyPolicy = () => {
-    Linking.openURL('https://visaflow.app/privacy-policy');
+    Linking.openURL('https://www.visaflowapp.com/privacy');
   };
 
   return (

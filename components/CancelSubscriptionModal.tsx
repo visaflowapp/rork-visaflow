@@ -47,7 +47,7 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({ visib
           </View>
           
           <View style={styles.warningContainer}>
-            <AlertTriangle size={24} color={Colors.error} style={styles.warningIcon} />
+            <AlertTriangle size={24} color={Colors.warning} style={styles.warningIcon} />
             <Text style={styles.warningText}>
               Are you sure you want to cancel your subscription?
             </Text>
