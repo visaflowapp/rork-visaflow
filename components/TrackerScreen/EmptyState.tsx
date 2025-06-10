@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Plus } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
+import Colors from '@/constants/colors';
 
 interface EmptyStateProps {
   onAddVisa: () => void;
@@ -9,58 +9,73 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
   return (
-    <View style={styles.emptyState}>
-      <Text style={styles.emptyTitle}>No Active Visas</Text>
-      <Text style={styles.emptySubtitle}>Add your first visa to start tracking</Text>
-      <TouchableOpacity 
-        style={styles.emptyStateButton}
-        onPress={onAddVisa}
-      >
-        <Plus size={20} color={colors.primary} style={styles.buttonIcon} />
-        <Text style={styles.emptyStateButtonText}>New Visa</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.title}>No Visas Yet</Text>
+        <Text style={styles.description}>
+          Start tracking your visa stays by adding your first visa record.
+        </Text>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={onAddVisa}
+        >
+          <Plus size={24} color="white" />
+          <Text style={styles.addButtonText}>Add Your First Visa</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 40,
+  container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
   },
-  emptyTitle: {
-    fontSize: 26,
+  content: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  title: {
+    fontSize: 22,
     fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 17,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: Colors.black,
+    marginBottom: 12,
     textAlign: 'center',
-    marginBottom: 32,
   },
-  emptyStateButton: {
+  description: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 12,
   },
-  buttonIcon: {
-    marginRight: 8,
+  addButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   emptyStateButtonText: {
-    color: colors.primary,
+    color: Colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },
