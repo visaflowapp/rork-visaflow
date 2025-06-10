@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { useRouter } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import VisaCard from '@/components/VisaCard';
-import { VisaData } from '@/store/types';
+import { VisaRecord } from '@/store/types';
 import Colors from '@/constants/colors';
 
 interface VisaCardSectionProps {
-  visas: VisaData[];
+  visas: VisaRecord[];
   title: string;
   emptyMessage?: string;
 }
@@ -40,7 +40,16 @@ const VisaCardSection: React.FC<VisaCardSectionProps> = ({
         data={visas}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <VisaCard visa={item} />
+          <VisaCard
+            id={item.id}
+            country={item.country}
+            visaType={item.visa_type}
+            entryDate={item.entry_date}
+            duration={item.duration}
+            exitDate={item.exit_date}
+            extensionsAvailable={item.extensions_available}
+            daysLeft={item.daysLeft}
+          />
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
