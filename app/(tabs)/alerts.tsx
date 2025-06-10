@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import AlertCard from '@/components/AlertCard';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
+import { CheckCircle } from 'lucide-react-native';
 
 export default function AlertsScreen() {
   const { alerts, dismissAlert, markAlertAsRead, markAllAlertsAsRead, userId, loadUserData } = useVisaStore();
@@ -55,6 +56,7 @@ export default function AlertsScreen() {
                 style={styles.markAllButton}
                 onPress={handleMarkAllAsRead}
               >
+                <CheckCircle size={16} color={Colors.primary} style={styles.markAllIcon} />
                 <Text style={styles.markAllButtonText}>Mark all as read</Text>
               </TouchableOpacity>
             ) : null
@@ -66,16 +68,18 @@ export default function AlertsScreen() {
         data={alerts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <AlertCard
-            id={item.id}
-            type={item.type}
-            title={item.title}
-            description={item.description}
-            timestamp={item.timestamp}
-            isRead={item.is_read}
-            icon={item.icon}
-            onDismiss={handleDismiss}
-          />
+          <TouchableOpacity onPress={() => handlePress(item.id)}>
+            <AlertCard
+              id={item.id}
+              type={item.type}
+              title={item.title}
+              description={item.description}
+              timestamp={item.timestamp}
+              isRead={item.is_read}
+              icon={item.icon}
+              onDismiss={handleDismiss}
+            />
+          </TouchableOpacity>
         )}
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={renderEmptyState}
@@ -94,10 +98,20 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   markAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 8,
     borderRadius: 16,
+    marginRight: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  markAllIcon: {
     marginRight: 4,
   },
   markAllButtonText: {

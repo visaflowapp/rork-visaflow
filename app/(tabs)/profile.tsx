@@ -1,18 +1,34 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link, Calendar } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
+import SimpleDropdown from '@/components/SimpleDropdown';
+import * as Notifications from 'expo-notifications';
+
+const languages = [
+  'English',
+  'Spanish',
+  'German',
+  'French',
+  'Mandarin (Simplified Chinese)',
+  'Portuguese',
+  'Russian'
+];
 
 export default function SettingsScreen() {
   const { 
     userProfile, 
     toggleNotifications,
     userId,
-    loadUserData 
+    loadUserData,
+    updateProfile 
   } = useVisaStore();
+
+  const [language, setLanguage] = useState('English');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -24,6 +40,40 @@ export default function SettingsScreen() {
     const referralLink = 'https://visaflow.app/ref/alex-johnson';
     // In a real app, you would copy to clipboard
     Alert.alert('Referral Link Copied', referralLink);
+  };
+
+  const handleToggleNotifications = async (value: boolean) => {
+    if (value && Platform.OS !== 'web') {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      
+      if (finalStatus !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Push notifications require permission. Please enable notifications in your device settings.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+    }
+    
+    toggleNotifications(value);
+  };
+
+  const handleLanguageChange = (selectedLanguage: string) => {
+    setLanguage(selectedLanguage);
+    // In a real app, you would update the app's language setting
+    Alert.alert('Language Changed', `App language set to ${selectedLanguage}`);
+  };
+
+  const navigateToPassportInfo = () => {
+    // In a real app, you would navigate to a passport info screen
+    Alert.alert('Passport Information', 'This would navigate to passport information screen');
   };
 
   if (!userProfile) {
@@ -82,23 +132,33 @@ export default function SettingsScreen() {
             title="Push Notifications"
             showToggle={true}
             toggleValue={userProfile.notifications}
-            onToggle={toggleNotifications}
+            onToggle={handleToggleNotifications}
           />
           
           <View style={styles.divider} />
           
-          <SettingsItem
-            icon={<Globe size={20} color={Colors.primary} />}
-            title="Language"
-            onPress={() => {}}
-          />
+          <TouchableOpacity 
+            style={styles.settingsItem}
+            onPress={() => setShowLanguageDropdown(true)}
+          >
+            <View style={styles.settingsItemLeft}>
+              <View style={styles.iconContainer}>
+                <Globe size={20} color={Colors.primary} />
+              </View>
+              <Text style={styles.settingsItemText}>Language</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.valueText}>{language}</Text>
+              <ChevronRight size={20} color={Colors.silver} />
+            </View>
+          </TouchableOpacity>
           
           <View style={styles.divider} />
           
           <SettingsItem
             icon={<User size={20} color={Colors.primary} />}
             title="Passport Information"
-            onPress={() => {}}
+            onPress={navigateToPassportInfo}
           />
           
           <View style={styles.divider} />
@@ -144,6 +204,16 @@ export default function SettingsScreen() {
           icon={<LogOut size={18} color={Colors.primary} style={styles.logoutIcon} />}
         />
       </View>
+
+      {showLanguageDropdown && (
+        <SimpleDropdown
+          label="Select Language"
+          options={languages}
+          value={language}
+          onSelect={handleLanguageChange}
+          placeholder="Select language"
+        />
+      )}
     </View>
   );
 }
@@ -201,6 +271,15 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.black,
     flex: 1,
+  },
+  valueContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  valueText: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    marginRight: 8,
   },
   divider: {
     height: 1,
