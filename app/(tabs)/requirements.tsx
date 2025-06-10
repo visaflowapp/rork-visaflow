@@ -11,7 +11,8 @@ import {
   FlatList,
   Pressable,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Linking
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
@@ -154,6 +155,20 @@ export default function RequirementsScreen() {
     }
   };
 
+  // Open external URL
+  const openExternalLink = async (url: string) => {
+    try {
+      const canOpen = await Linking.canOpenURL(url);
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        console.error("Cannot open URL:", url);
+      }
+    } catch (error) {
+      console.error("Error opening URL:", error);
+    }
+  };
+
   // Fetch visa requirements
   const fetchVisaRequirements = async () => {
     if (!passportCountry || !toCountry) {
@@ -166,14 +181,27 @@ export default function RequirementsScreen() {
     setShowResults(false);
 
     try {
-      // For demo purposes, we'll use mock data instead of making an actual API call
-      // In a real app, you would make the API call here
+      // In a real app, you would make an actual API call here with the user's input
+      // For example:
+      // const response = await fetch('https://api.nomadtravel.com/visa-requirements', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     passport: passportCountry,
+      //     destination: toCountry,
+      //     purpose: tripPurpose,
+      //     departureDate: formatDateForCalendar(startDate),
+      //     returnDate: tripType === 'Round Trip' ? formatDateForCalendar(endDate) : null,
+      //     transit: transitCountry || null,
+      //     from: fromCountry || null
+      //   })
+      // });
+      // const data = await response.json();
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // For demo purposes, we'll use dynamic mock data based on user input
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
       
-      // Use mock data
-      const mockData = getMockVisaData(passportCountry, toCountry);
+      const mockData = getMockVisaData(passportCountry, toCountry, tripPurpose);
       setApiResponse(mockData);
       setShowResults(true);
       
@@ -185,43 +213,139 @@ export default function RequirementsScreen() {
     }
   };
 
-  // Mock data for demonstration
-  const getMockVisaData = (from: string, to: string) => {
-    return {
-      visa_required: false,
-      max_stay_days: 60,
-      visa_on_arrival: false,
-      evisa_available: true,
-      special_visas: [
-        {
-          name: "Destination Thailand Visa (DTV)",
-          description: "Available for remote workers and long term travelers",
-          url: "https://www.thaievisa.go.th/visa/dtv-visa"
-        }
-      ],
-      requirements: [
-        {
-          name: "Mandatory Digital Arrival Card",
-          description: "Must be completed before arrival",
-          url: "https://tdac.immigration.go.th/arrival-card/#/home"
-        },
-        {
-          name: "Passport Validity",
-          description: "Passport must be valid for at least 6 months from the time of entry",
-          url: null
-        },
-        {
-          name: "Return Ticket",
-          description: "Proof of onward travel may be required",
-          url: null
-        },
-        {
-          name: "Sufficient Funds",
-          description: "Proof of 20,000 THB per person or 40,000 THB per family may be requested",
-          url: null
-        }
-      ]
-    };
+  // Dynamic mock data based on user input
+  const getMockVisaData = (from: string, to: string, purpose: string) => {
+    // Different responses based on destination country
+    if (to === 'Thailand') {
+      return {
+        visa_required: false,
+        max_stay_days: 60,
+        visa_on_arrival: false,
+        evisa_available: true,
+        special_visas: [
+          {
+            name: "Destination Thailand Visa (DTV)",
+            description: "Available for remote workers and long term travelers",
+            url: "https://www.thaievisa.go.th/visa/dtv-visa"
+          }
+        ],
+        requirements: [
+          {
+            name: "Mandatory Digital Arrival Card",
+            description: "Must be completed before arrival",
+            url: "https://tdac.immigration.go.th/arrival-card/#/home"
+          },
+          {
+            name: "Passport Validity",
+            description: "Passport must be valid for at least 6 months from the time of entry",
+            url: null
+          },
+          {
+            name: "Return Ticket",
+            description: "Proof of onward travel may be required",
+            url: null
+          },
+          {
+            name: "Sufficient Funds",
+            description: "Proof of 20,000 THB per person or 40,000 THB per family may be requested",
+            url: null
+          }
+        ]
+      };
+    } else if (to === 'Indonesia') {
+      return {
+        visa_required: purpose === 'Digital Nomad',
+        max_stay_days: purpose === 'Tourism' ? 30 : 60,
+        visa_on_arrival: true,
+        evisa_available: true,
+        special_visas: [
+          {
+            name: "B211A Visa",
+            description: "For digital nomads and remote workers staying up to 60 days",
+            url: "https://www.imigrasi.go.id/en/visa-b211a/"
+          }
+        ],
+        requirements: [
+          {
+            name: "Electronic Customs Declaration",
+            description: "Must be completed before arrival",
+            url: "https://ecd.beacukai.go.id/"
+          },
+          {
+            name: "Passport Validity",
+            description: "Passport must be valid for at least 6 months from the time of entry",
+            url: null
+          },
+          {
+            name: "Return Ticket",
+            description: "Proof of onward travel is required",
+            url: null
+          },
+          {
+            name: "Sufficient Funds",
+            description: "Proof of $1,500 USD for the duration of stay",
+            url: null
+          }
+        ]
+      };
+    } else if (to === 'Vietnam') {
+      return {
+        visa_required: true,
+        max_stay_days: 30,
+        visa_on_arrival: true,
+        evisa_available: true,
+        special_visas: [
+          {
+            name: "E-Visa",
+            description: "Available for tourists and business travelers for up to 30 days",
+            url: "https://evisa.xuatnhapcanh.gov.vn/en_US/web/guest/home"
+          }
+        ],
+        requirements: [
+          {
+            name: "Visa Application",
+            description: "Must be completed online before arrival",
+            url: "https://evisa.xuatnhapcanh.gov.vn/en_US/web/guest/home"
+          },
+          {
+            name: "Passport Validity",
+            description: "Passport must be valid for at least 6 months from the time of entry",
+            url: null
+          },
+          {
+            name: "Passport Photos",
+            description: "Two recent passport-sized photos",
+            url: null
+          },
+          {
+            name: "Proof of Accommodation",
+            description: "Hotel bookings or address of stay in Vietnam",
+            url: null
+          }
+        ]
+      };
+    } else {
+      // Default response for other countries
+      return {
+        visa_required: true,
+        max_stay_days: 30,
+        visa_on_arrival: false,
+        evisa_available: false,
+        special_visas: [],
+        requirements: [
+          {
+            name: "Passport Validity",
+            description: "Passport must be valid for at least 6 months from the time of entry",
+            url: null
+          },
+          {
+            name: "Visa Application",
+            description: "Contact the embassy or consulate for specific requirements",
+            url: null
+          }
+        ]
+      };
+    }
   };
 
   // Render dropdown item
@@ -332,7 +456,7 @@ export default function RequirementsScreen() {
     );
   };
 
-  // Render calendar modal - FIXED IMPLEMENTATION
+  // Render calendar modal
   const renderCalendarModal = (
     visible: boolean,
     onClose: () => void,
@@ -354,7 +478,6 @@ export default function RequirementsScreen() {
               </TouchableOpacity>
             </View>
             
-            {/* Fixed Calendar Implementation */}
             <Calendar
               current={calendarType === 'start' ? formatDateForCalendar(startDate) : formatDateForCalendar(endDate)}
               minDate={calendarType === 'end' ? formatDateForCalendar(startDate) : formatDateForCalendar(new Date())}
@@ -369,7 +492,6 @@ export default function RequirementsScreen() {
                 textDayFontWeight: '500',
                 textMonthFontWeight: 'bold',
                 textDayHeaderFontWeight: '500',
-                // Ensure text colors have good contrast
                 textSectionTitleColor: '#000',
                 textDayFontSize: 16,
                 textMonthFontSize: 16,
@@ -608,10 +730,142 @@ export default function RequirementsScreen() {
           </View>
         )}
 
-        {/* Results Section - FIXED IMPLEMENTATION */}
+        {/* Results Section */}
         {showResults && (
           <View style={styles.resultsContainer}>
-            {renderRequirementsResults(apiResponse, passportCountry, toCountry)}
+            <View style={styles.resultsCard}>
+              {/* Visa Requirements Section */}
+              <View style={styles.resultSection}>
+                <Text style={styles.resultSectionTitle}>Visa Requirements</Text>
+                
+                {/* Visa Not Required Card */}
+                {apiResponse.visa_required === false && (
+                  <View style={styles.resultItem}>
+                    <View style={styles.resultItemHeader}>
+                      <Text style={styles.resultItemTitle}>
+                        Visa not required for up to {apiResponse.max_stay_days} days
+                      </Text>
+                    </View>
+                    <Text style={styles.resultItemDescription}>
+                      You don't need a visa for {toCountry} if you have a {passportCountry} passport.
+                    </Text>
+                    <TouchableOpacity 
+                      style={styles.seeDetailsButton}
+                      onPress={() => {
+                        // In a real app, this would navigate to a details screen
+                        // For now, we'll just show an alert
+                        Alert.alert(
+                          "Visa Details",
+                          `${passportCountry} citizens can stay in ${toCountry} for up to ${apiResponse.max_stay_days} days without a visa.`
+                        );
+                      }}
+                    >
+                      <Text style={styles.seeDetailsText}>See Details</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                
+                {/* Visa Required Card */}
+                {apiResponse.visa_required === true && (
+                  <View style={styles.resultItem}>
+                    <View style={styles.resultItemHeader}>
+                      <Text style={styles.resultItemTitle}>
+                        Visa is required for your trip
+                      </Text>
+                    </View>
+                    <Text style={styles.resultItemDescription}>
+                      {passportCountry} passport holders need a visa to enter {toCountry}.
+                    </Text>
+                    <TouchableOpacity 
+                      style={styles.seeDetailsButton}
+                      onPress={() => {
+                        Alert.alert(
+                          "Visa Requirements",
+                          `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
+                        );
+                      }}
+                    >
+                      <Text style={styles.seeDetailsText}>See Details</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                
+                {/* Special Visas */}
+                {apiResponse.special_visas && apiResponse.special_visas.map((visa: any, index: number) => (
+                  <View key={index} style={styles.resultItem}>
+                    <View style={styles.resultItemHeader}>
+                      <Text style={styles.resultItemTitle}>{visa.name}</Text>
+                    </View>
+                    <Text style={styles.resultItemDescription}>{visa.description}</Text>
+                    <TouchableOpacity 
+                      style={styles.seeDetailsButton}
+                      onPress={() => {
+                        Alert.alert(
+                          visa.name,
+                          visa.description
+                        );
+                      }}
+                    >
+                      <Text style={styles.seeDetailsText}>See Details</Text>
+                    </TouchableOpacity>
+                    
+                    {visa.url && (
+                      <TouchableOpacity 
+                        style={styles.applyButton}
+                        onPress={() => openExternalLink(visa.url)}
+                      >
+                        <Text style={styles.applyButtonText}>Apply Online</Text>
+                        <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ))}
+              </View>
+              
+              {/* Passport & Documents Section */}
+              <View style={styles.resultSection}>
+                <Text style={styles.resultSectionTitle}>Passport & Documents</Text>
+                
+                {apiResponse.requirements && apiResponse.requirements.map((req: any, index: number) => (
+                  <View key={index} style={styles.resultItem}>
+                    <View style={styles.resultItemHeader}>
+                      <Text style={styles.resultItemTitle}>{req.name}</Text>
+                    </View>
+                    <Text style={styles.resultItemDescription}>{req.description}</Text>
+                    <TouchableOpacity 
+                      style={styles.seeDetailsButton}
+                      onPress={() => {
+                        Alert.alert(
+                          req.name,
+                          req.description
+                        );
+                      }}
+                    >
+                      <Text style={styles.seeDetailsText}>See Details</Text>
+                    </TouchableOpacity>
+                    
+                    {req.url && (
+                      <TouchableOpacity 
+                        style={styles.applyButton}
+                        onPress={() => openExternalLink(req.url)}
+                      >
+                        <Text style={styles.applyButtonText}>Apply Online</Text>
+                        <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ))}
+                
+                {/* Fallback if no requirements are provided */}
+                {(!apiResponse.requirements || apiResponse.requirements.length === 0) && (
+                  <View style={styles.resultItem}>
+                    <Text style={styles.resultItemDescription}>
+                      No specific document requirements found. Please check with the embassy or consulate for the most up-to-date information.
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
           </View>
         )}
 
@@ -628,7 +882,7 @@ export default function RequirementsScreen() {
         </View>
       </ScrollView>
 
-      {/* Calendar Modal - Using the fixed implementation */}
+      {/* Calendar Modal */}
       {renderCalendarModal(
         showStartDatePicker || showEndDatePicker,
         () => {
@@ -696,114 +950,6 @@ export default function RequirementsScreen() {
         tripPurposes,
         'Select Purpose of Travel'
       )}
-    </View>
-  );
-}
-
-// Function to render formatted results - FIXED IMPLEMENTATION
-function renderRequirementsResults(data: any, passportCountry: string, destinationCountry: string) {
-  if (!data) {
-    return (
-      <View style={styles.errorCard}>
-        <Text style={styles.errorTitle}>No Data Available</Text>
-        <Text style={styles.errorMessage}>Unable to retrieve visa requirements information.</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.resultsCard}>
-      {/* Visa Requirements Section */}
-      <View style={styles.resultSection}>
-        <Text style={styles.resultSectionTitle}>Visa Requirements</Text>
-        
-        {/* Visa Not Required Card */}
-        {data.visa_required === false && (
-          <View style={styles.resultItem}>
-            <View style={styles.resultItemHeader}>
-              <Text style={styles.resultItemTitle}>
-                Visa not required for up to {data.max_stay_days} days
-              </Text>
-            </View>
-            <Text style={styles.resultItemDescription}>
-              You don't need a visa for {destinationCountry} if you have a {passportCountry} passport.
-            </Text>
-            <TouchableOpacity style={styles.seeDetailsButton}>
-              <Text style={styles.seeDetailsText}>See Details</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        
-        {/* Visa Required Card */}
-        {data.visa_required === true && (
-          <View style={styles.resultItem}>
-            <View style={styles.resultItemHeader}>
-              <Text style={styles.resultItemTitle}>
-                Visa is required for your trip
-              </Text>
-            </View>
-            <Text style={styles.resultItemDescription}>
-              {passportCountry} passport holders need a visa to enter {destinationCountry}.
-            </Text>
-            <TouchableOpacity style={styles.seeDetailsButton}>
-              <Text style={styles.seeDetailsText}>See Details</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        
-        {/* Special Visas */}
-        {data.special_visas && data.special_visas.map((visa: any, index: number) => (
-          <View key={index} style={styles.resultItem}>
-            <View style={styles.resultItemHeader}>
-              <Text style={styles.resultItemTitle}>{visa.name}</Text>
-            </View>
-            <Text style={styles.resultItemDescription}>{visa.description}</Text>
-            <TouchableOpacity style={styles.seeDetailsButton}>
-              <Text style={styles.seeDetailsText}>See Details</Text>
-            </TouchableOpacity>
-            
-            {visa.url && (
-              <TouchableOpacity style={styles.applyButton}>
-                <Text style={styles.applyButtonText}>Apply Online</Text>
-                <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-      </View>
-      
-      {/* Passport & Documents Section */}
-      <View style={styles.resultSection}>
-        <Text style={styles.resultSectionTitle}>Passport & Documents</Text>
-        
-        {data.requirements && data.requirements.map((req: any, index: number) => (
-          <View key={index} style={styles.resultItem}>
-            <View style={styles.resultItemHeader}>
-              <Text style={styles.resultItemTitle}>{req.name}</Text>
-            </View>
-            <Text style={styles.resultItemDescription}>{req.description}</Text>
-            <TouchableOpacity style={styles.seeDetailsButton}>
-              <Text style={styles.seeDetailsText}>See Details</Text>
-            </TouchableOpacity>
-            
-            {req.url && (
-              <TouchableOpacity style={styles.applyButton}>
-                <Text style={styles.applyButtonText}>Apply Online</Text>
-                <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-        
-        {/* Fallback if no requirements are provided */}
-        {(!data.requirements || data.requirements.length === 0) && (
-          <View style={styles.resultItem}>
-            <Text style={styles.resultItemDescription}>
-              No specific document requirements found. Please check with the embassy or consulate for the most up-to-date information.
-            </Text>
-          </View>
-        )}
-      </View>
     </View>
   );
 }
@@ -1149,7 +1295,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 20,
   },
-  // Calendar modal styles - FIXED STYLES
   calendarModalContent: {
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
@@ -1176,12 +1321,11 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: '600',
   },
-  // Added calendar style to ensure it's visible
   calendar: {
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: 'white',
-    height: 350, // Ensure calendar has height
+    height: 350,
   },
 });
