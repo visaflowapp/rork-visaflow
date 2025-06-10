@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   content: {
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 24,
     alignItems: 'center',
@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
     marginBottom: 12,
     textAlign: 'center',
   },
   description: {
     fontSize: 16,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 22,
@@ -63,19 +63,19 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderRadius: 12,
   },
   addButtonText: {
-    color: Colors.white,
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
   },
   emptyStateButtonText: {
-    color: Colors.primary,
+    color: '#007AFF',
     fontSize: 16,
     fontWeight: '600',
   },

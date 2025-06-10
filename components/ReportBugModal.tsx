@@ -64,14 +64,14 @@ const ReportBugModal: React.FC<ReportBugModalProps> = ({
           <View style={styles.header}>
             <Text style={styles.title}>Help & Support</Text>
             <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <X size={24} color={Colors.black} />
+              <X size={24} color="#000000" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Bug size={20} color={Colors.primary} style={styles.sectionIcon} />
+                <Bug size={20} color="#007AFF" style={styles.sectionIcon} />
                 <Text style={styles.sectionTitle}>Report a Bug</Text>
               </View>
               <Text style={styles.sectionDescription}>
@@ -98,7 +98,7 @@ const ReportBugModal: React.FC<ReportBugModalProps> = ({
 
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Mail size={20} color={Colors.primary} style={styles.sectionIcon} />
+                <Mail size={20} color="#007AFF" style={styles.sectionIcon} />
                 <Text style={styles.sectionTitle}>Contact Support</Text>
               </View>
               <Text style={styles.sectionDescription}>
@@ -122,15 +122,18 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   modalContainer: {
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
     paddingTop: 20,
     paddingHorizontal: 16,
     paddingBottom: 30,
+    width: '100%',
+    maxWidth: 400,
     maxHeight: '80%',
   },
   header: {
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
   },
   closeButton: {
     padding: 4,
@@ -164,24 +167,24 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.black,
+    color: '#000000',
   },
   sectionDescription: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
     marginBottom: 16,
     lineHeight: 20,
   },
   textArea: {
     height: 120,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingTop: 12,
     fontSize: 16,
-    color: Colors.black,
-    backgroundColor: Colors.white,
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
     marginBottom: 16,
   },
   submitButton: {
@@ -192,7 +195,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.border,
+    backgroundColor: '#E5E5EA',
     marginVertical: 16,
   },
 });

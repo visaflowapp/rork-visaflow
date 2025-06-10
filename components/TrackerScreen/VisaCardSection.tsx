@@ -32,7 +32,7 @@ const VisaCardSection: React.FC<VisaCardSectionProps> = ({
           onPress={() => router.push('/screens/AllVisasScreen')}
         >
           <Text style={styles.viewAllText}>View All</Text>
-          <ChevronRight size={16} color={Colors.primary} />
+          <ChevronRight size={16} color="#007AFF" />
         </TouchableOpacity>
       </View>
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
   },
   viewAllButton: {
     flexDirection: 'row',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: Colors.primary,
+    color: '#007AFF',
     marginRight: 4,
   },
   listContent: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   visaTypeBadge: {
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 16,

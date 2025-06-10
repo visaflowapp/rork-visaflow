@@ -67,9 +67,14 @@ export default function TrackerScreen() {
     <View style={styles.container}>
       <Stack.Screen 
         options={{ 
-          title: '',
+          title: 'Countdown',
           headerStyle: { backgroundColor: '#007AFF' },
           headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20,
+          },
+          headerTitleAlign: 'center',
           headerRight: () => (
             <TouchableOpacity 
               style={styles.headerButton}
@@ -91,41 +96,54 @@ export default function TrackerScreen() {
               />
             )}
             
-            {activeVisas.length > 1 ? (
-              <FlatList
-                data={activeVisas}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.visaListContainer}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => setSelectedVisa(item.id)}
-                    style={[
-                      styles.visaCardWrapper,
-                      selectedVisa === item.id && styles.selectedVisaCard
-                    ]}
-                  >
-                    <VisaCard
-                      id={item.id}
-                      country={item.country}
-                      visaType={item.visa_type}
-                      entryDate={item.entry_date}
-                      duration={item.duration}
-                      exitDate={item.exit_date}
-                      extensionsAvailable={item.extensions_available}
-                      daysLeft={item.daysLeft}
-                      onRemove={handleRemoveVisa}
-                    />
-                  </TouchableOpacity>
-                )}
-              />
-            ) : currentVisa ? (
-              <VisaCardSection 
-                visas={[currentVisa]}
-                title="Current Visa"
-              />
-            ) : null}
+            {currentVisa && (
+              <View style={styles.visaCardContainer}>
+                <VisaCard
+                  id={currentVisa.id}
+                  country={currentVisa.country}
+                  visaType={currentVisa.visa_type}
+                  entryDate={currentVisa.entry_date}
+                  duration={currentVisa.duration}
+                  exitDate={currentVisa.exit_date}
+                  extensionsAvailable={currentVisa.extensions_available}
+                  daysLeft={currentVisa.daysLeft}
+                  onRemove={handleRemoveVisa}
+                  style={styles.mainVisaCard}
+                />
+              </View>
+            )}
+            
+            {activeVisas.length > 1 && (
+              <View style={styles.additionalVisasContainer}>
+                <Text style={styles.additionalVisasTitle}>Other Visas</Text>
+                <FlatList
+                  data={activeVisas.filter(visa => visa.id !== selectedVisa)}
+                  keyExtractor={(item) => item.id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.visaListContainer}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() => setSelectedVisa(item.id)}
+                      style={styles.additionalVisaCard}
+                    >
+                      <VisaCard
+                        id={item.id}
+                        country={item.country}
+                        visaType={item.visa_type}
+                        entryDate={item.entry_date}
+                        duration={item.duration}
+                        exitDate={item.exit_date}
+                        extensionsAvailable={item.extensions_available}
+                        daysLeft={item.daysLeft}
+                        onRemove={handleRemoveVisa}
+                        style={styles.smallVisaCard}
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
           </>
         ) : (
           <EmptyState onAddVisa={() => setShowAddModal(true)} />
@@ -172,17 +190,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
   },
-  visaListContainer: {
+  visaCardContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    marginTop: 20,
   },
-  visaCardWrapper: {
-    marginHorizontal: 8,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: 'transparent',
+  mainVisaCard: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
   },
-  selectedVisaCard: {
-    borderColor: 'white',
+  additionalVisasContainer: {
+    marginTop: 30,
+    paddingHorizontal: 16,
+  },
+  additionalVisasTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 12,
+  },
+  visaListContainer: {
+    paddingRight: 16,
+  },
+  additionalVisaCard: {
+    marginRight: 12,
+  },
+  smallVisaCard: {
+    transform: [{ scale: 0.85 }],
   },
 });

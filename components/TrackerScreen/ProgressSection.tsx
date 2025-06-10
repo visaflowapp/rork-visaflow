@@ -15,10 +15,10 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress })
     <View style={styles.progressSection}>
       <View style={styles.progressContainer}>
         <CircularProgress
-          size={240}
-          strokeWidth={18}
+          size={280}
+          strokeWidth={20}
           progress={progress}
-          color={getStatusColor(daysLeft)}
+          color="#34C759"
           backgroundColor="rgba(255, 255, 255, 0.2)"
         />
         <View style={styles.progressContent}>
@@ -33,9 +33,9 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress })
 const styles = StyleSheet.create({
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingTop: 20,
-    height: height * 0.35,
+    paddingVertical: 20,
+    paddingTop: 30,
+    height: height * 0.4,
     justifyContent: 'center',
   },
   progressContainer: {
@@ -47,19 +47,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 240,
-    height: 240,
+    width: 280,
+    height: 280,
   },
   daysNumber: {
-    fontSize: 56,
+    fontSize: 64,
     fontWeight: 'bold',
     color: 'white',
+    lineHeight: 70,
   },
   daysLabel: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    marginTop: -4,
+    marginTop: 4,
+    letterSpacing: 2,
   },
 });
 
