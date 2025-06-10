@@ -68,7 +68,7 @@ export default function TrackerScreen() {
       <Stack.Screen 
         options={{ 
           title: '',
-          headerStyle: { backgroundColor: colors.primary },
+          headerStyle: { backgroundColor: '#007AFF' },
           headerTintColor: 'white',
           headerRight: () => (
             <TouchableOpacity 
