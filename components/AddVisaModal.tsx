@@ -54,6 +54,8 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   const [notes, setNotes] = useState('');
   const [showEntryDatePicker, setShowEntryDatePicker] = useState(false);
   const [showExitDatePicker, setShowExitDatePicker] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showVisaTypeDropdown, setShowVisaTypeDropdown] = useState(false);
 
   const calculateDuration = () => {
     const diffTime = Math.abs(exitDate.getTime() - entryDate.getTime());
@@ -134,6 +136,8 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     'Turkey'
   ];
 
+  if (!visible) return null;
+
   return (
     <Modal
       visible={visible}
@@ -155,21 +159,53 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <SimpleDropdown
-              label="Country"
-              options={popularCountries}
-              value={country}
-              onSelect={setCountry}
-              placeholder="Select country"
-            />
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Country</Text>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowCountryDropdown(true)}
+              >
+                <Text style={country ? styles.dropdownText : styles.placeholderText}>
+                  {country || 'Select country'}
+                </Text>
+              </TouchableOpacity>
+              {showCountryDropdown && (
+                <SimpleDropdown
+                  label="Select Country"
+                  options={popularCountries}
+                  value={country}
+                  onSelect={(value) => {
+                    setCountry(value);
+                    setShowCountryDropdown(false);
+                  }}
+                  placeholder="Select country"
+                />
+              )}
+            </View>
 
-            <SimpleDropdown
-              label="Visa Type"
-              options={visaTypes}
-              value={visaType}
-              onSelect={setVisaType}
-              placeholder="Select visa type"
-            />
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Visa Type</Text>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowVisaTypeDropdown(true)}
+              >
+                <Text style={visaType ? styles.dropdownText : styles.placeholderText}>
+                  {visaType || 'Select visa type'}
+                </Text>
+              </TouchableOpacity>
+              {showVisaTypeDropdown && (
+                <SimpleDropdown
+                  label="Select Visa Type"
+                  options={visaTypes}
+                  value={visaType}
+                  onSelect={(value) => {
+                    setVisaType(value);
+                    setShowVisaTypeDropdown(false);
+                  }}
+                  placeholder="Select visa type"
+                />
+              )}
+            </View>
 
             <View style={styles.formGroup}>
               <Text style={styles.label}>Entry Date</Text>
@@ -374,6 +410,23 @@ const styles = StyleSheet.create({
   footerButton: {
     flex: 1,
     marginHorizontal: 8,
+  },
+  dropdownButton: {
+    height: 56,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: Colors.black,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: Colors.textSecondary,
   },
 });
 

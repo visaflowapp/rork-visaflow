@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link, Trash2, Fingerprint } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
-import SimpleDropdown from '@/components/SimpleDropdown';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReportBugModal from '@/components/ReportBugModal';
+import DeleteAccountModal from '@/components/DeleteAccountModal';
+import CancelSubscriptionModal from '@/components/CancelSubscriptionModal';
 
 const languages = [
   'English',
@@ -30,7 +33,10 @@ export default function SettingsScreen() {
   } = useVisaStore();
 
   const [language, setLanguage] = useState('English');
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [showReportBugModal, setShowReportBugModal] = useState(false);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -67,16 +73,41 @@ export default function SettingsScreen() {
     toggleNotifications(value);
   };
 
-  const handleLanguageChange = (selectedLanguage: string) => {
-    setLanguage(selectedLanguage);
-    setShowLanguageDropdown(false);
-    // In a real app, you would update the app's language setting
-    Alert.alert('Language Changed', `App language set to ${selectedLanguage}`);
+  const handleLanguageChange = () => {
+    router.push('/screens/LanguageScreen');
   };
 
   const navigateToPassportInfo = () => {
-    // Navigate to passport info screen
     router.push('/screens/PassportInfoScreen');
+  };
+
+  const navigateToPrivacySecurity = () => {
+    router.push('/screens/PrivacySecurityScreen');
+  };
+
+  const navigateToBillingSubscription = () => {
+    router.push('/screens/BillingSubscriptionScreen');
+  };
+
+  const handleContactSupport = () => {
+    Linking.openURL('mailto:support@visaflow.app?subject=Support Request&body=Hello, I need assistance with...');
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Clear auth tokens
+      await AsyncStorage.removeItem('auth_token');
+      await AsyncStorage.removeItem('user_id');
+      
+      // Clear user data
+      await AsyncStorage.removeItem('visa-storage');
+      
+      // Redirect to sign in screen
+      router.replace('/screens/SignInScreen');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      Alert.alert('Error', 'Failed to log out. Please try again.');
+    }
   };
 
   if (!userProfile) {
@@ -140,21 +171,11 @@ export default function SettingsScreen() {
           
           <View style={styles.divider} />
           
-          <TouchableOpacity 
-            style={styles.settingsItem}
-            onPress={() => setShowLanguageDropdown(true)}
-          >
-            <View style={styles.settingsItemLeft}>
-              <View style={styles.iconContainer}>
-                <Globe size={20} color={Colors.primary} />
-              </View>
-              <Text style={styles.settingsItemText}>Language</Text>
-            </View>
-            <View style={styles.valueContainer}>
-              <Text style={styles.valueText}>{language}</Text>
-              <ChevronRight size={20} color={Colors.silver} />
-            </View>
-          </TouchableOpacity>
+          <SettingsItem
+            icon={<Globe size={20} color={Colors.primary} />}
+            title="Language"
+            onPress={handleLanguageChange}
+          />
           
           <View style={styles.divider} />
           
@@ -169,7 +190,7 @@ export default function SettingsScreen() {
           <SettingsItem
             icon={<Shield size={20} color={Colors.primary} />}
             title="Privacy & Security"
-            onPress={() => {}}
+            onPress={navigateToPrivacySecurity}
           />
           
           <View style={styles.divider} />
@@ -177,7 +198,7 @@ export default function SettingsScreen() {
           <SettingsItem
             icon={<CreditCard size={20} color={Colors.primary} />}
             title="Billing & Subscription"
-            onPress={() => {}}
+            onPress={navigateToBillingSubscription}
           />
           
           <View style={styles.divider} />
@@ -193,7 +214,7 @@ export default function SettingsScreen() {
           <SettingsItem
             icon={<HelpCircle size={20} color={Colors.primary} />}
             title="Help & Support"
-            onPress={() => {}}
+            onPress={() => setShowReportBugModal(true)}
           />
         </View>
       </ScrollView>
@@ -201,22 +222,31 @@ export default function SettingsScreen() {
       <View style={styles.logoutContainer}>
         <Button
           title="Log Out"
-          onPress={() => {}}
+          onPress={handleLogout}
           variant="outline"
           style={styles.logoutButton}
           icon={<LogOut size={18} color={Colors.primary} style={styles.logoutIcon} />}
         />
       </View>
 
-      {showLanguageDropdown && (
-        <SimpleDropdown
-          label="Select Language"
-          options={languages}
-          value={language}
-          onSelect={handleLanguageChange}
-          placeholder="Select language"
-        />
-      )}
+      {/* Report Bug Modal */}
+      <ReportBugModal
+        visible={showReportBugModal}
+        onClose={() => setShowReportBugModal(false)}
+        onContactSupport={handleContactSupport}
+      />
+
+      {/* Delete Account Modal */}
+      <DeleteAccountModal
+        visible={showDeleteAccountModal}
+        onClose={() => setShowDeleteAccountModal(false)}
+      />
+
+      {/* Cancel Subscription Modal */}
+      <CancelSubscriptionModal
+        visible={showCancelSubscriptionModal}
+        onClose={() => setShowCancelSubscriptionModal(false)}
+      />
     </View>
   );
 }
