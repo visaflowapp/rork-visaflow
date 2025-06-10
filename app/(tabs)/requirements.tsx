@@ -945,7 +945,7 @@ export default function RequirementsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: '#007AFF',
   },
   scrollView: {
     flex: 1,
