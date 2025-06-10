@@ -97,33 +97,6 @@ export default function HelpSupportScreen() {
               icon={<Mail size={18} color={Colors.primary} style={styles.buttonIcon} />}
             />
           </View>
-          
-          <View style={styles.divider} />
-          
-          <View style={styles.section}>
-            <Text style={styles.faqTitle}>Frequently Asked Questions</Text>
-            
-            <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>How do I add a new visa?</Text>
-              <Text style={styles.faqAnswer}>
-                Go to the Countdown tab and tap the "New Visa" button in the top right corner. Fill in the required information and tap "Save Visa".
-              </Text>
-            </View>
-            
-            <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>How do I check visa requirements?</Text>
-              <Text style={styles.faqAnswer}>
-                Navigate to the Requirements tab and select your nationality, destination country, and purpose of travel to see the visa requirements.
-              </Text>
-            </View>
-            
-            <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Can I use the app offline?</Text>
-              <Text style={styles.faqAnswer}>
-                Yes, your visa information is stored locally on your device. However, checking visa requirements needs an internet connection.
-              </Text>
-            </View>
-          </View>
         </View>
       </ScrollView>
     </View>
@@ -200,25 +173,5 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: Colors.border,
     marginVertical: 16,
-  },
-  faqTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.black,
-    marginBottom: 16,
-  },
-  faqItem: {
-    marginBottom: 16,
-  },
-  faqQuestion: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.black,
-    marginBottom: 4,
-  },
-  faqAnswer: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    lineHeight: 20,
   },
 });
