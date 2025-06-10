@@ -6,6 +6,7 @@ import Colors from '@/constants/colors';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PrivacySecurityScreen() {
   const router = useRouter();

@@ -14,6 +14,7 @@ const Colors = {
   border: '#E5E5EA',
   neonGreen: '#39FF14',
   error: '#FF3B30',
+  warning: '#FFCC00', // Added warning color (same as yellow)
 };
 
 export default Colors;
