@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { X } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
@@ -13,6 +13,7 @@ interface VisaCardProps {
   extensionsAvailable: number;
   daysLeft: number;
   onRemove?: (id: string) => void;
+  style?: ViewStyle;
 }
 
 const VisaCard: React.FC<VisaCardProps> = ({
@@ -25,6 +26,7 @@ const VisaCard: React.FC<VisaCardProps> = ({
   extensionsAvailable,
   daysLeft,
   onRemove,
+  style,
 }) => {
   // Format dates for display
   const formatDate = (dateString: string) => {
@@ -97,7 +99,7 @@ const VisaCard: React.FC<VisaCardProps> = ({
   const extensionDeadline = getExtensionDeadline();
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       {onRemove && (
         <TouchableOpacity 
           style={styles.removeButton}
