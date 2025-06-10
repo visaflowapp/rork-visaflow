@@ -18,7 +18,7 @@ interface ButtonProps {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  icon?: React.ReactNode;
+  icon?: () => React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -39,21 +39,21 @@ const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case 'primary':
         buttonStyle = {
-          backgroundColor: Colors.primary,
+          backgroundColor: '#007AFF',
         };
         break;
       case 'secondary':
         buttonStyle = {
-          backgroundColor: Colors.white,
+          backgroundColor: 'white',
           borderWidth: 1,
-          borderColor: Colors.primary,
+          borderColor: '#007AFF',
         };
         break;
       case 'outline':
         buttonStyle = {
           backgroundColor: 'transparent',
           borderWidth: 1,
-          borderColor: Colors.border,
+          borderColor: '#E5E5EA',
         };
         break;
     }
@@ -103,13 +103,13 @@ const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case 'primary':
         textStyleObj = {
-          color: Colors.white,
+          color: 'white',
         };
         break;
       case 'secondary':
       case 'outline':
         textStyleObj = {
-          color: Colors.primary,
+          color: '#007AFF',
         };
         break;
     }
@@ -147,12 +147,12 @@ const Button: React.FC<ButtonProps> = ({
     >
       {loading ? (
         <ActivityIndicator 
-          color={variant === 'primary' ? Colors.white : Colors.primary} 
+          color={variant === 'primary' ? 'white' : '#007AFF'} 
           size="small" 
         />
       ) : (
         <>
-          {icon && <>{icon}</>}
+          {icon && icon()}
           <Text style={[styles.text, getTextStyle(), textStyle]}>{title}</Text>
         </>
       )}

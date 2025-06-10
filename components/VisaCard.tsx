@@ -47,10 +47,10 @@ const VisaCard: React.FC<VisaCardProps> = ({
 
   // Get progress color based on days left
   const getProgressColor = () => {
-    if (daysLeft > 30) return Colors.green;
-    if (daysLeft > 14) return Colors.green;
+    if (daysLeft > 30) return '#34C759';
+    if (daysLeft > 14) return '#34C759';
     if (daysLeft > 7) return '#FFD700';
-    return Colors.red;
+    return '#FF3B30';
   };
 
   // Get status emoji
@@ -103,7 +103,7 @@ const VisaCard: React.FC<VisaCardProps> = ({
           style={styles.removeButton}
           onPress={() => onRemove(id)}
         >
-          <X size={16} color={Colors.silver} />
+          <X size={16} color="#C7C7CC" />
         </TouchableOpacity>
       )}
       
@@ -177,12 +177,12 @@ const VisaCard: React.FC<VisaCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 8,
     width: 280,
-    shadowColor: Colors.black,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 20,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   country: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
     flex: 1,
   },
   statusContainer: {
@@ -232,10 +232,10 @@ const styles = StyleSheet.create({
   daysLeft: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.black,
+    color: '#000000',
   },
   visaTypeBadge: {
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 25,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   visaTypeText: {
-    color: Colors.white,
+    color: 'white',
     fontWeight: '600',
     fontSize: 14,
   },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 10,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: '#F2F2F7',
     borderRadius: 5,
     overflow: 'hidden',
     marginBottom: 8,
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: Colors.silver,
+    color: '#C7C7CC',
     textAlign: 'right',
     fontWeight: '500',
   },
@@ -277,13 +277,13 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 16,
-    color: Colors.silver,
+    color: '#C7C7CC',
     fontWeight: '500',
   },
   detailValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.black,
+    color: '#000000',
   },
   extensionDeadline: {
     marginTop: 12,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   extensionText: {
     fontSize: 13,
-    color: Colors.black,
+    color: '#000000',
     textAlign: 'center',
     fontWeight: '500',
   },

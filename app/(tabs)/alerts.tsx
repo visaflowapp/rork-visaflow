@@ -43,7 +43,7 @@ export default function AlertsScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Notifications',
-          headerStyle: { backgroundColor: Colors.primary },
+          headerStyle: { backgroundColor: '#007AFF' },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -56,7 +56,7 @@ export default function AlertsScreen() {
                 style={styles.markAllButton}
                 onPress={handleMarkAllAsRead}
               >
-                <CheckCircle size={16} color={Colors.primary} style={styles.markAllIcon} />
+                <CheckCircle size={16} color="#007AFF" style={styles.markAllIcon} />
                 <Text style={styles.markAllButtonText}>Mark all as read</Text>
               </TouchableOpacity>
             ) : null
@@ -91,7 +91,7 @@ export default function AlertsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
   },
   listContainer: {
     paddingTop: 16,
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   markAllButtonText: {
-    color: Colors.primary,
+    color: '#007AFF',
     fontSize: 13,
     fontWeight: '600',
   },
   emptyContainer: {
     padding: 24,
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: 20,
     marginHorizontal: 16,
     marginTop: 16,
@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
     marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: Colors.silver,
+    color: '#C7C7CC',
     textAlign: 'center',
     lineHeight: 20,
   },

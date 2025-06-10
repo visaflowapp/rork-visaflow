@@ -46,17 +46,17 @@ const AlertCard: React.FC<AlertCardProps> = ({
   const renderIcon = () => {
     switch (icon) {
       case 'clock':
-        return <Clock size={24} color={Colors.primary} />;
+        return <Clock size={24} color="#007AFF" />;
       case 'file-text':
-        return <FileText size={24} color={Colors.primary} />;
+        return <FileText size={24} color="#007AFF" />;
       case 'building':
-        return <Building size={24} color={Colors.primary} />;
+        return <Building size={24} color="#007AFF" />;
       case 'credit-card':
-        return <CreditCard size={24} color={Colors.primary} />;
+        return <CreditCard size={24} color="#007AFF" />;
       case 'calendar':
-        return <Calendar size={24} color={Colors.primary} />;
+        return <Calendar size={24} color="#007AFF" />;
       default:
-        return <Clock size={24} color={Colors.primary} />;
+        return <Clock size={24} color="#007AFF" />;
     }
   };
 
@@ -90,7 +90,7 @@ const AlertCard: React.FC<AlertCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
   },
   iconContainer: {
     marginRight: 16,
@@ -129,21 +129,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: Colors.black,
+    color: '#000000',
     marginBottom: 8,
     lineHeight: 20,
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.silver,
+    color: '#C7C7CC',
   },
   deleteAction: {
-    backgroundColor: Colors.red,
+    backgroundColor: '#FF3B30',
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 12,
   },
   deleteActionText: {
-    color: Colors.white,
+    color: 'white',
     fontWeight: '600',
     fontSize: 14,
   },

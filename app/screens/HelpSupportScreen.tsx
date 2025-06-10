@@ -38,7 +38,7 @@ export default function HelpSupportScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Help & Support',
-          headerStyle: { backgroundColor: Colors.primary },
+          headerStyle: { backgroundColor: '#007AFF' },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -55,7 +55,7 @@ export default function HelpSupportScreen() {
         <View style={styles.card}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Bug size={20} color={Colors.primary} style={styles.sectionIcon} />
+              <Bug size={20} color="#007AFF" style={styles.sectionIcon} />
               <Text style={styles.sectionTitle}>Report a Bug</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -75,7 +75,7 @@ export default function HelpSupportScreen() {
               onPress={handleSubmitBug}
               loading={isSubmitting}
               style={styles.submitButton}
-              icon={<Send size={18} color={Colors.white} style={styles.buttonIcon} />}
+              icon={() => <Send size={18} color="white" style={styles.buttonIcon} />}
             />
           </View>
           
@@ -83,7 +83,7 @@ export default function HelpSupportScreen() {
           
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Mail size={20} color={Colors.primary} style={styles.sectionIcon} />
+              <Mail size={20} color="#007AFF" style={styles.sectionIcon} />
               <Text style={styles.sectionTitle}>Contact Support</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -94,7 +94,7 @@ export default function HelpSupportScreen() {
               onPress={handleContactSupport}
               variant="outline"
               style={styles.contactButton}
-              icon={<Mail size={18} color={Colors.primary} style={styles.buttonIcon} />}
+              icon={() => <Mail size={18} color="#007AFF" style={styles.buttonIcon} />}
             />
           </View>
         </View>
@@ -106,7 +106,7 @@ export default function HelpSupportScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
   },
   backButton: {
     marginLeft: 8,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
@@ -140,24 +140,24 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
   },
   sectionDescription: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
     marginBottom: 16,
     lineHeight: 20,
   },
   textArea: {
     height: 120,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingTop: 12,
     fontSize: 16,
-    color: Colors.black,
-    backgroundColor: Colors.white,
+    color: '#000000',
+    backgroundColor: 'white',
     marginBottom: 16,
   },
   submitButton: {
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.border,
+    backgroundColor: '#E5E5EA',
     marginVertical: 16,
   },
 });

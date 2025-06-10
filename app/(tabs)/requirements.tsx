@@ -18,7 +18,7 @@ import {
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
-import { colors } from '@/constants/colors';
+import Colors from '@/constants/colors';
 import { countries } from '@/constants/mockData';
 import { getCountryFlag } from '@/utils/countryFlags';
 
@@ -82,7 +82,7 @@ export default function RequirementsScreen() {
     
     if (tripType === 'One Way') {
       setMarkedDates({
-        [startDateStr]: { selected: true, selectedColor: colors.primary }
+        [startDateStr]: { selected: true, selectedColor: '#007AFF' }
       });
     } else {
       // Create range of dates
@@ -94,11 +94,11 @@ export default function RequirementsScreen() {
         const dateStr = formatDateForCalendar(currentDate);
         
         if (dateStr === startDateStr) {
-          range[dateStr] = { selected: true, startingDay: true, color: colors.primary };
+          range[dateStr] = { selected: true, startingDay: true, color: '#007AFF' };
         } else if (dateStr === endDateStr) {
-          range[dateStr] = { selected: true, endingDay: true, color: colors.primary };
+          range[dateStr] = { selected: true, endingDay: true, color: '#007AFF' };
         } else {
-          range[dateStr] = { selected: true, color: colors.primary, textColor: 'white' };
+          range[dateStr] = { selected: true, color: '#007AFF', textColor: 'white' };
         }
         
         currentDate.setDate(currentDate.getDate() + 1);
@@ -388,7 +388,7 @@ export default function RequirementsScreen() {
         >
           <View style={styles.modalContent}>
             <View style={styles.searchContainer}>
-              <Search size={20} color={colors.textSecondary} style={styles.searchIcon} />
+              <Search size={20} color="#8E8E93" style={styles.searchIcon} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search countries"
@@ -489,10 +489,10 @@ export default function RequirementsScreen() {
               markedDates={markedDates}
               markingType={tripType === 'Round Trip' ? 'period' : 'dot'}
               theme={{
-                selectedDayBackgroundColor: colors.primary,
-                todayTextColor: colors.primary,
-                arrowColor: colors.primary,
-                dotColor: colors.primary,
+                selectedDayBackgroundColor: '#007AFF',
+                todayTextColor: '#007AFF',
+                arrowColor: '#007AFF',
+                dotColor: '#007AFF',
                 textDayFontWeight: '500',
                 textMonthFontWeight: 'bold',
                 textDayHeaderFontWeight: '500',
@@ -514,7 +514,7 @@ export default function RequirementsScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Visa Requirements',
-          headerStyle: { backgroundColor: colors.primary },
+          headerStyle: { backgroundColor: '#007AFF' },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -548,7 +548,7 @@ export default function RequirementsScreen() {
                 <Text style={styles.countryFlag}>{getCountryFlag(passportCountry)}</Text>
                 <Text style={styles.dropdownButtonText}>{passportCountry}</Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -560,10 +560,10 @@ export default function RequirementsScreen() {
               onPress={() => setShowTripTypeDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <Plane size={20} color={colors.primary} style={styles.inputIcon} />
+                <Plane size={20} color="#007AFF" style={styles.inputIcon} />
                 <Text style={styles.dropdownButtonText}>{tripType}</Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -575,7 +575,7 @@ export default function RequirementsScreen() {
               onPress={() => setShowFromDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <PlaneTakeoff size={20} color={colors.primary} style={styles.inputIcon} />
+                <PlaneTakeoff size={20} color="#007AFF" style={styles.inputIcon} />
                 <Text style={[
                   styles.dropdownButtonText,
                   !fromCountry && styles.placeholderText
@@ -589,7 +589,7 @@ export default function RequirementsScreen() {
                   )}
                 </Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -601,7 +601,7 @@ export default function RequirementsScreen() {
               onPress={() => setShowTransitDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <Plane size={20} color={colors.primary} style={styles.inputIcon} />
+                <Plane size={20} color="#007AFF" style={styles.inputIcon} />
                 <Text style={[
                   styles.dropdownButtonText,
                   !transitCountry && styles.placeholderText
@@ -615,7 +615,7 @@ export default function RequirementsScreen() {
                   )}
                 </Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -627,7 +627,7 @@ export default function RequirementsScreen() {
               onPress={() => setShowToDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <PlaneLanding size={20} color={colors.primary} style={styles.inputIcon} />
+                <PlaneLanding size={20} color="#007AFF" style={styles.inputIcon} />
                 <Text style={[
                   styles.dropdownButtonText,
                   !toCountry && styles.placeholderText
@@ -641,7 +641,7 @@ export default function RequirementsScreen() {
                   )}
                 </Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -653,10 +653,10 @@ export default function RequirementsScreen() {
               onPress={() => setShowPurposeDropdown(true)}
             >
               <View style={styles.dropdownButtonContent}>
-                <CreditCard size={20} color={colors.primary} style={styles.inputIcon} />
+                <CreditCard size={20} color="#007AFF" style={styles.inputIcon} />
                 <Text style={styles.dropdownButtonText}>{tripPurpose}</Text>
               </View>
-              <ChevronDown size={20} color={colors.primary} />
+              <ChevronDown size={20} color="#007AFF" />
             </TouchableOpacity>
           </View>
 
@@ -675,7 +675,7 @@ export default function RequirementsScreen() {
                 }}
               >
                 <View style={styles.dropdownButtonContent}>
-                  <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                  <Clock size={20} color="#007AFF" style={styles.inputIcon} />
                   <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
                 </View>
               </TouchableOpacity>
@@ -689,7 +689,7 @@ export default function RequirementsScreen() {
                   }}
                 >
                   <View style={styles.dropdownButtonContent}>
-                    <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                    <Clock size={20} color="#007AFF" style={styles.inputIcon} />
                     <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
                   </View>
                 </TouchableOpacity>
@@ -704,7 +704,7 @@ export default function RequirementsScreen() {
                   }}
                 >
                   <View style={styles.dropdownButtonContent}>
-                    <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                    <Clock size={20} color="#007AFF" style={styles.inputIcon} />
                     <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
                   </View>
                 </TouchableOpacity>
@@ -860,7 +860,7 @@ export default function RequirementsScreen() {
         {/* Help Section */}
         <View style={styles.helpCard}>
           <View style={styles.helpHeader}>
-            <Info size={20} color={colors.primary} />
+            <Info size={20} color="#007AFF" />
             <Text style={styles.helpTitle}>Need Help?</Text>
           </View>
           <Text style={styles.helpText}>
@@ -954,7 +954,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   headerSection: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 30,
@@ -990,14 +990,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: colors.text,
+    color: '#000000',
   },
   dropdownButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -1010,11 +1010,11 @@ const styles = StyleSheet.create({
   },
   dropdownButtonText: {
     fontSize: 16,
-    color: colors.text,
+    color: '#000000',
     flex: 1,
   },
   placeholderText: {
-    color: colors.textSecondary,
+    color: '#8E8E93',
   },
   inputIcon: {
     marginRight: 12,
@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -1042,7 +1042,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -1050,15 +1050,15 @@ const styles = StyleSheet.create({
   },
   dateButtonText: {
     fontSize: 14,
-    color: colors.text,
+    color: '#000000',
   },
   dateRangeSeparator: {
     marginHorizontal: 8,
     fontSize: 16,
-    color: colors.textSecondary,
+    color: '#8E8E93',
   },
   checkButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#007AFF',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -1093,7 +1093,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
-    color: colors.text,
+    color: '#000000',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -1101,7 +1101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   searchIcon: {
     marginRight: 8,
@@ -1116,7 +1116,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   closeButtonText: {
-    color: colors.primary,
+    color: '#007AFF',
     fontSize: 16,
     fontWeight: '500',
   },
@@ -1128,36 +1128,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   dropdownItemText: {
     fontSize: 16,
-    color: colors.text,
+    color: '#000000',
   },
   simpleDropdownItem: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   simpleDropdownItemText: {
     fontSize: 16,
-    color: colors.text,
+    color: '#000000',
     textAlign: 'center',
   },
   cancelButton: {
     marginTop: 16,
     paddingVertical: 16,
     alignItems: 'center',
-    backgroundColor: colors.lightGray,
+    backgroundColor: '#F2F2F7',
     borderRadius: 12,
   },
   cancelButtonText: {
-    color: colors.text,
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },
   errorCard: {
-    backgroundColor: colors.lightRed,
+    backgroundColor: '#FFEEEE',
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 16,
@@ -1171,12 +1171,12 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.error,
+    color: '#FF3B30',
     marginBottom: 8,
   },
   errorMessage: {
     fontSize: 14,
-    color: colors.error,
+    color: '#FF3B30',
     lineHeight: 20,
   },
   resultsContainer: {
@@ -1196,19 +1196,19 @@ const styles = StyleSheet.create({
   resultSection: {
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   resultSectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: colors.text,
+    color: '#000000',
   },
   resultItem: {
     marginBottom: 16,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   resultItemHeader: {
     flexDirection: 'row',
@@ -1218,12 +1218,12 @@ const styles = StyleSheet.create({
   resultItemTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
+    color: '#000000',
     flex: 1,
   },
   resultItemDescription: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: '#8E8E93',
     marginBottom: 12,
     lineHeight: 20,
   },
@@ -1232,12 +1232,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   seeDetailsText: {
-    color: colors.primary,
+    color: '#007AFF',
     fontSize: 14,
     fontWeight: '500',
   },
   applyButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#007AFF',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -1276,11 +1276,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 8,
-    color: colors.text,
+    color: '#000000',
   },
   helpText: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: '#8E8E93',
     lineHeight: 20,
   },
   calendarModalContent: {
@@ -1297,22 +1297,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   calendarTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.text,
+    color: '#000000',
   },
   calendarCloseText: {
     fontSize: 16,
-    color: colors.primary,
+    color: '#007AFF',
     fontWeight: '600',
   },
   calendar: {
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E5EA',
     backgroundColor: 'white',
     height: 350,
   },

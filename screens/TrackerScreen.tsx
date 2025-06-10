@@ -7,7 +7,7 @@ import VisaCardSection from '@/components/TrackerScreen/VisaCardSection';
 import EmptyState from '@/components/TrackerScreen/EmptyState';
 import AddVisaModal from '@/components/AddVisaModal';
 import { getProgressPercentage } from '@/utils/visaHelpers';
-import { colors } from '@/constants/colors';
+import Colors from '@/constants/colors';
 import VisaCard from '@/components/VisaCard';
 
 export default function TrackerScreen() {
@@ -122,8 +122,8 @@ export default function TrackerScreen() {
               />
             ) : currentVisa ? (
               <VisaCardSection 
-                visa={currentVisa}
-                onRemove={handleRemoveVisa}
+                visas={[currentVisa]}
+                title="Current Visa"
               />
             ) : null}
           </>

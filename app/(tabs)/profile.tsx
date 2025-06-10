@@ -156,7 +156,7 @@ export default function SettingsScreen() {
           onValueChange={onToggle || (() => {})}
         />
       ) : (
-        <ChevronRight size={20} color={Colors.silver} />
+        <ChevronRight size={20} color="#C7C7CC" />
       )}
     </TouchableOpacity>
   );
@@ -166,7 +166,7 @@ export default function SettingsScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.settingsCard}>
           <SettingsItem
-            icon={<Bell size={20} color={Colors.primary} />}
+            icon={<Bell size={20} color="#007AFF" />}
             title="Push Notifications"
             showToggle={true}
             toggleValue={userProfile.notifications}
@@ -176,7 +176,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Globe size={20} color={Colors.primary} />}
+            icon={<Globe size={20} color="#007AFF" />}
             title="Language"
             onPress={handleLanguageChange}
           />
@@ -184,7 +184,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<User size={20} color={Colors.primary} />}
+            icon={<User size={20} color="#007AFF" />}
             title="Passport Information"
             onPress={navigateToPassportInfo}
           />
@@ -192,7 +192,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Shield size={20} color={Colors.primary} />}
+            icon={<Shield size={20} color="#007AFF" />}
             title="Privacy & Security"
             onPress={navigateToPrivacySecurity}
           />
@@ -200,7 +200,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<CreditCard size={20} color={Colors.primary} />}
+            icon={<CreditCard size={20} color="#007AFF" />}
             title="Billing & Subscription"
             onPress={navigateToBillingSubscription}
           />
@@ -208,7 +208,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Link size={20} color={Colors.primary} />}
+            icon={<Link size={20} color="#007AFF" />}
             title="Affiliate Program"
             onPress={copyReferralLink}
           />
@@ -216,7 +216,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<HelpCircle size={20} color={Colors.primary} />}
+            icon={<HelpCircle size={20} color="#007AFF" />}
             title="Help & Support"
             onPress={navigateToHelpSupport}
           />
@@ -229,7 +229,7 @@ export default function SettingsScreen() {
           onPress={handleLogout}
           variant="outline"
           style={styles.logoutButton}
-          icon={<LogOut size={18} color={Colors.primary} style={styles.logoutIcon} />}
+          icon={() => <LogOut size={18} color="#007AFF" style={styles.logoutIcon} />}
         />
       </View>
 
@@ -258,7 +258,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#007AFF',
   },
   loadingContainer: {
     justifyContent: 'center',
@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 18,
-    color: Colors.white,
+    color: 'white',
   },
   content: {
     flex: 1,
     paddingTop: 24,
   },
   settingsCard: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     borderRadius: 20,
     marginHorizontal: 16,
     shadowColor: '#000',
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   settingsItemText: {
     fontSize: 16,
     fontWeight: '500',
-    color: Colors.black,
+    color: '#000000',
     flex: 1,
   },
   valueContainer: {
@@ -315,12 +315,12 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 16,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
     marginRight: 8,
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.border,
+    backgroundColor: '#E5E5EA',
     marginLeft: 72,
   },
   logoutContainer: {
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   logoutButton: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.3,
