@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0066CC', // Hardcoded primary color to fix the error
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderRadius: 12,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   emptyStateButtonText: {
-    color: Colors.primary,
+    color: '#0066CC', // Hardcoded primary color to fix the error
     fontSize: 16,
     fontWeight: '600',
   },

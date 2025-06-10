@@ -57,7 +57,7 @@ export default function PrivacySecurityScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Privacy & Security',
-          headerStyle: { backgroundColor: Colors.primary },
+          headerStyle: { backgroundColor: '#0066CC' }, // Hardcoded primary color to fix the error
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -77,7 +77,7 @@ export default function PrivacySecurityScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingTextContainer}>
               <View style={styles.iconContainer}>
-                <Fingerprint size={20} color={Colors.primary} />
+                <Fingerprint size={20} color="#0066CC" /> {/* Hardcoded primary color to fix the error */}
               </View>
               <View style={styles.settingTextContent}>
                 <Text style={styles.settingTitle}>Face ID / Touch ID</Text>
@@ -100,7 +100,7 @@ export default function PrivacySecurityScreen() {
           <TouchableOpacity style={styles.linkItem} onPress={openPrivacyPolicy}>
             <View style={styles.linkTextContainer}>
               <View style={styles.iconContainer}>
-                <Shield size={20} color={Colors.primary} />
+                <Shield size={20} color="#0066CC" /> {/* Hardcoded primary color to fix the error */}
               </View>
               <Text style={styles.linkText}>Privacy Policy</Text>
             </View>
@@ -141,7 +141,7 @@ export default function PrivacySecurityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0066CC', // Hardcoded primary color to fix the error
   },
   backButton: {
     marginLeft: 8,

@@ -38,7 +38,7 @@ export default function HelpSupportScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Help & Support',
-          headerStyle: { backgroundColor: Colors.primary },
+          headerStyle: { backgroundColor: '#0066CC' }, // Hardcoded primary color to fix the error
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -55,7 +55,7 @@ export default function HelpSupportScreen() {
         <View style={styles.card}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Bug size={20} color={Colors.primary} style={styles.sectionIcon} />
+              <Bug size={20} color="#0066CC" style={styles.sectionIcon} /> {/* Hardcoded primary color to fix the error */}
               <Text style={styles.sectionTitle}>Report a Bug</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -83,7 +83,7 @@ export default function HelpSupportScreen() {
           
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Mail size={20} color={Colors.primary} style={styles.sectionIcon} />
+              <Mail size={20} color="#0066CC" style={styles.sectionIcon} /> {/* Hardcoded primary color to fix the error */}
               <Text style={styles.sectionTitle}>Contact Support</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -94,7 +94,7 @@ export default function HelpSupportScreen() {
               onPress={handleContactSupport}
               variant="outline"
               style={styles.contactButton}
-              icon={<Mail size={18} color={Colors.primary} style={styles.buttonIcon} />}
+              icon={<Mail size={18} color="#0066CC" style={styles.buttonIcon} />} {/* Hardcoded primary color to fix the error */}
             />
           </View>
         </View>
@@ -106,7 +106,7 @@ export default function HelpSupportScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0066CC', // Hardcoded primary color to fix the error
   },
   backButton: {
     marginLeft: 8,
