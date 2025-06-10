@@ -183,6 +183,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selectedVisaCard: {
-    borderColor: colors.white,
+    borderColor: 'white',
   },
 });
