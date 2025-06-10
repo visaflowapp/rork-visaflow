@@ -32,7 +32,7 @@ const VisaCardSection: React.FC<VisaCardSectionProps> = ({
           onPress={() => router.push('/screens/AllVisasScreen')}
         >
           <Text style={styles.viewAllText}>View All</Text>
-          <ChevronRight size={16} color="#0066CC" /> {/* Hardcoded primary color to fix the error */}
+          <ChevronRight size={16} color="#0066CC" />
         </TouchableOpacity>
       </View>
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: '#0066CC', // Hardcoded primary color to fix the error
+    color: '#0066CC',
     marginRight: 4,
   },
   listContent: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   visaTypeBadge: {
-    backgroundColor: '#0066CC', // Hardcoded primary color to fix the error
+    backgroundColor: '#0066CC',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 16,
