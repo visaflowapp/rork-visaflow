@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Save, Calendar } from 'lucide-react-native';
+import { Save, Calendar, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import Button from '@/components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -86,6 +86,11 @@ export default function PassportInfoScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       
@@ -119,13 +124,24 @@ export default function PassportInfoScreen() {
             </TouchableOpacity>
             
             {showDatePicker && (
-              <DateTimePicker
-                value={expiryDate}
-                mode="date"
-                display="default"
-                onChange={onDateChange}
-                minimumDate={new Date()}
-              />
+              <View style={styles.calendarContainer}>
+                <DateTimePicker
+                  value={expiryDate}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'inline' : 'default'}
+                  onChange={onDateChange}
+                  minimumDate={new Date()}
+                  style={styles.calendar}
+                />
+                {Platform.OS === 'ios' && (
+                  <TouchableOpacity 
+                    style={styles.calendarDoneButton}
+                    onPress={() => setShowDatePicker(false)}
+                  >
+                    <Text style={styles.calendarDoneText}>Done</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             )}
           </View>
           
@@ -160,6 +176,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  backButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   content: {
     flex: 1,
@@ -220,6 +240,35 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     color: Colors.black,
+  },
+  calendarContainer: {
+    marginTop: 8,
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...(Platform.OS === 'ios' ? {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+    } : {
+      elevation: 4,
+    }),
+  },
+  calendar: {
+    backgroundColor: Colors.white,
+    ...(Platform.OS === 'ios' ? { height: 320 } : {}),
+  },
+  calendarDoneButton: {
+    alignItems: 'center',
+    padding: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  calendarDoneText: {
+    color: Colors.primary,
+    fontSize: 16,
+    fontWeight: '600',
   },
   securityNote: {
     backgroundColor: 'rgba(0, 122, 255, 0.1)',

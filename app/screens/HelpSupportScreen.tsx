@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, Linking } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Bug, Mail, Send } from 'lucide-react-native';
+import { Bug, Mail, Send, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import Button from '@/components/Button';
 
@@ -43,6 +43,11 @@ export default function HelpSupportScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       
@@ -129,6 +134,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  backButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   content: {
     flex: 1,

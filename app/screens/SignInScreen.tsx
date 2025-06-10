@@ -1,26 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  Image, 
-  KeyboardAvoidingView, 
-  Platform,
-  ScrollView,
-  Alert
-} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import Button from '@/components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useVisaStore } from '@/store/visaStore';
 
 export default function SignInScreen() {
   const router = useRouter();
-  const { setUserId } = useVisaStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,28 +18,22 @@ export default function SignInScreen() {
       Alert.alert('Error', 'Please enter both email and password');
       return;
     }
-
+    
     setIsLoading(true);
-
+    
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // For demo purposes, accept any credentials
-      const mockUserId = 'demo-user';
-      const mockToken = 'mock-jwt-token';
-      
-      // Store auth data
-      await AsyncStorage.setItem('auth_token', mockToken);
-      await AsyncStorage.setItem('user_id', mockUserId);
-      
-      // Set user ID in store
-      setUserId(mockUserId);
+      // In a real app, you would validate credentials with your backend
+      // For demo, we'll just store a mock token and user ID
+      await AsyncStorage.setItem('auth_token', 'mock_token_12345');
+      await AsyncStorage.setItem('user_id', 'user_123');
       
       // Navigate to main app
       router.replace('/(tabs)');
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Error during sign in:', error);
       Alert.alert('Error', 'Failed to sign in. Please try again.');
     } finally {
       setIsLoading(false);
@@ -65,60 +46,57 @@ export default function SignInScreen() {
       'A password reset link will be sent to your email address.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Send Link', onPress: () => {
-          if (!email.trim()) {
-            Alert.alert('Error', 'Please enter your email address');
-            return;
-          }
-          Alert.alert('Success', `Password reset link sent to ${email}`);
-        }}
+        { text: 'Send Link', onPress: () => console.log('Send password reset link') }
       ]
     );
   };
 
   const handleCreateAccount = () => {
-    router.push('/screens/SignUpScreen');
+    // In a real app, navigate to sign up screen
+    Alert.alert('Create Account', 'This would navigate to the sign up screen in a real app.');
   };
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView 
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
     >
       <ScrollView 
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>VisaFlow</Text>
+          <View style={styles.logoCircle}>
+            <Text style={styles.logoText}>VF</Text>
+          </View>
+          <Text style={styles.appName}>VisaFlow</Text>
+          <Text style={styles.tagline}>Track your visa journey with ease</Text>
         </View>
         
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue tracking your visas</Text>
+          <Text style={styles.formTitle}>Sign In</Text>
           
           <View style={styles.inputContainer}>
-            <Mail size={20} color={Colors.silver} style={styles.inputIcon} />
+            <Mail size={20} color={Colors.primary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
-              keyboardType="email-address"
               autoCapitalize="none"
+              keyboardType="email-address"
             />
           </View>
           
           <View style={styles.inputContainer}>
-            <Lock size={20} color={Colors.silver} style={styles.inputIcon} />
+            <Lock size={20} color={Colors.primary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              autoCapitalize="none"
             />
             <TouchableOpacity 
               onPress={() => setShowPassword(!showPassword)}
@@ -167,41 +145,56 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   logoContainer: {
     alignItems: 'center',
     marginBottom: 40,
   },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   logoText: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: Colors.white,
+  },
+  appName: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: Colors.black,
+    marginBottom: 8,
+  },
+  tagline: {
+    fontSize: 16,
+    color: Colors.textSecondary,
   },
   formContainer: {
     backgroundColor: Colors.white,
     borderRadius: 20,
     padding: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
   },
-  title: {
+  formTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: Colors.black,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: Colors.textSecondary,
     marginBottom: 24,
   },
   inputContainer: {
@@ -210,16 +203,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
     height: 56,
-    backgroundColor: Colors.white,
+    marginBottom: 16,
+    paddingHorizontal: 16,
   },
   inputIcon: {
     marginRight: 12,
   },
   input: {
     flex: 1,
+    height: '100%',
     fontSize: 16,
     color: Colors.black,
   },
@@ -227,7 +220,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   forgotPasswordContainer: {
-    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
     marginBottom: 24,
   },
   forgotPasswordText: {
@@ -249,9 +242,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.border,
   },
   dividerText: {
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
     color: Colors.textSecondary,
-    fontSize: 14,
+    fontWeight: '600',
   },
   createAccountButton: {
     height: 56,
@@ -263,7 +256,7 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: 16,
-    color: Colors.primary,
     fontWeight: '600',
+    color: Colors.primary,
   },
 });

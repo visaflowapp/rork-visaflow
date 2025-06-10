@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { Check } from 'lucide-react-native';
+import { Check, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -18,6 +18,22 @@ const languages = [
 export default function LanguageScreen() {
   const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState('English');
+
+  // Load saved language on component mount
+  React.useEffect(() => {
+    const loadLanguage = async () => {
+      try {
+        const storedLanguage = await AsyncStorage.getItem('user_language');
+        if (storedLanguage) {
+          setSelectedLanguage(storedLanguage);
+        }
+      } catch (error) {
+        console.error('Error loading language preference:', error);
+      }
+    };
+    
+    loadLanguage();
+  }, []);
 
   const handleLanguageSelect = async (language: string) => {
     setSelectedLanguage(language);
@@ -66,6 +82,11 @@ export default function LanguageScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       
@@ -85,6 +106,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  backButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   content: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { CreditCard, Calendar, ExternalLink, AlertTriangle } from 'lucide-react-native';
+import { CreditCard, Calendar, ExternalLink, AlertTriangle, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import Button from '@/components/Button';
 import CancelSubscriptionModal from '@/components/CancelSubscriptionModal';
@@ -62,6 +62,11 @@ export default function BillingSubscriptionScreen() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="white" />
+            </TouchableOpacity>
+          ),
         }} 
       />
       
@@ -163,6 +168,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  backButton: {
+    marginLeft: 8,
+    padding: 4,
   },
   content: {
     flex: 1,
