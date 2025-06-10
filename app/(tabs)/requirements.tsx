@@ -14,8 +14,8 @@ import {
   Platform
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { Calendar, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Calendar } from 'react-native-calendars';
+import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { countries } from '@/constants/mockData';
 import { getCountryFlag } from '@/utils/countryFlags';
@@ -58,11 +58,53 @@ export default function RequirementsScreen() {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Calendar state
+  const [calendarType, setCalendarType] = useState<'start' | 'end'>('start');
+  const [markedDates, setMarkedDates] = useState<{[key: string]: any}>({});
+  
   // API state
   const [isLoading, setIsLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+
+  // Update marked dates when start/end dates change
+  useEffect(() => {
+    updateMarkedDates();
+  }, [startDate, endDate, tripType]);
+
+  // Update marked dates for calendar
+  const updateMarkedDates = () => {
+    const startDateStr = formatDateForCalendar(startDate);
+    const endDateStr = formatDateForCalendar(endDate);
+    
+    if (tripType === 'One Way') {
+      setMarkedDates({
+        [startDateStr]: { selected: true, selectedColor: colors.primary }
+      });
+    } else {
+      // Create range of dates
+      const range: {[key: string]: any} = {};
+      let currentDate = new Date(startDate);
+      const lastDate = new Date(endDate);
+      
+      while (currentDate <= lastDate) {
+        const dateStr = formatDateForCalendar(currentDate);
+        
+        if (dateStr === startDateStr) {
+          range[dateStr] = { selected: true, startingDay: true, color: colors.primary };
+        } else if (dateStr === endDateStr) {
+          range[dateStr] = { selected: true, endingDay: true, color: colors.primary };
+        } else {
+          range[dateStr] = { selected: true, color: colors.primary, textColor: 'white' };
+        }
+        
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      setMarkedDates(range);
+    }
+  };
 
   // Filter countries based on search query
   const filteredCountries = countries.filter(country => 
@@ -78,31 +120,36 @@ export default function RequirementsScreen() {
     });
   };
 
-  // Handle date changes
-  const onStartDateChange = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(Platform.OS === 'ios' ? true : false);
-    if (selectedDate) {
-      setStartDate(selectedDate);
-      // If end date is before start date, update it
-      if (endDate < selectedDate) {
-        setEndDate(new Date(selectedDate.getTime() + 7 * 24 * 60 * 60 * 1000));
-      }
-      
-      // Close the picker after selection on iOS
-      if (Platform.OS === 'ios') {
-        setTimeout(() => setShowStartDatePicker(false), 250);
-      }
-    }
+  // Format date for calendar (YYYY-MM-DD)
+  const formatDateForCalendar = (date: Date) => {
+    return date.toISOString().split('T')[0];
   };
 
-  const onEndDateChange = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(Platform.OS === 'ios' ? true : false);
-    if (selectedDate) {
-      setEndDate(selectedDate);
+  // Handle calendar day press
+  const handleDayPress = (day: any) => {
+    const selectedDate = new Date(day.dateString);
+    
+    if (calendarType === 'start') {
+      setStartDate(selectedDate);
       
-      // Close the picker after selection on iOS
-      if (Platform.OS === 'ios') {
-        setTimeout(() => setShowEndDatePicker(false), 250);
+      // If end date is before start date, update it
+      if (endDate < selectedDate) {
+        const newEndDate = new Date(selectedDate);
+        newEndDate.setDate(newEndDate.getDate() + 7);
+        setEndDate(newEndDate);
+      }
+      
+      if (tripType === 'One Way') {
+        setShowStartDatePicker(false);
+      } else {
+        // For round trip, switch to end date selection
+        setCalendarType('end');
+      }
+    } else {
+      // End date selection
+      if (selectedDate >= startDate) {
+        setEndDate(selectedDate);
+        setShowEndDatePicker(false);
       }
     }
   };
@@ -302,16 +349,12 @@ export default function RequirementsScreen() {
     );
   };
 
-  // Render date picker modal for iOS
-  const renderDatePickerModal = (
+  // Render calendar modal
+  const renderCalendarModal = (
     visible: boolean,
     onClose: () => void,
-    currentDate: Date,
-    onDateChange: (event: any, date?: Date) => void,
     title: string
   ) => {
-    if (Platform.OS !== 'ios') return null;
-    
     return (
       <Modal
         visible={visible}
@@ -320,21 +363,29 @@ export default function RequirementsScreen() {
         onRequestClose={onClose}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.datePickerModalContent}>
-            <View style={styles.datePickerHeader}>
-              <Text style={styles.datePickerTitle}>{title}</Text>
+          <View style={styles.calendarModalContent}>
+            <View style={styles.calendarHeader}>
+              <Text style={styles.calendarTitle}>{title}</Text>
               <TouchableOpacity onPress={onClose}>
-                <Text style={styles.datePickerCloseText}>Done</Text>
+                <Text style={styles.calendarCloseText}>Done</Text>
               </TouchableOpacity>
             </View>
             
-            <DateTimePicker
-              value={currentDate}
-              mode="date"
-              display="spinner"
-              onChange={onDateChange}
-              style={styles.iosDatePicker}
-              minimumDate={title.includes('End') ? startDate : new Date()}
+            <Calendar
+              current={calendarType === 'start' ? formatDateForCalendar(startDate) : formatDateForCalendar(endDate)}
+              minDate={calendarType === 'end' ? formatDateForCalendar(startDate) : formatDateForCalendar(new Date())}
+              onDayPress={handleDayPress}
+              markedDates={markedDates}
+              markingType={tripType === 'Round Trip' ? 'period' : 'dot'}
+              theme={{
+                selectedDayBackgroundColor: colors.primary,
+                todayTextColor: colors.primary,
+                arrowColor: colors.primary,
+                dotColor: colors.primary,
+                textDayFontWeight: '500',
+                textMonthFontWeight: 'bold',
+                textDayHeaderFontWeight: '500',
+              }}
             />
           </View>
         </View>
@@ -496,35 +547,50 @@ export default function RequirementsScreen() {
           {/* Date Range */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>
-              {tripType === 'One Way' ? 'Select Departure Date' : 'Enter a Date Range'}
+              {tripType === 'One Way' ? 'Select Departure Date' : 'Select Travel Dates'}
             </Text>
             
             {tripType === 'One Way' ? (
               <TouchableOpacity 
                 style={styles.singleDateButton}
-                onPress={() => setShowStartDatePicker(true)}
+                onPress={() => {
+                  setCalendarType('start');
+                  setShowStartDatePicker(true);
+                }}
               >
-                <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
-                <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                <View style={styles.dropdownButtonContent}>
+                  <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                  <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                </View>
               </TouchableOpacity>
             ) : (
               <View style={styles.dateRangeContainer}>
                 <TouchableOpacity 
                   style={styles.dateButton}
-                  onPress={() => setShowStartDatePicker(true)}
+                  onPress={() => {
+                    setCalendarType('start');
+                    setShowStartDatePicker(true);
+                  }}
                 >
-                  <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
-                  <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                  <View style={styles.dropdownButtonContent}>
+                    <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                    <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                  </View>
                 </TouchableOpacity>
                 
                 <Text style={styles.dateRangeSeparator}>—</Text>
                 
                 <TouchableOpacity 
                   style={styles.dateButton}
-                  onPress={() => setShowEndDatePicker(true)}
+                  onPress={() => {
+                    setCalendarType('end');
+                    setShowEndDatePicker(true);
+                  }}
                 >
-                  <Calendar size={20} color={colors.primary} style={styles.inputIcon} />
-                  <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
+                  <View style={styles.dropdownButtonContent}>
+                    <Clock size={20} color={colors.primary} style={styles.inputIcon} />
+                    <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             )}
@@ -573,43 +639,16 @@ export default function RequirementsScreen() {
         </View>
       </ScrollView>
 
-      {/* Date Pickers */}
-      {/* For Android, render inline */}
-      {Platform.OS === 'android' && showStartDatePicker && (
-        <DateTimePicker
-          value={startDate}
-          mode="date"
-          display="default"
-          onChange={onStartDateChange}
-          minimumDate={new Date()}
-        />
-      )}
-      
-      {Platform.OS === 'android' && showEndDatePicker && (
-        <DateTimePicker
-          value={endDate}
-          mode="date"
-          display="default"
-          onChange={onEndDateChange}
-          minimumDate={startDate}
-        />
-      )}
-
-      {/* For iOS, render in modal */}
-      {renderDatePickerModal(
-        showStartDatePicker,
-        () => setShowStartDatePicker(false),
-        startDate,
-        onStartDateChange,
-        tripType === 'One Way' ? 'Select Departure Date' : 'Select Start Date'
-      )}
-      
-      {renderDatePickerModal(
-        showEndDatePicker,
-        () => setShowEndDatePicker(false),
-        endDate,
-        onEndDateChange,
-        'Select End Date'
+      {/* Calendar Modal */}
+      {renderCalendarModal(
+        showStartDatePicker || showEndDatePicker,
+        () => {
+          setShowStartDatePicker(false);
+          setShowEndDatePicker(false);
+        },
+        calendarType === 'start' 
+          ? (tripType === 'One Way' ? 'Select Departure Date' : 'Select Start Date')
+          : 'Select End Date'
       )}
 
       {/* Dropdowns */}
@@ -1095,15 +1134,15 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 20,
   },
-  // Date picker modal styles
-  datePickerModalContent: {
+  // Calendar modal styles
+  calendarModalContent: {
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
     paddingBottom: 30,
   },
-  datePickerHeader: {
+  calendarHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -1112,18 +1151,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  datePickerTitle: {
+  calendarTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.text,
   },
-  datePickerCloseText: {
+  calendarCloseText: {
     fontSize: 16,
     color: colors.primary,
     fontWeight: '600',
-  },
-  iosDatePicker: {
-    height: 200,
-    width: '100%',
   },
 });
