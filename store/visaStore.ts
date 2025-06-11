@@ -25,19 +25,21 @@ export const useVisaStore = create<VisaState>()(
         // Simulate loading delay
         setTimeout(() => {
           const state = get();
-          // Only load dummy data if no visas exist
-          const visasToLoad = state.activeVisas.length === 0 ? dummyVisas : state.activeVisas;
+          // Only load dummy data if no visas exist and no persisted data
+          const visasToLoad = state.activeVisas.length === 0 ? [] : state.activeVisas;
           
           set({
-            userProfile: dummyProfile,
+            userProfile: state.userProfile || dummyProfile,
             activeVisas: visasToLoad.sort((a, b) => a.daysLeft - b.daysLeft),
-            alerts: dummyAlerts,
+            alerts: state.alerts.length === 0 ? [] : state.alerts,
             isLoading: false,
           });
-        }, 500);
+        }, 300);
       },
       
       addVisa: (visa) => {
+        set({ isLoading: true });
+        
         const newVisa = {
           id: Date.now().toString(),
           ...visa,
@@ -45,15 +47,23 @@ export const useVisaStore = create<VisaState>()(
           daysLeft: Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
         };
         
-        set(state => ({
-          activeVisas: [...state.activeVisas, newVisa].sort((a, b) => a.daysLeft - b.daysLeft),
-        }));
+        setTimeout(() => {
+          set(state => ({
+            activeVisas: [...state.activeVisas, newVisa].sort((a, b) => a.daysLeft - b.daysLeft),
+            isLoading: false,
+          }));
+        }, 500);
       },
       
       removeVisa: (visaId: string) => {
-        set(state => ({
-          activeVisas: state.activeVisas.filter(visa => visa.id !== visaId),
-        }));
+        set({ isLoading: true });
+        
+        setTimeout(() => {
+          set(state => ({
+            activeVisas: state.activeVisas.filter(visa => visa.id !== visaId),
+            isLoading: false,
+          }));
+        }, 300);
       },
       
       dismissAlert: (alertId: string) => {

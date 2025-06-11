@@ -20,6 +20,7 @@ export default function TrackerScreen() {
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedVisa, setSelectedVisa] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
     if (!userId) {
@@ -28,6 +29,16 @@ export default function TrackerScreen() {
       loadUserData();
     }
   }, [userId, setUserId, loadUserData]);
+
+  // Show Add Visa modal for new users after initialization
+  useEffect(() => {
+    if (!isLoading && !hasInitialized) {
+      setHasInitialized(true);
+      if (activeVisas.length === 0) {
+        setShowAddModal(true);
+      }
+    }
+  }, [isLoading, activeVisas.length, hasInitialized]);
 
   // If there's only one visa, select it automatically
   useEffect(() => {
@@ -54,10 +65,10 @@ export default function TrackerScreen() {
     ? activeVisas.find(visa => visa.id === selectedVisa) 
     : activeVisas.length > 0 ? activeVisas[0] : null;
 
-  if (isLoading) {
+  if (isLoading && hasInitialized) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading your visas...</Text>
+        <Text style={styles.loadingText}>Making changes...</Text>
       </View>
     );
   }
@@ -144,7 +155,7 @@ export default function TrackerScreen() {
             )}
           </>
         ) : (
-          <EmptyState onAddVisa={() => setShowAddModal(true)} />
+          !showAddModal && <EmptyState onAddVisa={() => setShowAddModal(true)} />
         )}
       </View>
 
