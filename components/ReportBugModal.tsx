@@ -95,7 +95,7 @@ const ReportBugModal: React.FC<ReportBugModalProps> = ({ visible, onClose }) => 
                 onPress={handleSubmitBug}
                 disabled={isSubmitting}
                 style={styles.submitButton}
-                icon={<Send size={18} color="white" />}
+                icon={() => <Send size={18} color="white" />}
               />
             </View>
 
@@ -117,7 +117,7 @@ const ReportBugModal: React.FC<ReportBugModalProps> = ({ visible, onClose }) => 
                 onPress={handleContactSupport}
                 variant="outline"
                 style={styles.contactButton}
-                icon={<Mail size={18} color="#007AFF" />}
+                icon={() => <Mail size={18} color="#007AFF" />}
               />
             </View>
           </View>

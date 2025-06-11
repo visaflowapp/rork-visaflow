@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { X } from 'lucide-react-native';
+import { getCountryFlag } from '@/utils/countryFlags';
 
 interface VisaCardProps {
   id: string;
@@ -60,42 +61,6 @@ const VisaCard: React.FC<VisaCardProps> = ({
     if (daysLeft > 14) return '✅';
     if (daysLeft > 7) return '⚠️';
     return '❌';
-  };
-
-  // Get country flag emoji
-  const getCountryFlag = (countryName: string) => {
-    const flagMap: {[key: string]: string} = {
-      "United States": "🇺🇸",
-      "United Kingdom": "🇬🇧",
-      "Canada": "🇨🇦",
-      "Australia": "🇦🇺",
-      "Germany": "🇩🇪",
-      "France": "🇫🇷",
-      "Japan": "🇯🇵",
-      "Brazil": "🇧🇷",
-      "India": "🇮🇳",
-      "South Africa": "🇿🇦",
-      "Mexico": "🇲🇽",
-      "Portugal": "🇵🇹",
-      "Spain": "🇪🇸",
-      "Thailand": "🇹🇭",
-      "Vietnam": "🇻🇳",
-      "Indonesia": "🇮🇩",
-      "Singapore": "🇸🇬",
-      "Malaysia": "🇲🇾",
-      "Philippines": "🇵🇭",
-      "Cambodia": "🇰🇭",
-      "South Korea": "🇰🇷",
-      "Taiwan": "🇹🇼",
-      "Colombia": "🇨🇴",
-      "Greece": "🇬🇷",
-      "Croatia": "🇭🇷",
-      "Georgia": "🇬🇪",
-      "Turkey": "🇹🇷",
-      "Italy": "🇮🇹"
-    };
-    
-    return flagMap[countryName] || "🌍";
   };
 
   // Calculate extension deadline
