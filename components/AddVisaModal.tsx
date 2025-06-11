@@ -7,14 +7,13 @@ import {
   TouchableOpacity, 
   TextInput,
   ScrollView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { X } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
 import SimpleDropdown from './SimpleDropdown';
-import Colors from '@/constants/colors';
-import { countries } from '@/constants/mockData';
 
 interface AddVisaModalProps {
   visible: boolean;
@@ -41,6 +40,30 @@ const visaTypes = [
   'B211A Visa'
 ];
 
+// Popular countries for digital nomads
+const popularCountries = [
+  'Thailand',
+  'Indonesia', 
+  'Vietnam',
+  'Malaysia',
+  'Singapore',
+  'Philippines',
+  'Cambodia',
+  'Japan',
+  'South Korea',
+  'Taiwan',
+  'Mexico',
+  'Colombia',
+  'Brazil',
+  'Portugal',
+  'Spain',
+  'Italy',
+  'Greece',
+  'Croatia',
+  'Georgia',
+  'Turkey'
+];
+
 const AddVisaModal: React.FC<AddVisaModalProps> = ({
   visible,
   onClose,
@@ -63,8 +86,18 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     return diffDays;
   };
 
+  const resetForm = () => {
+    setCountry('');
+    setVisaType('');
+    setEntryDate(new Date());
+    setExitDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
+    setExtensionsAvailable('0');
+    setNotes('');
+  };
+
   const handleSave = () => {
     if (!country || !visaType) {
+      Alert.alert('Missing Information', 'Please select both country and visa type.');
       return;
     }
 
@@ -74,17 +107,15 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       entry_date: entryDate.toISOString().split('T')[0],
       exit_date: exitDate.toISOString().split('T')[0],
       duration: calculateDuration(),
-      extensions_available: parseInt(extensionsAvailable, 10),
+      extensions_available: parseInt(extensionsAvailable, 10) || 0,
       notes: notes.trim() || undefined,
     });
 
-    // Reset form
-    setCountry('');
-    setVisaType('');
-    setEntryDate(new Date());
-    setExitDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
-    setExtensionsAvailable('0');
-    setNotes('');
+    resetForm();
+  };
+
+  const handleClose = () => {
+    resetForm();
     onClose();
   };
 
@@ -112,30 +143,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     }
   };
 
-  // Filter to top 20 most common countries for digital nomads
-  const popularCountries = [
-    'Thailand',
-    'Indonesia', 
-    'Vietnam',
-    'Malaysia',
-    'Singapore',
-    'Philippines',
-    'Cambodia',
-    'Japan',
-    'South Korea',
-    'Taiwan',
-    'Mexico',
-    'Colombia',
-    'Brazil',
-    'Portugal',
-    'Spain',
-    'Italy',
-    'Greece',
-    'Croatia',
-    'Georgia',
-    'Turkey'
-  ];
-
   if (!visible) return null;
 
   return (
@@ -143,14 +150,14 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       visible={visible}
       animationType="slide"
       transparent={true}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Add Visa</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <X size={24} color={Colors.black} />
+            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+              <X size={24} color="#000000" />
             </TouchableOpacity>
           </View>
 
@@ -160,7 +167,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Country</Text>
+              <Text style={styles.label}>Country *</Text>
               <TouchableOpacity
                 style={styles.dropdownButton}
                 onPress={() => setShowCountryDropdown(true)}
@@ -169,22 +176,10 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                   {country || 'Select country'}
                 </Text>
               </TouchableOpacity>
-              {showCountryDropdown && (
-                <SimpleDropdown
-                  label="Select Country"
-                  options={popularCountries}
-                  value={country}
-                  onSelect={(value) => {
-                    setCountry(value);
-                    setShowCountryDropdown(false);
-                  }}
-                  placeholder="Select country"
-                />
-              )}
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Visa Type</Text>
+              <Text style={styles.label}>Visa Type *</Text>
               <TouchableOpacity
                 style={styles.dropdownButton}
                 onPress={() => setShowVisaTypeDropdown(true)}
@@ -193,18 +188,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                   {visaType || 'Select visa type'}
                 </Text>
               </TouchableOpacity>
-              {showVisaTypeDropdown && (
-                <SimpleDropdown
-                  label="Select Visa Type"
-                  options={visaTypes}
-                  value={visaType}
-                  onSelect={(value) => {
-                    setVisaType(value);
-                    setShowVisaTypeDropdown(false);
-                  }}
-                  placeholder="Select visa type"
-                />
-              )}
             </View>
 
             <View style={styles.formGroup}>
@@ -221,15 +204,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                   })}
                 </Text>
               </TouchableOpacity>
-              {showEntryDatePicker && (
-                <DateTimePicker
-                  value={entryDate}
-                  mode="date"
-                  display="default"
-                  onChange={onEntryDateChange}
-                  minimumDate={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)} // Allow dates up to 30 days in the past
-                />
-              )}
             </View>
 
             <View style={styles.formGroup}>
@@ -246,15 +220,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                   })}
                 </Text>
               </TouchableOpacity>
-              {showExitDatePicker && (
-                <DateTimePicker
-                  value={exitDate}
-                  mode="date"
-                  display="default"
-                  onChange={onExitDateChange}
-                  minimumDate={entryDate}
-                />
-              )}
             </View>
 
             <View style={styles.formGroup}>
@@ -274,6 +239,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                 onChangeText={setExtensionsAvailable}
                 keyboardType="number-pad"
                 placeholder="Number of extensions available"
+                placeholderTextColor="#8E8E93"
               />
             </View>
 
@@ -284,6 +250,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                 value={notes}
                 onChangeText={setNotes}
                 placeholder="Add any additional notes about your visa"
+                placeholderTextColor="#8E8E93"
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
@@ -294,7 +261,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
           <View style={styles.footer}>
             <Button
               title="Cancel"
-              onPress={onClose}
+              onPress={handleClose}
               variant="outline"
               style={styles.footerButton}
             />
@@ -304,6 +271,54 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               style={styles.footerButton}
             />
           </View>
+
+          {/* Date Pickers */}
+          {showEntryDatePicker && (
+            <DateTimePicker
+              value={entryDate}
+              mode="date"
+              display="default"
+              onChange={onEntryDateChange}
+              minimumDate={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)} // Allow dates up to 30 days in the past
+            />
+          )}
+
+          {showExitDatePicker && (
+            <DateTimePicker
+              value={exitDate}
+              mode="date"
+              display="default"
+              onChange={onExitDateChange}
+              minimumDate={entryDate}
+            />
+          )}
+
+          {/* Dropdowns */}
+          {showCountryDropdown && (
+            <SimpleDropdown
+              label="Select Country"
+              options={popularCountries}
+              value={country}
+              onSelect={(value) => {
+                setCountry(value);
+                setShowCountryDropdown(false);
+              }}
+              placeholder="Select country"
+            />
+          )}
+
+          {showVisaTypeDropdown && (
+            <SimpleDropdown
+              label="Select Visa Type"
+              options={visaTypes}
+              value={visaType}
+              onSelect={(value) => {
+                setVisaType(value);
+                setShowVisaTypeDropdown(false);
+              }}
+              placeholder="Select visa type"
+            />
+          )}
         </View>
       </View>
     </Modal>
@@ -317,7 +332,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 20,
@@ -334,7 +349,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
   },
   closeButton: {
     padding: 4,
@@ -349,55 +364,55 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 8,
-    color: Colors.black,
+    color: '#000000',
     fontWeight: '600',
   },
   input: {
     height: 56,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 16,
-    color: Colors.black,
-    backgroundColor: Colors.white,
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
   },
   textArea: {
     height: 100,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingTop: 12,
     fontSize: 16,
-    color: Colors.black,
-    backgroundColor: Colors.white,
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
   },
   dateInput: {
     height: 56,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     justifyContent: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
   },
   dateText: {
     fontSize: 16,
-    color: Colors.black,
+    color: '#000000',
   },
   calculatedField: {
     height: 56,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
   },
   calculatedText: {
     fontSize: 16,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
     fontWeight: '500',
   },
   footer: {
@@ -405,7 +420,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: Colors.border,
+    borderTopColor: '#E5E5EA',
   },
   footerButton: {
     flex: 1,
@@ -414,19 +429,19 @@ const styles = StyleSheet.create({
   dropdownButton: {
     height: 56,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: '#E5E5EA',
     borderRadius: 12,
     paddingHorizontal: 16,
     justifyContent: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
   },
   dropdownText: {
     fontSize: 16,
-    color: Colors.black,
+    color: '#000000',
   },
   placeholderText: {
     fontSize: 16,
-    color: Colors.textSecondary,
+    color: '#8E8E93',
   },
 });
 

@@ -9,7 +9,6 @@ import {
   Pressable
 } from 'react-native';
 import { Check } from 'lucide-react-native';
-import Colors from '@/constants/colors';
 
 interface SimpleDropdownProps {
   label: string;
@@ -41,7 +40,7 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         {item}
       </Text>
       {item === value && (
-        <Check size={20} color={Colors.primary} />
+        <Check size={20} color="#007AFF" />
       )}
     </TouchableOpacity>
   );
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,
     width: '80%',
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: '#000000',
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -102,18 +101,18 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    borderBottomColor: '#E5E5EA',
   },
   selectedOption: {
     backgroundColor: 'rgba(0, 122, 255, 0.1)',
   },
   optionText: {
     fontSize: 16,
-    color: Colors.black,
+    color: '#000000',
     flex: 1,
   },
   selectedOptionText: {
-    color: Colors.primary,
+    color: '#007AFF',
     fontWeight: '600',
   },
 });

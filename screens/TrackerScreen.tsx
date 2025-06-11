@@ -3,11 +3,9 @@ import { View, TouchableOpacity, Text, StyleSheet, FlatList } from 'react-native
 import { Stack } from 'expo-router';
 import { useVisaStore } from '@/store/visaStore';
 import ProgressSection from '@/components/TrackerScreen/ProgressSection';
-import VisaCardSection from '@/components/TrackerScreen/VisaCardSection';
 import EmptyState from '@/components/TrackerScreen/EmptyState';
 import AddVisaModal from '@/components/AddVisaModal';
 import { getProgressPercentage } from '@/utils/visaHelpers';
-import Colors from '@/constants/colors';
 import VisaCard from '@/components/VisaCard';
 
 export default function TrackerScreen() {
@@ -42,6 +40,7 @@ export default function TrackerScreen() {
 
   const handleAddVisa = (visaData: any) => {
     addVisa(visaData);
+    setShowAddModal(false);
   };
 
   const handleRemoveVisa = (visaId: string) => {
@@ -108,7 +107,6 @@ export default function TrackerScreen() {
                   extensionsAvailable={currentVisa.extensions_available}
                   daysLeft={currentVisa.daysLeft}
                   onRemove={handleRemoveVisa}
-                  style={styles.mainVisaCard}
                 />
               </View>
             )}
@@ -193,13 +191,7 @@ const styles = StyleSheet.create({
   visaCardContainer: {
     paddingHorizontal: 16,
     marginTop: 20,
-  },
-  mainVisaCard: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 15,
+    alignItems: 'center',
   },
   additionalVisasContainer: {
     marginTop: 30,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { X } from 'lucide-react-native';
-import Colors from '@/constants/colors';
 
 interface VisaCardProps {
   id: string;

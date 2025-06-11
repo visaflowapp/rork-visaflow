@@ -1,9 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { CircularProgress } from '@/components/CircularProgress';
-import { getStatusColor } from '@/utils/visaHelpers';
-
-const { height } = Dimensions.get('window');
+import { View, Text, StyleSheet } from 'react-native';
+import CircularProgress from '@/components/CircularProgress';
 
 interface ProgressSectionProps {
   daysLeft: number;
@@ -12,16 +9,16 @@ interface ProgressSectionProps {
 
 const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress }) => {
   return (
-    <View style={styles.progressSection}>
+    <View style={styles.container}>
       <View style={styles.progressContainer}>
         <CircularProgress
-          size={280}
-          strokeWidth={20}
+          size={200}
+          strokeWidth={12}
           progress={progress}
           color="#34C759"
-          backgroundColor="rgba(255, 255, 255, 0.2)"
+          backgroundColor="rgba(255, 255, 255, 0.3)"
         />
-        <View style={styles.progressContent}>
+        <View style={styles.centerContent}>
           <Text style={styles.daysNumber}>{daysLeft}</Text>
           <Text style={styles.daysLabel}>DAYS LEFT</Text>
         </View>
@@ -31,37 +28,32 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress })
 };
 
 const styles = StyleSheet.create({
-  progressSection: {
+  container: {
     alignItems: 'center',
-    paddingVertical: 20,
-    paddingTop: 30,
-    height: height * 0.4,
-    justifyContent: 'center',
+    paddingVertical: 40,
   },
   progressContainer: {
     position: 'relative',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  progressContent: {
+  centerContent: {
     position: 'absolute',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: 280,
-    height: 280,
+    justifyContent: 'center',
   },
   daysNumber: {
-    fontSize: 64,
+    fontSize: 48,
     fontWeight: 'bold',
     color: 'white',
-    lineHeight: 70,
+    textAlign: 'center',
   },
   daysLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
     color: 'white',
-    marginTop: 4,
-    letterSpacing: 2,
+    textAlign: 'center',
+    letterSpacing: 1,
   },
 });
 
