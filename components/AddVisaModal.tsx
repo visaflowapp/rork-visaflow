@@ -29,25 +29,42 @@ interface AddVisaModalProps {
   }) => void;
 }
 
-const visaTypes = [
-  'Tourist Visa',
-  'Business Visa',
-  'Digital Nomad Visa',
-  'Work Visa',
-  'Student Visa',
-  'Transit Visa',
-  'eVisa',
-  'B211A Visa'
-];
+// Dynamic visa types based on country
+const getVisaTypesForCountry = (country: string): string[] => {
+  const visaTypesByCountry: { [key: string]: string[] } = {
+    'Indonesia': ['B211A Visa', 'B211B Visa', 'Tourist Visa', 'Business Visa'],
+    'Thailand': ['Tourist Visa', 'Non-O Visa', 'Non-B Visa', 'Elite Visa', 'Digital Nomad Visa'],
+    'Malaysia': ['Tourist Visa', 'MM2H Visa', 'Business Visa', 'Digital Nomad Visa'],
+    'Philippines': ['Tourist Visa', 'SRRV Visa', 'Business Visa', 'Digital Nomad Visa'],
+    'Vietnam': ['Tourist Visa', 'Business Visa', 'Work Permit', 'eVisa'],
+    'Singapore': ['Tourist Visa', 'Business Visa', 'Work Visa', 'Tech.Pass'],
+    'Cambodia': ['Tourist Visa', 'Business Visa', 'eVisa'],
+    'Japan': ['Tourist Visa', 'Business Visa', 'Work Visa', 'Digital Nomad Visa'],
+    'South Korea': ['Tourist Visa', 'Business Visa', 'Work Visa', 'Digital Nomad Visa'],
+    'Taiwan': ['Tourist Visa', 'Business Visa', 'Gold Card'],
+    'Mexico': ['Tourist Visa', 'Temporary Resident Visa', 'Digital Nomad Visa'],
+    'Colombia': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Brazil': ['Tourist Visa', 'Business Visa', 'Digital Nomad Visa'],
+    'Portugal': ['Tourist Visa', 'Digital Nomad Visa', 'D7 Visa', 'Business Visa'],
+    'Spain': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Italy': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Greece': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Croatia': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Georgia': ['Tourist Visa', 'Digital Nomad Visa', 'Business Visa'],
+    'Turkey': ['Tourist Visa', 'Business Visa', 'eVisa'],
+  };
+
+  return visaTypesByCountry[country] || ['Tourist Visa', 'Business Visa', 'Digital Nomad Visa'];
+};
 
 // Popular countries for digital nomads
 const popularCountries = [
-  'Thailand',
   'Indonesia', 
-  'Vietnam',
+  'Thailand',
   'Malaysia',
-  'Singapore',
   'Philippines',
+  'Vietnam',
+  'Singapore',
   'Cambodia',
   'Japan',
   'South Korea',
@@ -95,9 +112,13 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     setNotes('');
   };
 
+  const isFormValid = () => {
+    return country && visaType && entryDate && exitDate && exitDate > entryDate;
+  };
+
   const handleSave = () => {
-    if (!country || !visaType) {
-      Alert.alert('Missing Information', 'Please select both country and visa type.');
+    if (!isFormValid()) {
+      Alert.alert('Missing Information', 'Please fill in all required fields and ensure exit date is after entry date.');
       return;
     }
 
@@ -117,6 +138,12 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   const handleClose = () => {
     resetForm();
     onClose();
+  };
+
+  const handleCountrySelect = (selectedCountry: string) => {
+    setCountry(selectedCountry);
+    setVisaType(''); // Reset visa type when country changes
+    setShowCountryDropdown(false);
   };
 
   const onEntryDateChange = (event: any, selectedDate?: Date) => {
@@ -144,6 +171,8 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   };
 
   if (!visible) return null;
+
+  const availableVisaTypes = country ? getVisaTypesForCountry(country) : [];
 
   return (
     <Modal
@@ -181,17 +210,18 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Visa Type *</Text>
               <TouchableOpacity
-                style={styles.dropdownButton}
-                onPress={() => setShowVisaTypeDropdown(true)}
+                style={[styles.dropdownButton, !country && styles.disabledButton]}
+                onPress={() => country && setShowVisaTypeDropdown(true)}
+                disabled={!country}
               >
                 <Text style={visaType ? styles.dropdownText : styles.placeholderText}>
-                  {visaType || 'Select visa type'}
+                  {visaType || (country ? 'Select visa type' : 'Select country first')}
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Entry Date</Text>
+              <Text style={styles.label}>Entry Date *</Text>
               <TouchableOpacity
                 style={styles.dateInput}
                 onPress={() => setShowEntryDatePicker(true)}
@@ -207,7 +237,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Exit Date</Text>
+              <Text style={styles.label}>Exit Date *</Text>
               <TouchableOpacity
                 style={styles.dateInput}
                 onPress={() => setShowExitDatePicker(true)}
@@ -268,7 +298,11 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <Button
               title="Save Visa"
               onPress={handleSave}
-              style={styles.footerButton}
+              style={[
+                styles.footerButton,
+                !isFormValid() && styles.disabledSaveButton
+              ]}
+              disabled={!isFormValid()}
             />
           </View>
 
@@ -299,10 +333,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               label="Select Country"
               options={popularCountries}
               value={country}
-              onSelect={(value) => {
-                setCountry(value);
-                setShowCountryDropdown(false);
-              }}
+              onSelect={handleCountrySelect}
               placeholder="Select country"
             />
           )}
@@ -310,7 +341,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
           {showVisaTypeDropdown && (
             <SimpleDropdown
               label="Select Visa Type"
-              options={visaTypes}
+              options={availableVisaTypes}
               value={visaType}
               onSelect={(value) => {
                 setVisaType(value);
@@ -435,6 +466,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },
+  disabledButton: {
+    backgroundColor: '#F2F2F7',
+    borderColor: '#E5E5EA',
+  },
   dropdownText: {
     fontSize: 16,
     color: '#000000',
@@ -442,6 +477,9 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 16,
     color: '#8E8E93',
+  },
+  disabledSaveButton: {
+    opacity: 0.5,
   },
 });
 

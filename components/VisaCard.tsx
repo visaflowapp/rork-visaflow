@@ -81,7 +81,18 @@ const VisaCard: React.FC<VisaCardProps> = ({
       "Thailand": "🇹🇭",
       "Vietnam": "🇻🇳",
       "Indonesia": "🇮🇩",
-      "Singapore": "🇸🇬"
+      "Singapore": "🇸🇬",
+      "Malaysia": "🇲🇾",
+      "Philippines": "🇵🇭",
+      "Cambodia": "🇰🇭",
+      "South Korea": "🇰🇷",
+      "Taiwan": "🇹🇼",
+      "Colombia": "🇨🇴",
+      "Greece": "🇬🇷",
+      "Croatia": "🇭🇷",
+      "Georgia": "🇬🇪",
+      "Turkey": "🇹🇷",
+      "Italy": "🇮🇹"
     };
     
     return flagMap[countryName] || "🌍";
@@ -147,7 +158,7 @@ const VisaCard: React.FC<VisaCardProps> = ({
         </View>
         
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Exit</Text>
+          <Text style={styles.detailLabel}>Exit By</Text>
           <Text style={styles.detailValue}>{formatDate(exitDate)}</Text>
         </View>
         
@@ -159,7 +170,7 @@ const VisaCard: React.FC<VisaCardProps> = ({
         {extensionsAvailable > 0 && (
           <>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Extensions</Text>
+              <Text style={styles.detailLabel}>Extensions Left</Text>
               <Text style={styles.detailValue}>{extensionsAvailable}</Text>
             </View>
             {extensionDeadline && (
@@ -275,11 +286,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#007AFF',
   },
   detailLabel: {
     fontSize: 16,
-    color: '#C7C7CC',
-    fontWeight: '500',
+    color: '#000000',
+    fontWeight: '600',
   },
   detailValue: {
     fontSize: 16,
@@ -289,14 +302,14 @@ const styles = StyleSheet.create({
   extensionDeadline: {
     marginTop: 12,
     padding: 12,
-    backgroundColor: 'rgba(255, 204, 0, 0.1)',
+    backgroundColor: 'rgba(255, 59, 48, 0.1)',
     borderRadius: 12,
   },
   extensionText: {
     fontSize: 13,
-    color: '#000000',
+    color: '#FF3B30',
     textAlign: 'center',
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
 

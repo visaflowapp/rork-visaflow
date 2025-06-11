@@ -8,6 +8,14 @@ interface ProgressSectionProps {
 }
 
 const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress }) => {
+  // Get progress color based on days left
+  const getProgressColor = () => {
+    if (daysLeft > 30) return '#34C759';
+    if (daysLeft > 14) return '#34C759';
+    if (daysLeft > 7) return '#FFD700';
+    return '#FF3B30';
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.progressContainer}>
@@ -15,7 +23,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress })
           size={200}
           strokeWidth={12}
           progress={progress}
-          color="#34C759"
+          color={getProgressColor()}
           backgroundColor="rgba(255, 255, 255, 0.3)"
         />
         <View style={styles.centerContent}>

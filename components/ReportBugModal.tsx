@@ -6,109 +6,118 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   TextInput,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
-import { X, Bug, Mail } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { X, Bug, Mail, Send } from 'lucide-react-native';
 import Button from './Button';
 
 interface ReportBugModalProps {
   visible: boolean;
   onClose: () => void;
-  onContactSupport: () => void;
 }
 
-const ReportBugModal: React.FC<ReportBugModalProps> = ({
-  visible,
-  onClose,
-  onContactSupport
-}) => {
+const ReportBugModal: React.FC<ReportBugModalProps> = ({ visible, onClose }) => {
   const [bugDescription, setBugDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmitBug = async () => {
     if (!bugDescription.trim()) {
-      Alert.alert('Error', 'Please describe the issue you encountered');
+      Alert.alert('Missing Information', 'Please describe the bug you encountered.');
       return;
     }
 
     setIsSubmitting(true);
-
-    // Simulate API call
+    
+    // Simulate submission
     setTimeout(() => {
       setIsSubmitting(false);
+      setBugDescription('');
       Alert.alert(
         'Bug Report Submitted',
-        'Thank you for your feedback! Our team will investigate the issue.',
-        [{ text: 'OK', onPress: handleClose }]
+        'Thank you for your feedback! We will investigate this issue.',
+        [{ text: 'OK', onPress: onClose }]
       );
     }, 1000);
   };
 
-  const handleClose = () => {
-    setBugDescription('');
-    onClose();
+  const handleContactSupport = () => {
+    const email = 'support@visatracker.com';
+    const subject = 'Support Request';
+    const body = 'Hi, I need help with...';
+    
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    Linking.openURL(mailtoUrl).catch(() => {
+      Alert.alert('Error', 'Could not open email client. Please contact support@visatracker.com directly.');
+    });
   };
-
-  if (!visible) return null;
 
   return (
     <Modal
       visible={visible}
       animationType="slide"
       transparent={true}
-      onRequestClose={handleClose}
+      onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}>Help & Support</Text>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <X size={24} color="#000000" />
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <X size={24} color="#8E8E93" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
+            {/* Bug Report Section */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Bug size={20} color="#007AFF" style={styles.sectionIcon} />
+                <Bug size={24} color="#007AFF" />
                 <Text style={styles.sectionTitle}>Report a Bug</Text>
               </View>
               <Text style={styles.sectionDescription}>
                 Encountered an issue? Let us know so we can fix it.
               </Text>
+              
               <TextInput
                 style={styles.textArea}
                 value={bugDescription}
                 onChangeText={setBugDescription}
-                placeholder="Describe the issue you encountered..."
+                placeholder="Describe the bug you encountered..."
+                placeholderTextColor="#8E8E93"
                 multiline
-                numberOfLines={4}
+                numberOfLines={6}
                 textAlignVertical="top"
               />
+              
               <Button
-                title="Submit Report"
-                onPress={handleSubmit}
-                loading={isSubmitting}
+                title={isSubmitting ? "Submitting..." : "Submit Report"}
+                onPress={handleSubmitBug}
+                disabled={isSubmitting}
                 style={styles.submitButton}
+                icon={<Send size={18} color="white" />}
               />
             </View>
 
+            {/* Divider */}
             <View style={styles.divider} />
 
+            {/* Contact Support Section */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Mail size={20} color="#007AFF" style={styles.sectionIcon} />
+                <Mail size={24} color="#007AFF" />
                 <Text style={styles.sectionTitle}>Contact Support</Text>
               </View>
               <Text style={styles.sectionDescription}>
                 Need help with something else? Our support team is ready to assist you.
               </Text>
+              
               <Button
                 title="Email Support"
-                onPress={onContactSupport}
+                onPress={handleContactSupport}
                 variant="outline"
                 style={styles.contactButton}
+                icon={<Mail size={18} color="#007AFF" />}
               />
             </View>
           </View>
@@ -129,51 +138,43 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
-    paddingTop: 20,
-    paddingHorizontal: 16,
-    paddingBottom: 30,
     width: '100%',
     maxWidth: 400,
     maxHeight: '80%',
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
   closeButton: {
-    padding: 4,
+    padding: 8,
   },
   content: {
-    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 8,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  sectionIcon: {
-    marginRight: 8,
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#000000',
+    marginLeft: 12,
   },
   sectionDescription: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#8E8E93',
-    marginBottom: 16,
-    lineHeight: 20,
+    marginBottom: 20,
+    lineHeight: 22,
   },
   textArea: {
     height: 120,
@@ -190,13 +191,13 @@ const styles = StyleSheet.create({
   submitButton: {
     marginBottom: 8,
   },
-  contactButton: {
-    marginTop: 8,
-  },
   divider: {
     height: 1,
     backgroundColor: '#E5E5EA',
-    marginVertical: 16,
+    marginVertical: 24,
+  },
+  contactButton: {
+    marginTop: 8,
   },
 });
 
