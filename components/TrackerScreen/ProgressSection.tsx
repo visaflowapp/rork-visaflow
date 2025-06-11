@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import CircularProgress from '@/components/CircularProgress';
+import { CircularProgress } from '@/components/CircularProgress';
 
 interface ProgressSectionProps {
   daysLeft: number;
