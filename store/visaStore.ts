@@ -38,6 +38,7 @@ export const useVisaStore = create<VisaState>()(
       },
       
       addVisa: (visa) => {
+        console.log('VisaStore: Adding visa', visa);
         set({ isLoading: true });
         
         const newVisa = {
@@ -47,12 +48,16 @@ export const useVisaStore = create<VisaState>()(
           daysLeft: Math.ceil((new Date(visa.exit_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)),
         };
         
+        console.log('VisaStore: Created new visa object', newVisa);
+        
         setTimeout(() => {
+          console.log('VisaStore: Saving visa to state');
           set(state => ({
             activeVisas: [...state.activeVisas, newVisa].sort((a, b) => a.daysLeft - b.daysLeft),
             isLoading: false,
           }));
-        }, 500);
+          console.log('VisaStore: Visa saved successfully');
+        }, 100); // Reduced from 500ms to 100ms
       },
       
       removeVisa: (visaId: string) => {

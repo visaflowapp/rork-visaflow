@@ -8,8 +8,13 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
   const handleAddVisa = () => {
-    console.log('EmptyState: Add visa button pressed');
-    onAddVisa();
+    console.log('EmptyState: Add visa button pressed - calling onAddVisa');
+    try {
+      onAddVisa();
+      console.log('EmptyState: onAddVisa called successfully');
+    } catch (error) {
+      console.error('EmptyState: Error calling onAddVisa:', error);
+    }
   };
 
   return (

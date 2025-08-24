@@ -86,6 +86,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   onClose,
   onSave,
 }) => {
+  console.log('AddVisaModal: Rendered with visible =', visible);
   const [country, setCountry] = useState('');
   const [visaType, setVisaType] = useState('');
   const [entryDate, setEntryDate] = useState(new Date());
@@ -180,7 +181,12 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     }
   };
 
-  if (!visible) return null;
+  if (!visible) {
+    console.log('AddVisaModal: Not visible, returning null');
+    return null;
+  }
+  
+  console.log('AddVisaModal: Rendering modal content');
 
   const availableVisaTypes = country ? getVisaTypesForCountry(country) : [];
 
