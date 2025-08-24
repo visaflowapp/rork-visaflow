@@ -69,6 +69,7 @@ export default function TrackerScreen() {
       hasInitialized
     });
     setShowAddModal(true);
+    console.log('TrackerScreen: Modal state set to true');
   };
 
   const handleRemoveVisa = (visaId: string) => {
@@ -163,7 +164,6 @@ export default function TrackerScreen() {
                         extensionsAvailable={item.extensions_available}
                         daysLeft={item.daysLeft}
                         onRemove={handleRemoveVisa}
-                        style={styles.smallVisaCard}
                       />
                     </TouchableOpacity>
                   )}
@@ -172,13 +172,16 @@ export default function TrackerScreen() {
             )}
           </>
         ) : (
-          !showAddModal && <EmptyState onAddVisa={handleOpenAddModal} />
+          <EmptyState onAddVisa={handleOpenAddModal} />
         )}
       </View>
 
       <AddVisaModal 
         visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={() => {
+          console.log('TrackerScreen: Closing modal');
+          setShowAddModal(false);
+        }}
         onSave={handleAddVisa}
       />
     </View>

@@ -11,7 +11,7 @@ import {
   Alert
 } from 'react-native';
 import { X } from 'lucide-react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
 import SimpleDropdown from './SimpleDropdown';
 
@@ -181,6 +181,8 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
     }
   };
 
+  console.log('AddVisaModal: Render called with visible =', visible);
+  
   if (!visible) {
     console.log('AddVisaModal: Not visible, returning null');
     return null;
@@ -196,6 +198,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       animationType="slide"
       transparent={true}
       onRequestClose={handleClose}
+      onShow={() => console.log('AddVisaModal: Modal shown')}
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
@@ -205,6 +208,17 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               <X size={24} color="#000000" />
             </TouchableOpacity>
           </View>
+          
+          {/* Test button to verify modal is working */}
+          <TouchableOpacity 
+            style={{ backgroundColor: '#007AFF', padding: 16, borderRadius: 8, margin: 16 }}
+            onPress={() => {
+              console.log('Test button pressed!');
+              Alert.alert('Test', 'Modal is working!');
+            }}
+          >
+            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>TEST BUTTON - Modal Working</Text>
+          </TouchableOpacity>
 
           <ScrollView 
             style={styles.formContainer} 
@@ -322,8 +336,8 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             />
           </View>
 
-          {/* Date Pickers */}
-          {showEntryDatePicker && (
+          {/* Date Pickers - Temporarily disabled for testing */}
+          {/* {showEntryDatePicker && (
             <DateTimePicker
               value={entryDate}
               mode="date"
