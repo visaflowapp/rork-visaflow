@@ -8,7 +8,6 @@ import {
   TextStyle
 } from 'react-native';
 
-
 interface ButtonProps {
   title: string;
   onPress: () => void;
@@ -19,6 +18,7 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   icon?: () => React.ReactNode;
+  testID?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,12 +30,12 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   style,
   textStyle,
-  icon
+  icon,
+  testID,
 }) => {
   const getButtonStyle = () => {
     let buttonStyle: ViewStyle = {};
     
-    // Variant styles
     switch (variant) {
       case 'primary':
         buttonStyle = {
@@ -58,7 +58,6 @@ const Button: React.FC<ButtonProps> = ({
         break;
     }
     
-    // Size styles
     switch (size) {
       case 'small':
         buttonStyle = {
@@ -86,7 +85,6 @@ const Button: React.FC<ButtonProps> = ({
         break;
     }
     
-    // Disabled style
     if (disabled) {
       buttonStyle = {
         ...buttonStyle,
@@ -140,6 +138,7 @@ const Button: React.FC<ButtonProps> = ({
   
   return (
     <TouchableOpacity
+      testID={testID}
       style={[styles.button, getButtonStyle(), style]}
       onPress={onPress}
       disabled={disabled || loading}

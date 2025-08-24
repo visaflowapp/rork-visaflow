@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import Button from '@/components/Button';
 
 interface EmptyStateProps {
@@ -10,10 +10,12 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
   const handleAddVisa = () => {
     console.log('EmptyState: Add visa button pressed - calling onAddVisa');
     try {
+      Alert.alert('Add Visa', 'Opening the Add Visa form...');
       onAddVisa();
       console.log('EmptyState: onAddVisa called successfully');
     } catch (error) {
       console.error('EmptyState: Error calling onAddVisa:', error);
+      Alert.alert('Error', 'Could not open the Add Visa form.');
     }
   };
 
@@ -26,6 +28,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
           Add your first visa to start tracking your countdown
         </Text>
         <Button
+          testID="add-first-visa-btn"
           title="Add Your First Visa"
           onPress={handleAddVisa}
           style={styles.button}
