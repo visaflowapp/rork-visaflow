@@ -7,6 +7,11 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
+  const handleAddVisa = () => {
+    console.log('EmptyState: Add visa button pressed');
+    onAddVisa();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -17,7 +22,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onAddVisa }) => {
         </Text>
         <Button
           title="Add Your First Visa"
-          onPress={onAddVisa}
+          onPress={handleAddVisa}
           style={styles.button}
         />
       </View>

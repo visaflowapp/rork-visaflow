@@ -117,12 +117,20 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
   };
 
   const handleSave = () => {
+    console.log('Form validation:', {
+      country,
+      visaType,
+      entryDate,
+      exitDate,
+      isValid: isFormValid()
+    });
+    
     if (!isFormValid()) {
       Alert.alert('Missing Information', 'Please fill in all required fields and ensure exit date is after entry date.');
       return;
     }
 
-    onSave({
+    const visaData = {
       country,
       visa_type: visaType,
       entry_date: entryDate.toISOString().split('T')[0],
@@ -130,8 +138,10 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       duration: calculateDuration(),
       extensions_available: parseInt(extensionsAvailable, 10) || 0,
       notes: notes.trim() || undefined,
-    });
-
+    };
+    
+    console.log('Saving visa data:', visaData);
+    onSave(visaData);
     resetForm();
   };
 
@@ -335,6 +345,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               value={country}
               onSelect={handleCountrySelect}
               placeholder="Select country"
+              onClose={() => setShowCountryDropdown(false)}
             />
           )}
 
@@ -348,6 +359,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
                 setShowVisaTypeDropdown(false);
               }}
               placeholder="Select visa type"
+              onClose={() => setShowVisaTypeDropdown(false)}
             />
           )}
         </View>

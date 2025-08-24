@@ -16,6 +16,7 @@ interface SimpleDropdownProps {
   value: string;
   onSelect: (item: string) => void;
   placeholder?: string;
+  onClose?: () => void;
 }
 
 const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
@@ -23,7 +24,8 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   options,
   value,
   onSelect,
-  placeholder = 'Select an option'
+  placeholder = 'Select an option',
+  onClose
 }) => {
   const renderOption = ({ item }: { item: string }) => (
     <TouchableOpacity
@@ -53,7 +55,7 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
     >
       <Pressable 
         style={styles.modalOverlay}
-        onPress={() => onSelect(value)}
+        onPress={onClose}
       >
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{label}</Text>

@@ -50,6 +50,7 @@ export default function TrackerScreen() {
   }, [activeVisas]);
 
   const handleAddVisa = (visaData: any) => {
+    console.log('Adding visa:', visaData);
     addVisa(visaData);
     setShowAddModal(false);
   };
@@ -65,10 +66,10 @@ export default function TrackerScreen() {
     ? activeVisas.find(visa => visa.id === selectedVisa) 
     : activeVisas.length > 0 ? activeVisas[0] : null;
 
-  if (isLoading && hasInitialized) {
+  if (isLoading && !hasInitialized) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Making changes...</Text>
+        <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
   }
