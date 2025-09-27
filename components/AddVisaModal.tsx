@@ -11,7 +11,7 @@ import {
   Alert
 } from 'react-native';
 import { X } from 'lucide-react-native';
-// import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
 import SimpleDropdown from './SimpleDropdown';
 
@@ -209,17 +209,6 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             </TouchableOpacity>
           </View>
           
-          {/* Test button to verify modal is working */}
-          <TouchableOpacity 
-            style={{ backgroundColor: '#007AFF', padding: 16, borderRadius: 8, margin: 16 }}
-            onPress={() => {
-              console.log('Test button pressed!');
-              Alert.alert('Test', 'Modal is working!');
-            }}
-          >
-            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>TEST BUTTON - Modal Working</Text>
-          </TouchableOpacity>
-
           <ScrollView 
             style={styles.formContainer} 
             keyboardShouldPersistTaps="handled"
@@ -228,6 +217,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Country *</Text>
               <TouchableOpacity
+                testID="country-picker"
                 style={styles.dropdownButton}
                 onPress={() => setShowCountryDropdown(true)}
               >
@@ -240,6 +230,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Visa Type *</Text>
               <TouchableOpacity
+                testID="visa-type-picker"
                 style={[styles.dropdownButton, !country && styles.disabledButton]}
                 onPress={() => country && setShowVisaTypeDropdown(true)}
                 disabled={!country}
@@ -253,6 +244,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Entry Date *</Text>
               <TouchableOpacity
+                testID="entry-date-picker"
                 style={styles.dateInput}
                 onPress={() => setShowEntryDatePicker(true)}
               >
@@ -269,6 +261,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <View style={styles.formGroup}>
               <Text style={styles.label}>Exit Date *</Text>
               <TouchableOpacity
+                testID="exit-date-picker"
                 style={styles.dateInput}
                 onPress={() => setShowExitDatePicker(true)}
               >
@@ -320,12 +313,14 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
 
           <View style={styles.footer}>
             <Button
+              testID="cancel-add-visa"
               title="Cancel"
               onPress={handleClose}
               variant="outline"
               style={styles.footerButton}
             />
             <Button
+              testID="save-visa"
               title="Save Visa"
               onPress={handleSave}
               style={[
@@ -336,14 +331,13 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             />
           </View>
 
-          {/* Date Pickers - Temporarily disabled for testing */}
-          {/* {showEntryDatePicker && (
+          {showEntryDatePicker && (
             <DateTimePicker
               value={entryDate}
               mode="date"
-              display="default"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={onEntryDateChange}
-              minimumDate={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)} // Allow dates up to 30 days in the past
+              minimumDate={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)}
             />
           )}
 
@@ -351,13 +345,12 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             <DateTimePicker
               value={exitDate}
               mode="date"
-              display="default"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={onExitDateChange}
               minimumDate={entryDate}
             />
           )}
 
-          {/* Dropdowns */}
           {showCountryDropdown && (
             <SimpleDropdown
               label="Select Country"

@@ -18,14 +18,14 @@ export default function TrackerScreen() {
     addVisa,
     removeVisa 
   } = useVisaStore();
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
   
   // Debug modal state changes
   useEffect(() => {
     console.log('TrackerScreen: showAddModal changed to:', showAddModal);
   }, [showAddModal]);
   const [selectedVisa, setSelectedVisa] = useState<string | null>(null);
-  const [hasInitialized, setHasInitialized] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     if (!userId) {
@@ -54,7 +54,15 @@ export default function TrackerScreen() {
     }
   }, [activeVisas]);
 
-  const handleAddVisa = (visaData: any) => {
+  const handleAddVisa = (visaData: {
+    country: string;
+    visa_type: string;
+    entry_date: string;
+    exit_date: string;
+    duration: number;
+    extensions_available: number;
+    notes?: string;
+  }) => {
     console.log('TrackerScreen: Adding visa:', visaData);
     addVisa(visaData);
     setShowAddModal(false);
@@ -105,6 +113,7 @@ export default function TrackerScreen() {
           headerTitleAlign: 'center',
           headerRight: () => (
             <TouchableOpacity 
+              testID="new-visa-header-btn"
               style={styles.headerButton}
               onPress={handleOpenAddModal}
             >
