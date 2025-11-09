@@ -165,7 +165,7 @@ export default function PassportInfoScreen() {
           onPress={handleSave}
           loading={isLoading}
           style={styles.saveButton}
-          icon={<Save size={18} color={Colors.white} style={styles.saveIcon} />}
+          icon={() => <Save size={18} color={Colors.white} style={styles.saveIcon} />}
         />
       </View>
     </View>

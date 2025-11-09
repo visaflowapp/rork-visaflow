@@ -237,7 +237,6 @@ export default function SettingsScreen() {
       <ReportBugModal
         visible={showReportBugModal}
         onClose={() => setShowReportBugModal(false)}
-        onContactSupport={handleContactSupport}
       />
 
       {/* Delete Account Modal */}
