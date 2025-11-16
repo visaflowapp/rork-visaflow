@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, FlatList } from 'react-native';
 import { Stack } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useVisaStore } from '@/store/visaStore';
 import ProgressSection from '@/components/TrackerScreen/ProgressSection';
 import EmptyState from '@/components/TrackerScreen/EmptyState';
@@ -100,7 +101,12 @@ export default function TrackerScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#0052D4', '#4364F7', '#6FB1FC']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       <Stack.Screen 
         options={{ 
           title: 'Countdown',
@@ -193,34 +199,34 @@ export default function TrackerScreen() {
         }}
         onSave={handleAddVisa}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#007AFF',
   },
   loadingText: {
     color: 'white',
     fontSize: 18,
   },
   headerButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   headerButtonText: {
-    color: '#007AFF',
+    color: 'white',
     fontSize: 15,
     fontWeight: '600',
   },

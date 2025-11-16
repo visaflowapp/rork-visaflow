@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
 import { X } from 'lucide-react-native';
 import { getCountryFlag } from '@/utils/countryFlags';
+import { GlassView } from 'expo-glass-effect';
 
 interface VisaCardProps {
   id: string;
@@ -73,8 +74,11 @@ const VisaCard: React.FC<VisaCardProps> = ({
 
   const extensionDeadline = getExtensionDeadline();
 
+  const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
+  const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
+
   return (
-    <View style={[styles.card, style]}>
+    <GlassWrapper style={[styles.card, style]} {...glassProps}>
       {onRemove && (
         <TouchableOpacity 
           style={styles.removeButton}
@@ -148,35 +152,39 @@ const VisaCard: React.FC<VisaCardProps> = ({
           </>
         )}
       </View>
-    </View>
+    </GlassWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 24,
+    padding: 24,
     marginHorizontal: 8,
-    width: 280,
+    width: 320,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 15,
     position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   removeButton: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#F2F2F7',
+    top: 16,
+    right: 16,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
   header: {
     flexDirection: 'row',
@@ -194,10 +202,13 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   country: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000',
+    color: 'white',
     flex: 1,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   statusContainer: {
     alignItems: 'center',
@@ -207,17 +218,22 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   daysLeft: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#000000',
+    color: 'white',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   visaTypeBadge: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
     borderRadius: 25,
     alignSelf: 'flex-start',
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   visaTypeText: {
     color: 'white',
@@ -228,21 +244,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   progressBar: {
-    height: 10,
-    backgroundColor: '#F2F2F7',
-    borderRadius: 5,
+    height: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 6,
     overflow: 'hidden',
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 6,
   },
   progressText: {
     fontSize: 14,
-    color: '#C7C7CC',
+    color: 'white',
     textAlign: 'right',
-    fontWeight: '500',
+    fontWeight: '600',
+    opacity: 0.9,
   },
   detailsContainer: {
     marginTop: 8,
@@ -250,31 +269,34 @@ const styles = StyleSheet.create({
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#007AFF',
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
   },
   detailLabel: {
     fontSize: 16,
-    color: '#000000',
+    color: 'white',
     fontWeight: '600',
+    opacity: 0.9,
   },
   detailValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000000',
+    color: 'white',
   },
   extensionDeadline: {
     marginTop: 12,
-    padding: 12,
-    backgroundColor: 'rgba(255, 59, 48, 0.1)',
-    borderRadius: 12,
+    padding: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   extensionText: {
     fontSize: 13,
-    color: '#FF3B30',
+    color: 'white',
     textAlign: 'center',
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
 

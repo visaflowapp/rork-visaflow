@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { Stack } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { GlassView } from 'expo-glass-effect';
 import AlertCard from '@/components/AlertCard';
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
@@ -27,19 +29,27 @@ export default function AlertsScreen() {
     markAllAlertsAsRead();
   };
 
+  const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
+  const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
+
   const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
+    <GlassWrapper style={styles.emptyContainer} {...glassProps}>
       <Text style={styles.emptyTitle}>No Notifications</Text>
       <Text style={styles.emptyText}>
         You are all caught up! We will notify you when there are new visa alerts or policy changes.
       </Text>
-    </View>
+    </GlassWrapper>
   );
 
   const hasUnreadAlerts = alerts.some(alert => !alert.is_read);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#0052D4', '#4364F7', '#6FB1FC']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       <Stack.Screen 
         options={{ 
           title: 'Notifications',
@@ -56,7 +66,7 @@ export default function AlertsScreen() {
                 style={styles.markAllButton}
                 onPress={handleMarkAllAsRead}
               >
-                <CheckCircle size={16} color="#007AFF" style={styles.markAllIcon} />
+                <CheckCircle size={16} color="white" style={styles.markAllIcon} />
                 <Text style={styles.markAllButtonText}>Mark all as read</Text>
               </TouchableOpacity>
             ) : null
@@ -84,14 +94,13 @@ export default function AlertsScreen() {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={renderEmptyState}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
   },
   listContainer: {
     paddingTop: 16,
@@ -100,29 +109,26 @@ const styles = StyleSheet.create({
   markAllButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 16,
     marginRight: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   markAllIcon: {
     marginRight: 4,
   },
   markAllButtonText: {
-    color: '#007AFF',
+    color: 'white',
     fontSize: 13,
     fontWeight: '600',
   },
   emptyContainer: {
     padding: 24,
-    backgroundColor: 'white',
-    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 24,
     marginHorizontal: 16,
     marginTop: 16,
     alignItems: 'center',
@@ -132,17 +138,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 30,
     elevation: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   emptyTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: 'white',
     marginBottom: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   emptyText: {
-    fontSize: 14,
-    color: '#C7C7CC',
+    fontSize: 15,
+    color: 'white',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 22,
+    opacity: 0.9,
   },
 });

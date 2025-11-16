@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Clock, FileText, Building, CreditCard, Calendar } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { Swipeable } from 'react-native-gesture-handler';
+import { GlassView } from 'expo-glass-effect';
 
 interface AlertCardProps {
   id: string;
@@ -42,21 +43,20 @@ const AlertCard: React.FC<AlertCardProps> = ({
     }
   };
 
-  // Render icon based on type
   const renderIcon = () => {
     switch (icon) {
       case 'clock':
-        return <Clock size={24} color="#007AFF" />;
+        return <Clock size={28} color="white" />;
       case 'file-text':
-        return <FileText size={24} color="#007AFF" />;
+        return <FileText size={28} color="white" />;
       case 'building':
-        return <Building size={24} color="#007AFF" />;
+        return <Building size={28} color="white" />;
       case 'credit-card':
-        return <CreditCard size={24} color="#007AFF" />;
+        return <CreditCard size={28} color="white" />;
       case 'calendar':
-        return <Calendar size={24} color="#007AFF" />;
+        return <Calendar size={28} color="white" />;
       default:
-        return <Clock size={24} color="#007AFF" />;
+        return <Clock size={28} color="white" />;
     }
   };
 
@@ -72,9 +72,12 @@ const AlertCard: React.FC<AlertCardProps> = ({
     );
   };
 
+  const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
+  const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
+
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <View style={[styles.card, isRead && styles.readCard]}>
+      <GlassWrapper style={[styles.card, isRead && styles.readCard]} {...glassProps}>
         {!isRead && <View style={styles.unreadIndicator} />}
         <View style={styles.iconContainer}>{renderIcon()}</View>
         <View style={styles.contentContainer}>
@@ -82,7 +85,7 @@ const AlertCard: React.FC<AlertCardProps> = ({
           <Text style={styles.description}>{description}</Text>
           <Text style={styles.timestamp}>{formatTime(timestamp)}</Text>
         </View>
-      </View>
+      </GlassWrapper>
     </Swipeable>
   );
 };
@@ -90,9 +93,9 @@ const AlertCard: React.FC<AlertCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 20,
+    padding: 20,
     marginHorizontal: 16,
     marginVertical: 8,
     shadowColor: '#000',
@@ -101,46 +104,58 @@ const styles = StyleSheet.create({
     shadowRadius: 30,
     elevation: 20,
     position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   readCard: {
     opacity: 0.7,
   },
   unreadIndicator: {
     position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#007AFF',
+    top: 20,
+    right: 20,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#34C759',
+    borderWidth: 2,
+    borderColor: 'white',
   },
   iconContainer: {
     marginRight: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   contentContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 4,
+    color: 'white',
+    marginBottom: 6,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   description: {
     fontSize: 14,
-    color: '#000000',
+    color: 'white',
     marginBottom: 8,
     lineHeight: 20,
+    opacity: 0.95,
   },
   timestamp: {
     fontSize: 12,
-    color: '#C7C7CC',
+    color: 'white',
+    opacity: 0.7,
+    fontWeight: '600',
   },
   deleteAction: {
     backgroundColor: '#FF3B30',
