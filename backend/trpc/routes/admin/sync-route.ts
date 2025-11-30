@@ -78,7 +78,9 @@ export const ingestMultipleRoute = publicProcedure
 
       return {
         success: true,
-        ...result,
+        ingestedCount: result.success,
+        failedCount: result.failed,
+        errors: result.errors,
       };
     } catch (error) {
       console.error('[ingestMultipleRoute] Error:', error);
