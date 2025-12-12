@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'r
 import { X } from 'lucide-react-native';
 import { getCountryFlag } from '@/utils/countryFlags';
 import { GlassView } from 'expo-glass-effect';
+import Colors from '@/constants/colors';
 
 interface VisaCardProps {
   id: string;
@@ -40,7 +41,6 @@ const VisaCard: React.FC<VisaCardProps> = ({
 
   // Calculate progress percentage
   const calculateProgress = () => {
-    const today = new Date();
     const entry = new Date(entryDate);
     const exit = new Date(exitDate);
     const totalDays = Math.ceil((exit.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
@@ -50,10 +50,18 @@ const VisaCard: React.FC<VisaCardProps> = ({
 
   // Get progress color based on days left
   const getProgressColor = () => {
-    if (daysLeft > 30) return '#34C759';
-    if (daysLeft > 14) return '#34C759';
-    if (daysLeft > 7) return '#FFD700';
-    return '#FF3B30';
+    if (daysLeft > 30) return Colors.glowGreen;
+    if (daysLeft > 14) return Colors.accentTeal;
+    if (daysLeft > 7) return Colors.warningAmber;
+    return Colors.criticalRed;
+  };
+
+  // Get neon glow color
+  const getNeonGlowColor = () => {
+    if (daysLeft > 30) return Colors.glowGreen;
+    if (daysLeft > 14) return Colors.neonBlue;
+    if (daysLeft > 7) return Colors.warningAmber;
+    return Colors.criticalRed;
   };
 
   // Get status emoji
@@ -78,7 +86,9 @@ const VisaCard: React.FC<VisaCardProps> = ({
   const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
 
   return (
-    <GlassWrapper style={[styles.card, style]} {...glassProps}>
+    <View style={[styles.cardContainer, style]}>
+      <View style={[styles.neonGlow, { shadowColor: getNeonGlowColor() }]} />
+      <GlassWrapper style={styles.card} {...glassProps}>
       {onRemove && (
         <TouchableOpacity 
           style={styles.removeButton}
@@ -152,25 +162,36 @@ const VisaCard: React.FC<VisaCardProps> = ({
           </>
         )}
       </View>
-    </GlassWrapper>
+      </GlassWrapper>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 24,
-    padding: 24,
+  cardContainer: {
+    position: 'relative',
     marginHorizontal: 8,
     width: 320,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
+  },
+  neonGlow: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 24,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
     elevation: 15,
+  },
+  card: {
+    backgroundColor: 'rgba(13, 27, 42, 0.8)',
+    borderRadius: 24,
+    padding: 24,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 212, 255, 0.3)',
     position: 'relative',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   removeButton: {
     position: 'absolute',
@@ -204,11 +225,11 @@ const styles = StyleSheet.create({
   country: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: Colors.white,
     flex: 1,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    textShadowColor: Colors.neonBlue,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   statusContainer: {
     alignItems: 'center',
@@ -220,41 +241,46 @@ const styles = StyleSheet.create({
   daysLeft: {
     fontSize: 20,
     fontWeight: '700',
-    color: 'white',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    color: Colors.electricCyan,
+    textShadowColor: Colors.neonBlue,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   visaTypeBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(0, 212, 255, 0.15)',
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderRadius: 25,
     alignSelf: 'flex-start',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderColor: Colors.neonBlue,
   },
   visaTypeText: {
-    color: 'white',
-    fontWeight: '600',
+    color: Colors.electricCyan,
+    fontWeight: '700',
     fontSize: 14,
+    letterSpacing: 0.5,
   },
   progressContainer: {
     marginBottom: 20,
   },
   progressBar: {
-    height: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 6,
+    height: 8,
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(0, 212, 255, 0.3)',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: 4,
+    shadowColor: '#00D4FF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
   },
   progressText: {
     fontSize: 14,
@@ -271,32 +297,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+    borderBottomColor: 'rgba(0, 212, 255, 0.15)',
   },
   detailLabel: {
     fontSize: 16,
-    color: 'white',
-    fontWeight: '600',
-    opacity: 0.9,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontWeight: '500',
+    letterSpacing: 0.3,
   },
   detailValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: 'white',
+    color: Colors.electricCyan,
   },
   extensionDeadline: {
     marginTop: 12,
     padding: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: 'rgba(178, 75, 243, 0.15)',
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: Colors.neonPurple,
   },
   extensionText: {
     fontSize: 13,
-    color: 'white',
+    color: Colors.neonPurple,
     textAlign: 'center',
     fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });
 

@@ -45,7 +45,7 @@ export default function AlertsScreen() {
 
   return (
     <LinearGradient
-      colors={['#0052D4', '#4364F7', '#6FB1FC']}
+      colors={[Colors.deepBlue, Colors.spaceDark, Colors.cosmicBlue]}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -53,7 +53,9 @@ export default function AlertsScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Notifications',
-          headerStyle: { backgroundColor: '#007AFF' },
+          headerStyle: { 
+            backgroundColor: Colors.deepBlue,
+          },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -127,28 +129,26 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     padding: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(13, 27, 42, 0.8)',
     borderRadius: 24,
     marginHorizontal: 16,
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
+    shadowColor: Colors.neonBlue,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
     elevation: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 212, 255, 0.3)',
   },
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: Colors.electricCyan,
     marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    letterSpacing: 0.5,
   },
   emptyText: {
     fontSize: 15,

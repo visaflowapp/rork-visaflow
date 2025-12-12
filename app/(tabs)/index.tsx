@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, FlatList } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, FlatList, Animated } from 'react-native';
 import { Stack } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 import ProgressSection from '@/components/TrackerScreen/ProgressSection';
 import EmptyState from '@/components/TrackerScreen/EmptyState';
@@ -10,6 +11,24 @@ import { getProgressPercentage } from '@/utils/visaHelpers';
 import VisaCard from '@/components/VisaCard';
 
 export default function TrackerScreen() {
+  const pulseAnim = React.useRef(new Animated.Value(1)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [pulseAnim]);
   const { 
     activeVisas, 
     isLoading, 
@@ -102,7 +121,7 @@ export default function TrackerScreen() {
 
   return (
     <LinearGradient
-      colors={['#0052D4', '#4364F7', '#6FB1FC']}
+      colors={[Colors.deepBlue, Colors.spaceDark, Colors.cosmicBlue]}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -110,7 +129,9 @@ export default function TrackerScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Countdown',
-          headerStyle: { backgroundColor: '#007AFF' },
+          headerStyle: { 
+            backgroundColor: Colors.deepBlue,
+          },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -123,7 +144,14 @@ export default function TrackerScreen() {
               style={styles.headerButton}
               onPress={handleOpenAddModal}
             >
-              <Text style={styles.headerButtonText}>New Visa</Text>
+              <LinearGradient
+                colors={[Colors.neonBlue, Colors.electricCyan]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.headerButtonGradient}
+              >
+                <Text style={styles.headerButtonText}>+ New Visa</Text>
+              </LinearGradient>
             </TouchableOpacity>
           ),
         }} 
@@ -257,5 +285,12 @@ const styles = StyleSheet.create({
   },
   smallVisaCard: {
     transform: [{ scale: 0.85 }],
+  },
+  headerButtonGradient: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

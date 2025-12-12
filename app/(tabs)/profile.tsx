@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link, Trash2, Fingerprint } from 'lucide-react-native';
+import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
-import Colors from '@/constants/colors';
+
 import { useVisaStore } from '@/store/visaStore';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,15 +12,7 @@ import ReportBugModal from '@/components/ReportBugModal';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
 import CancelSubscriptionModal from '@/components/CancelSubscriptionModal';
 
-const languages = [
-  'English',
-  'Spanish',
-  'German',
-  'French',
-  'Mandarin (Simplified Chinese)',
-  'Portuguese',
-  'Russian'
-];
+
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -28,15 +20,14 @@ export default function SettingsScreen() {
     userProfile, 
     toggleNotifications,
     userId,
-    loadUserData,
-    updateProfile 
+    loadUserData
   } = useVisaStore();
 
-  const [language, setLanguage] = useState('English');
+
   const [showReportBugModal, setShowReportBugModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false);
-  const [biometricEnabled, setBiometricEnabled] = useState(false);
+
 
   useEffect(() => {
     if (userId) {
@@ -93,9 +84,7 @@ export default function SettingsScreen() {
     router.push('/screens/HelpSupportScreen');
   };
 
-  const handleContactSupport = () => {
-    Linking.openURL('mailto:support@visaflow.app?subject=Support Request&body=Hello, I need assistance with...');
-  };
+
 
   const handleLogout = async () => {
     try {

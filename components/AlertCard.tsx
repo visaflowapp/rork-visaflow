@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Clock, FileText, Building, CreditCard, Calendar } from 'lucide-react-native';
-import Colors from '@/constants/colors';
 import { Swipeable } from 'react-native-gesture-handler';
 import { GlassView } from 'expo-glass-effect';
+import Colors from '@/constants/colors';
 
 interface AlertCardProps {
   id: string;
@@ -44,19 +44,20 @@ const AlertCard: React.FC<AlertCardProps> = ({
   };
 
   const renderIcon = () => {
+    const iconColor = Colors.neonBlue;
     switch (icon) {
       case 'clock':
-        return <Clock size={28} color="white" />;
+        return <Clock size={28} color={iconColor} />;
       case 'file-text':
-        return <FileText size={28} color="white" />;
+        return <FileText size={28} color={iconColor} />;
       case 'building':
-        return <Building size={28} color="white" />;
+        return <Building size={28} color={iconColor} />;
       case 'credit-card':
-        return <CreditCard size={28} color="white" />;
+        return <CreditCard size={28} color={iconColor} />;
       case 'calendar':
-        return <Calendar size={28} color="white" />;
+        return <Calendar size={28} color={iconColor} />;
       default:
-        return <Clock size={28} color="white" />;
+        return <Clock size={28} color={iconColor} />;
     }
   };
 
@@ -93,19 +94,19 @@ const AlertCard: React.FC<AlertCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(13, 27, 42, 0.8)',
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 16,
     marginVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
+    shadowColor: Colors.neonBlue,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
     elevation: 20,
     position: 'relative',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 212, 255, 0.3)',
   },
   readCard: {
     opacity: 0.7,
@@ -117,9 +118,13 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#34C759',
+    backgroundColor: Colors.glowGreen,
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: Colors.white,
+    shadowColor: Colors.glowGreen,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
   },
   iconContainer: {
     marginRight: 16,
@@ -128,9 +133,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    borderWidth: 1.5,
+    borderColor: Colors.neonBlue,
+    shadowColor: Colors.neonBlue,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
   },
   contentContainer: {
     flex: 1,
@@ -138,11 +147,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: 'white',
+    color: Colors.electricCyan,
     marginBottom: 6,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    letterSpacing: 0.3,
   },
   description: {
     fontSize: 14,

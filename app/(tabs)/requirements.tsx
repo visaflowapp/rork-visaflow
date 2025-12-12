@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Modal,
   FlatList,
-  Pressable,
+
   KeyboardAvoidingView,
   Platform,
   Linking,
@@ -18,7 +18,7 @@ import {
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+
 import { countries } from '@/constants/mockData';
 import { getCountryFlag } from '@/utils/countryFlags';
 
@@ -70,13 +70,8 @@ export default function RequirementsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
 
-  // Update marked dates when start/end dates change
-  useEffect(() => {
-    updateMarkedDates();
-  }, [startDate, endDate, tripType]);
-
   // Update marked dates for calendar
-  const updateMarkedDates = () => {
+  const updateMarkedDates = React.useCallback(() => {
     const startDateStr = formatDateForCalendar(startDate);
     const endDateStr = formatDateForCalendar(endDate);
     
@@ -106,7 +101,12 @@ export default function RequirementsScreen() {
       
       setMarkedDates(range);
     }
-  };
+  }, [startDate, endDate, tripType]);
+
+  // Update marked dates when start/end dates change
+  useEffect(() => {
+    updateMarkedDates();
+  }, [updateMarkedDates]);
 
   // Filter countries based on search query
   const filteredCountries = countries.filter(country => 
@@ -751,7 +751,7 @@ export default function RequirementsScreen() {
                       </Text>
                     </View>
                     <Text style={styles.resultItemDescription}>
-                      You don't need a visa for {toCountry} if you have a {passportCountry} passport.
+                      You don&apos;t need a visa for {toCountry} if you have a {passportCountry} passport.
                     </Text>
                     <TouchableOpacity 
                       style={styles.seeDetailsButton}

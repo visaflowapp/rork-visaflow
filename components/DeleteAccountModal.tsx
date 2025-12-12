@@ -93,7 +93,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </View>
             
             <Text style={styles.confirmationLabel}>
-              Type "delete" to confirm:
+              Type &quot;delete&quot; to confirm:
             </Text>
             
             <TextInput

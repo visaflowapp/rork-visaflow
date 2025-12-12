@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { VisaState } from './types';
-import { dummyVisas, dummyAlerts, dummyProfile } from '@/mocks/visaData';
+import { dummyProfile } from '@/mocks/visaData';
 
 export const useVisaStore = create<VisaState>()(
   persist(

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { CreditCard, Calendar, ExternalLink, AlertTriangle } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, Linking, Alert } from 'react-native';
+import { Stack } from 'expo-router';
+import { CreditCard, Calendar, AlertTriangle } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import Button from '@/components/Button';
 import CancelSubscriptionModal from '@/components/CancelSubscriptionModal';
 
 export default function BillingSubscriptionScreen() {
-  const router = useRouter();
   const [showCancelModal, setShowCancelModal] = useState(false);
   
   // Mock subscription data

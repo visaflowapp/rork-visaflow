@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { CircularProgress } from '@/components/CircularProgress';
 import { GlassView } from 'expo-glass-effect';
+import Colors from '@/constants/colors';
 
 interface ProgressSectionProps {
   daysLeft: number;
@@ -11,10 +12,10 @@ interface ProgressSectionProps {
 const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress }) => {
   // Get progress color based on days left
   const getProgressColor = () => {
-    if (daysLeft > 30) return '#34C759';
-    if (daysLeft > 14) return '#34C759';
-    if (daysLeft > 7) return '#FFD700';
-    return '#FF3B30';
+    if (daysLeft > 30) return Colors.glowGreen;
+    if (daysLeft > 14) return Colors.accentTeal;
+    if (daysLeft > 7) return Colors.warningAmber;
+    return Colors.criticalRed;
   };
 
   const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
@@ -22,21 +23,23 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({ daysLeft, progress })
 
   return (
     <View style={styles.container}>
-      <GlassWrapper style={styles.glassCard} {...glassProps}>
-        <View style={styles.progressContainer}>
-          <CircularProgress
-            size={240}
-            strokeWidth={18}
-            progress={progress}
-            color={getProgressColor()}
-            backgroundColor="rgba(255, 255, 255, 0.2)"
-          />
-          <View style={styles.centerContent}>
-            <Text style={styles.daysNumber}>{daysLeft}</Text>
-            <Text style={styles.daysLabel}>DAYS LEFT</Text>
+      <View style={[styles.glowContainer, { shadowColor: getProgressColor() }]}>
+        <GlassWrapper style={styles.glassCard} {...glassProps}>
+          <View style={styles.progressContainer}>
+            <CircularProgress
+              size={240}
+              strokeWidth={18}
+              progress={progress}
+              color={getProgressColor()}
+              backgroundColor="rgba(0, 212, 255, 0.1)"
+            />
+            <View style={styles.centerContent}>
+              <Text style={[styles.daysNumber, { color: getProgressColor() }]}>{daysLeft}</Text>
+              <Text style={styles.daysLabel}>DAYS LEFT</Text>
+            </View>
           </View>
-        </View>
-      </GlassWrapper>
+        </GlassWrapper>
+      </View>
     </View>
   );
 };
@@ -47,17 +50,18 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     paddingHorizontal: 20,
   },
+  glowContainer: {
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 20,
+  },
   glassCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(13, 27, 42, 0.7)',
     borderRadius: 30,
     padding: 30,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.2,
-    shadowRadius: 40,
-    elevation: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 212, 255, 0.3)',
   },
   progressContainer: {
     position: 'relative',
@@ -72,22 +76,21 @@ const styles = StyleSheet.create({
   daysNumber: {
     fontSize: 72,
     fontWeight: 'bold',
-    color: 'white',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    textShadowColor: Colors.neonBlue,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
   },
   daysLabel: {
     fontSize: 18,
     fontWeight: '700',
-    color: 'white',
+    color: Colors.electricCyan,
     textAlign: 'center',
-    letterSpacing: 2,
+    letterSpacing: 3,
     marginTop: 4,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    textShadowColor: Colors.neonBlue,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
 });
 

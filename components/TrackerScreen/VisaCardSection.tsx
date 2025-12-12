@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import VisaCard from '@/components/VisaCard';
 import { VisaRecord } from '@/store/types';
-import Colors from '@/constants/colors';
+
 
 interface VisaCardSectionProps {
   visas: VisaRecord[];

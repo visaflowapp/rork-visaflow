@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, Linking } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { Bug, Mail, Send, ArrowLeft } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { View, Text, StyleSheet, ScrollView, TextInput, Alert, Linking } from 'react-native';
+import { Stack } from 'expo-router';
+import { Bug, Mail, Send } from 'lucide-react-native';
 import Button from '@/components/Button';
 
 export default function HelpSupportScreen() {
-  const router = useRouter();
   const [bugDescription, setBugDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, Linking } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Bug, Mail, Send, ArrowLeft } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+
 import Button from '@/components/Button';
 
 export default function HelpSupportScreen() {

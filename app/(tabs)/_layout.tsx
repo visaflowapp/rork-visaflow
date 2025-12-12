@@ -7,19 +7,19 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: Colors.neonBlue,
+        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
         tabBarStyle: {
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.deepBlue,
           borderTopWidth: 1,
-          borderTopColor: Colors.border,
+          borderTopColor: 'rgba(0, 212, 255, 0.3)',
           height: 44,
           paddingBottom: 2,
           paddingTop: 2,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
+          shadowColor: Colors.neonBlue,
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.5,
+          shadowRadius: 15,
           elevation: 10,
         },
         tabBarLabelStyle: {
@@ -31,9 +31,11 @@ export default function TabLayout() {
           marginTop: 0,
         },
         headerStyle: {
-          backgroundColor: Colors.primary,
+          backgroundColor: Colors.deepBlue,
+          borderBottomWidth: 1,
+          borderBottomColor: 'rgba(0, 212, 255, 0.3)',
         },
-        headerTintColor: Colors.white,
+        headerTintColor: Colors.electricCyan,
         headerTitleStyle: {
           fontWeight: 'bold',
           textAlign: 'center',
