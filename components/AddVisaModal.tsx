@@ -14,6 +14,7 @@ import { X } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Button from './Button';
 import SimpleDropdown from './SimpleDropdown';
+import { getCountryFlag, getAllCountries } from '@/utils/countryFlags';
 
 interface AddVisaModalProps {
   visible: boolean;
@@ -57,29 +58,7 @@ const getVisaTypesForCountry = (country: string): string[] => {
   return visaTypesByCountry[country] || ['Tourist Visa', 'Business Visa', 'Digital Nomad Visa'];
 };
 
-// Popular countries for digital nomads
-const popularCountries = [
-  'Indonesia', 
-  'Thailand',
-  'Malaysia',
-  'Philippines',
-  'Vietnam',
-  'Singapore',
-  'Cambodia',
-  'Japan',
-  'South Korea',
-  'Taiwan',
-  'Mexico',
-  'Colombia',
-  'Brazil',
-  'Portugal',
-  'Spain',
-  'Italy',
-  'Greece',
-  'Croatia',
-  'Georgia',
-  'Turkey'
-];
+const allCountries = getAllCountries();
 
 const AddVisaModal: React.FC<AddVisaModalProps> = ({
   visible,
@@ -216,13 +195,13 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
           >
             <View style={styles.formGroup}>
               <Text style={styles.label}>Country *</Text>
-              <TouchableOpacity
+<TouchableOpacity
                 testID="country-picker"
                 style={styles.dropdownButton}
                 onPress={() => setShowCountryDropdown(true)}
               >
                 <Text style={country ? styles.dropdownText : styles.placeholderText}>
-                  {country || 'Select country'}
+                  {country ? `${getCountryFlag(country)} ${country}` : 'Select country'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -351,14 +330,15 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             />
           )}
 
-          {showCountryDropdown && (
+{showCountryDropdown && (
             <SimpleDropdown
               label="Select Country"
-              options={popularCountries}
+              options={allCountries}
               value={country}
               onSelect={handleCountrySelect}
               placeholder="Select country"
               onClose={() => setShowCountryDropdown(false)}
+              renderOption={(item) => `${getCountryFlag(item)} ${item}`}
             />
           )}
 

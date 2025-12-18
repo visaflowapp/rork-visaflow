@@ -17,6 +17,7 @@ interface SimpleDropdownProps {
   onSelect: (item: string) => void;
   placeholder?: string;
   onClose?: () => void;
+  renderOption?: (item: string) => string;
 }
 
 const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
@@ -25,9 +26,10 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   value,
   onSelect,
   placeholder = 'Select an option',
-  onClose
+  onClose,
+  renderOption
 }) => {
-  const renderOption = ({ item }: { item: string }) => (
+const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={[
         styles.option,
@@ -39,7 +41,7 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         styles.optionText,
         item === value && styles.selectedOptionText
       ]}>
-        {item}
+        {renderOption ? renderOption(item) : item}
       </Text>
       {item === value && (
         <Check size={20} color="#007AFF" />
@@ -59,9 +61,9 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       >
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{label}</Text>
-          <FlatList
+<FlatList
             data={options}
-            renderItem={renderOption}
+            renderItem={renderItem}
             keyExtractor={(item) => item}
             style={styles.optionsList}
             showsVerticalScrollIndicator={false}
