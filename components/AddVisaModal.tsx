@@ -339,6 +339,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
               placeholder="Select country"
               onClose={() => setShowCountryDropdown(false)}
               renderOption={(item) => `${getCountryFlag(item)} ${item}`}
+              searchable={true}
             />
           )}
 

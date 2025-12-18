@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   View, 
   Text, 
@@ -6,9 +6,10 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  Pressable
+  Pressable,
+  TextInput
 } from 'react-native';
-import { Check } from 'lucide-react-native';
+import { Check, Search } from 'lucide-react-native';
 
 interface SimpleDropdownProps {
   label: string;
@@ -18,6 +19,7 @@ interface SimpleDropdownProps {
   placeholder?: string;
   onClose?: () => void;
   renderOption?: (item: string) => string;
+  searchable?: boolean;
 }
 
 const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
@@ -27,8 +29,20 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   onSelect,
   placeholder = 'Select an option',
   onClose,
-  renderOption
+  renderOption,
+  searchable = false
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchQuery.trim()) {
+      return options;
+    }
+    const query = searchQuery.toLowerCase();
+    return options.filter(option => 
+      option.toLowerCase().includes(query)
+    );
+  }, [options, searchQuery, searchable]);
 const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={[
@@ -61,8 +75,21 @@ const renderItem = ({ item }: { item: string }) => (
       >
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{label}</Text>
-<FlatList
-            data={options}
+          {searchable && (
+            <View style={styles.searchContainer}>
+              <Search size={20} color="#8E8E93" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search..."
+                placeholderTextColor="#8E8E93"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                autoFocus={true}
+              />
+            </View>
+          )}
+          <FlatList
+            data={filteredOptions}
             renderItem={renderItem}
             keyExtractor={(item) => item}
             style={styles.optionsList}
@@ -85,8 +112,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,
-    width: '80%',
-    maxHeight: '60%',
+    width: '85%',
+    maxHeight: '70%',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F2F2F7',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    height: 44,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000000',
+    height: '100%',
   },
   modalTitle: {
     fontSize: 18,
