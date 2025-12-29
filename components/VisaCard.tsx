@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { X } from 'lucide-react-native';
 import { getCountryFlag } from '@/utils/countryFlags';
-import { GlassView } from 'expo-glass-effect';
 import Colors from '@/constants/colors';
 
 interface VisaCardProps {
@@ -30,7 +29,6 @@ const VisaCard: React.FC<VisaCardProps> = ({
   onRemove,
   style,
 }) => {
-  // Format dates for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -39,7 +37,6 @@ const VisaCard: React.FC<VisaCardProps> = ({
     });
   };
 
-  // Calculate progress percentage
   const calculateProgress = () => {
     const entry = new Date(entryDate);
     const exit = new Date(exitDate);
@@ -48,170 +45,144 @@ const VisaCard: React.FC<VisaCardProps> = ({
     return Math.max(0, Math.min(100, (usedDays / totalDays) * 100));
   };
 
-  // Get progress color based on days left
   const getProgressColor = () => {
-    if (daysLeft > 30) return Colors.glowGreen;
-    if (daysLeft > 14) return Colors.accentTeal;
-    if (daysLeft > 7) return Colors.warningAmber;
-    return Colors.criticalRed;
+    if (daysLeft > 30) return Colors.success;
+    if (daysLeft > 14) return Colors.secondary;
+    if (daysLeft > 7) return Colors.warning;
+    return Colors.error;
   };
 
-  // Get neon glow color
-  const getNeonGlowColor = () => {
-    if (daysLeft > 30) return Colors.glowGreen;
-    if (daysLeft > 14) return Colors.neonBlue;
-    if (daysLeft > 7) return Colors.warningAmber;
-    return Colors.criticalRed;
-  };
-
-  // Get status emoji
   const getStatusEmoji = () => {
-    if (daysLeft > 30) return '✅';
-    if (daysLeft > 14) return '✅';
-    if (daysLeft > 7) return '⚠️';
-    return '❌';
+    if (daysLeft > 30) return '✓';
+    if (daysLeft > 14) return '✓';
+    if (daysLeft > 7) return '⚠';
+    return '!';
   };
 
-  // Calculate extension deadline
   const getExtensionDeadline = () => {
     if (extensionsAvailable === 0) return null;
     const extensionDeadline = new Date(exitDate);
-    extensionDeadline.setDate(extensionDeadline.getDate() - 30); // 30 days before expiry
+    extensionDeadline.setDate(extensionDeadline.getDate() - 30);
     return extensionDeadline;
   };
 
   const extensionDeadline = getExtensionDeadline();
 
-  const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
-  const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
-
   return (
     <View style={[styles.cardContainer, style]}>
-      <View style={[styles.neonGlow, { shadowColor: getNeonGlowColor() }]} />
-      <GlassWrapper style={styles.card} {...glassProps}>
-      {onRemove && (
-        <TouchableOpacity 
-          style={styles.removeButton}
-          onPress={() => onRemove(id)}
-        >
-          <X size={16} color="#C7C7CC" />
-        </TouchableOpacity>
-      )}
-      
-      <View style={styles.header}>
-        <View style={styles.countryContainer}>
-          <Text style={styles.flag}>{getCountryFlag(country)}</Text>
-          <Text style={styles.country}>{country}</Text>
-        </View>
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusEmoji}>{getStatusEmoji()}</Text>
-          <Text style={styles.daysLeft}>{daysLeft}d</Text>
-        </View>
-      </View>
-
-      <View style={styles.visaTypeBadge}>
-        <Text style={styles.visaTypeText}>{visaType}</Text>
-      </View>
-
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View 
-            style={[
-              styles.progressFill, 
-              { 
-                width: `${calculateProgress()}%`,
-                backgroundColor: getProgressColor()
-              }
-            ]} 
-          />
-        </View>
-        <Text style={styles.progressText}>
-          {Math.round(calculateProgress())}% used
-        </Text>
-      </View>
-
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Entry</Text>
-          <Text style={styles.detailValue}>{formatDate(entryDate)}</Text>
-        </View>
-        
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Exit By</Text>
-          <Text style={styles.detailValue}>{formatDate(exitDate)}</Text>
-        </View>
-        
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Duration</Text>
-          <Text style={styles.detailValue}>{duration} days</Text>
-        </View>
-        
-        {extensionsAvailable > 0 && (
-          <>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Extensions Left</Text>
-              <Text style={styles.detailValue}>{extensionsAvailable}</Text>
-            </View>
-            {extensionDeadline && (
-              <View style={styles.extensionDeadline}>
-                <Text style={styles.extensionText}>
-                  Extension deadline: {formatDate(extensionDeadline.toISOString())}
-                </Text>
-              </View>
-            )}
-          </>
+      <View style={styles.card}>
+        {onRemove && (
+          <TouchableOpacity 
+            style={styles.removeButton}
+            onPress={() => onRemove(id)}
+          >
+            <X size={18} color={Colors.textSecondary} />
+          </TouchableOpacity>
         )}
+        
+        <View style={styles.header}>
+          <View style={styles.countryContainer}>
+            <Text style={styles.flag}>{getCountryFlag(country)}</Text>
+            <Text style={styles.country}>{country}</Text>
+          </View>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusEmoji}>{getStatusEmoji()}</Text>
+            <Text style={styles.daysLeft}>{daysLeft}d</Text>
+          </View>
+        </View>
+
+        <View style={styles.visaTypeBadge}>
+          <Text style={styles.visaTypeText}>{visaType}</Text>
+        </View>
+
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View 
+              style={[
+                styles.progressFill, 
+                { 
+                  width: `${calculateProgress()}%`,
+                  backgroundColor: getProgressColor()
+                }
+              ]} 
+            />
+          </View>
+          <Text style={styles.progressText}>
+            {Math.round(calculateProgress())}% used
+          </Text>
+        </View>
+
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Entry</Text>
+            <Text style={styles.detailValue}>{formatDate(entryDate)}</Text>
+          </View>
+          
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Exit By</Text>
+            <Text style={styles.detailValue}>{formatDate(exitDate)}</Text>
+          </View>
+          
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Duration</Text>
+            <Text style={styles.detailValue}>{duration} days</Text>
+          </View>
+          
+          {extensionsAvailable > 0 && (
+            <>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Extensions Left</Text>
+                <Text style={styles.detailValue}>{extensionsAvailable}</Text>
+              </View>
+              {extensionDeadline && (
+                <View style={styles.extensionDeadline}>
+                  <Text style={styles.extensionText}>
+                    Extension deadline: {formatDate(extensionDeadline.toISOString())}
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
+        </View>
       </View>
-      </GlassWrapper>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    position: 'relative',
     marginHorizontal: 8,
     width: 320,
   },
-  neonGlow: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 24,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 20,
-    elevation: 15,
-  },
   card: {
-    backgroundColor: 'rgba(13, 27, 42, 0.8)',
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 2,
-    borderColor: 'rgba(0, 212, 255, 0.3)',
-    position: 'relative',
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
   removeButton: {
     position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    top: 12,
+    right: 12,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.gray100,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   countryContainer: {
     flexDirection: 'row',
@@ -219,111 +190,91 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   flag: {
-    fontSize: 32,
-    marginRight: 12,
+    fontSize: 28,
+    marginRight: 10,
   },
   country: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.white,
+    fontSize: 20,
+    fontWeight: '600',
+    color: Colors.text,
     flex: 1,
-    textShadowColor: Colors.neonBlue,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
   },
   statusContainer: {
     alignItems: 'center',
   },
   statusEmoji: {
-    fontSize: 20,
-    marginBottom: 4,
+    fontSize: 16,
+    marginBottom: 2,
   },
   daysLeft: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
-    color: Colors.electricCyan,
-    textShadowColor: Colors.neonBlue,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
+    color: Colors.text,
   },
   visaTypeBadge: {
-    backgroundColor: 'rgba(0, 212, 255, 0.15)',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 25,
+    backgroundColor: Colors.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
     alignSelf: 'flex-start',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: Colors.neonBlue,
+    marginBottom: 16,
   },
   visaTypeText: {
-    color: Colors.electricCyan,
-    fontWeight: '700',
-    fontSize: 14,
-    letterSpacing: 0.5,
+    color: Colors.primary,
+    fontWeight: '600',
+    fontSize: 13,
   },
   progressContainer: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   progressBar: {
-    height: 8,
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: Colors.gray200,
+    borderRadius: 3,
     overflow: 'hidden',
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 212, 255, 0.3)',
+    marginBottom: 6,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 4,
-    shadowColor: '#00D4FF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
+    borderRadius: 3,
   },
   progressText: {
-    fontSize: 14,
-    color: 'white',
+    fontSize: 12,
+    color: Colors.textSecondary,
     textAlign: 'right',
-    fontWeight: '600',
-    opacity: 0.9,
+    fontWeight: '500',
   },
   detailsContainer: {
-    marginTop: 8,
+    marginTop: 4,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 212, 255, 0.15)',
+    borderBottomColor: Colors.borderLight,
   },
   detailLabel: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 14,
+    color: Colors.textSecondary,
     fontWeight: '500',
-    letterSpacing: 0.3,
   },
   detailValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: Colors.electricCyan,
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
   },
   extensionDeadline: {
-    marginTop: 12,
-    padding: 14,
-    backgroundColor: 'rgba(178, 75, 243, 0.15)',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: Colors.neonPurple,
+    marginTop: 10,
+    padding: 12,
+    backgroundColor: Colors.primaryLight,
+    borderRadius: 12,
   },
   extensionText: {
-    fontSize: 13,
-    color: Colors.neonPurple,
+    fontSize: 12,
+    color: Colors.primary,
     textAlign: 'center',
-    fontWeight: '700',
-    letterSpacing: 0.3,
+    fontWeight: '600',
   },
 });
 

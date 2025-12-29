@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
-
+import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -152,6 +152,19 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: 'Settings',
+          headerStyle: {
+            backgroundColor: Colors.white,
+          },
+          headerTintColor: Colors.text,
+          headerTitleStyle: {
+            fontWeight: '600',
+          },
+          headerShadowVisible: false,
+        }}
+      />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.settingsCard}>
           <SettingsItem
@@ -246,36 +259,38 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.background,
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
-    fontSize: 18,
-    color: 'white',
+    fontSize: 16,
+    color: Colors.text,
   },
   content: {
     flex: 1,
-    paddingTop: 24,
+    paddingTop: 16,
   },
   settingsCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 16,
     marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   settingsItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
   },
   settingsItemLeft: {
     flexDirection: 'row',
@@ -283,18 +298,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primaryLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   settingsItemText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#000000',
+    color: Colors.text,
     flex: 1,
   },
   valueContainer: {
@@ -303,26 +318,28 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 16,
-    color: '#8E8E93',
+    color: Colors.textSecondary,
     marginRight: 8,
   },
   divider: {
     height: 1,
-    backgroundColor: '#E5E5EA',
-    marginLeft: 72,
+    backgroundColor: Colors.borderLight,
+    marginLeft: 60,
   },
   logoutContainer: {
     padding: 16,
     paddingBottom: 32,
   },
   logoutButton: {
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
-    height: 56,
+    backgroundColor: Colors.white,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
+    height: 54,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   logoutIcon: {
     marginRight: 8,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Button from '@/components/Button';
+import Colors from '@/constants/colors';
 
 interface EmptyStateProps {
   onAddVisa: () => void;
@@ -45,15 +46,15 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 22,
+    fontWeight: '600',
+    color: Colors.text,
     marginBottom: 12,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 15,
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 22,

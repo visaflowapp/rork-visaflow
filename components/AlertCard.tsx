@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Clock, FileText, Building, CreditCard, Calendar } from 'lucide-react-native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { GlassView } from 'expo-glass-effect';
 import Colors from '@/constants/colors';
 
 interface AlertCardProps {
@@ -44,7 +43,7 @@ const AlertCard: React.FC<AlertCardProps> = ({
   };
 
   const renderIcon = () => {
-    const iconColor = Colors.neonBlue;
+    const iconColor = Colors.primary;
     switch (icon) {
       case 'clock':
         return <Clock size={28} color={iconColor} />;
@@ -73,12 +72,9 @@ const AlertCard: React.FC<AlertCardProps> = ({
     );
   };
 
-  const GlassWrapper = Platform.OS === 'ios' ? GlassView : View;
-  const glassProps = Platform.OS === 'ios' ? { glassEffectStyle: 'clear' as const } : {};
-
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <GlassWrapper style={[styles.card, isRead && styles.readCard]} {...glassProps}>
+      <View style={[styles.card, isRead && styles.readCard]}>
         {!isRead && <View style={styles.unreadIndicator} />}
         <View style={styles.iconContainer}>{renderIcon()}</View>
         <View style={styles.contentContainer}>
@@ -86,7 +82,7 @@ const AlertCard: React.FC<AlertCardProps> = ({
           <Text style={styles.description}>{description}</Text>
           <Text style={styles.timestamp}>{formatTime(timestamp)}</Text>
         </View>
-      </GlassWrapper>
+      </View>
     </Swipeable>
   );
 };
@@ -94,78 +90,63 @@ const AlertCard: React.FC<AlertCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(13, 27, 42, 0.8)',
-    borderRadius: 20,
-    padding: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 16,
     marginHorizontal: 16,
-    marginVertical: 8,
-    shadowColor: Colors.neonBlue,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 15,
-    elevation: 20,
+    marginVertical: 6,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
     position: 'relative',
-    borderWidth: 1.5,
-    borderColor: 'rgba(0, 212, 255, 0.3)',
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   readCard: {
-    opacity: 0.7,
+    opacity: 0.6,
   },
   unreadIndicator: {
     position: 'absolute',
-    top: 20,
-    right: 20,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: Colors.glowGreen,
-    borderWidth: 2,
-    borderColor: Colors.white,
-    shadowColor: Colors.glowGreen,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 6,
+    top: 16,
+    right: 16,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.primary,
   },
   iconContainer: {
-    marginRight: 16,
+    marginRight: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    borderWidth: 1.5,
-    borderColor: Colors.neonBlue,
-    shadowColor: Colors.neonBlue,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.primaryLight,
   },
   contentContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: Colors.electricCyan,
-    marginBottom: 6,
-    letterSpacing: 0.3,
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: 'white',
-    marginBottom: 8,
+    color: Colors.textSecondary,
+    marginBottom: 6,
     lineHeight: 20,
-    opacity: 0.95,
   },
   timestamp: {
     fontSize: 12,
-    color: 'white',
-    opacity: 0.7,
-    fontWeight: '600',
+    color: Colors.textTertiary,
+    fontWeight: '500',
   },
   deleteAction: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: Colors.error,
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
@@ -174,7 +155,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 12,
   },
   deleteActionText: {
-    color: 'white',
+    color: Colors.white,
     fontWeight: '600',
     fontSize: 14,
   },

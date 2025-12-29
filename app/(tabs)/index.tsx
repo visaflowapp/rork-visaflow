@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, FlatList, Animated } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
 import ProgressSection from '@/components/TrackerScreen/ProgressSection';
@@ -11,24 +11,6 @@ import { getProgressPercentage } from '@/utils/visaHelpers';
 import VisaCard from '@/components/VisaCard';
 
 export default function TrackerScreen() {
-  const pulseAnim = React.useRef(new Animated.Value(1)).current;
-
-  React.useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.05,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, [pulseAnim]);
   const { 
     activeVisas, 
     isLoading, 
@@ -120,23 +102,19 @@ export default function TrackerScreen() {
   }
 
   return (
-    <LinearGradient
-      colors={[Colors.deepBlue, Colors.spaceDark, Colors.cosmicBlue]}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    <View style={styles.container}>
       <Stack.Screen 
         options={{ 
-          title: 'Countdown',
+          title: 'Visa Tracker',
           headerStyle: { 
-            backgroundColor: Colors.deepBlue,
+            backgroundColor: Colors.white,
           },
-          headerTintColor: 'white',
+          headerTintColor: Colors.text,
           headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 20,
+            fontWeight: '600',
+            fontSize: 18,
           },
+          headerShadowVisible: false,
           headerTitleAlign: 'center',
           headerRight: () => (
             <TouchableOpacity 
@@ -144,20 +122,13 @@ export default function TrackerScreen() {
               style={styles.headerButton}
               onPress={handleOpenAddModal}
             >
-              <LinearGradient
-                colors={[Colors.neonBlue, Colors.electricCyan]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.headerButtonGradient}
-              >
-                <Text style={styles.headerButtonText}>+ New Visa</Text>
-              </LinearGradient>
+              <Text style={styles.headerButtonText}>+ Add Visa</Text>
             </TouchableOpacity>
           ),
         }} 
       />
 
-      <View style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {activeVisas.length > 0 ? (
           <>
             {currentVisa && (
@@ -217,7 +188,7 @@ export default function TrackerScreen() {
         ) : (
           <EmptyState onAddVisa={handleOpenAddModal} />
         )}
-      </View>
+      </ScrollView>
 
       <AddVisaModal 
         visible={showAddModal}
@@ -227,54 +198,52 @@ export default function TrackerScreen() {
         }}
         onSave={handleAddVisa}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.background,
   },
   loadingText: {
-    color: 'white',
-    fontSize: 18,
+    color: Colors.text,
+    fontSize: 16,
   },
   headerButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 4,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
   },
   headerButtonText: {
-    color: 'white',
-    fontSize: 15,
+    color: Colors.primary,
+    fontSize: 16,
     fontWeight: '600',
   },
   content: {
     flex: 1,
-    justifyContent: 'flex-start',
   },
   visaCardContainer: {
     paddingHorizontal: 16,
-    marginTop: 20,
+    marginTop: 16,
     alignItems: 'center',
   },
   additionalVisasContainer: {
-    marginTop: 30,
+    marginTop: 24,
     paddingHorizontal: 16,
+    marginBottom: 24,
   },
   additionalVisasTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: '600',
+    color: Colors.text,
     marginBottom: 12,
   },
   visaListContainer: {
@@ -282,15 +251,5 @@ const styles = StyleSheet.create({
   },
   additionalVisaCard: {
     marginRight: 12,
-  },
-  smallVisaCard: {
-    transform: [{ scale: 0.85 }],
-  },
-  headerButtonGradient: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 });

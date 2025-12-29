@@ -7,51 +7,40 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.neonBlue,
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textTertiary,
         tabBarStyle: {
-          backgroundColor: Colors.deepBlue,
+          backgroundColor: Colors.white,
           borderTopWidth: 1,
-          borderTopColor: 'rgba(0, 212, 255, 0.3)',
-          height: 44,
-          paddingBottom: 2,
-          paddingTop: 2,
-          shadowColor: Colors.neonBlue,
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0.5,
-          shadowRadius: 15,
-          elevation: 10,
+          borderTopColor: Colors.border,
+          height: 50,
+          paddingBottom: 4,
+          paddingTop: 4,
         },
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '600',
-          marginTop: 0,
-        },
-        tabBarIconStyle: {
-          marginTop: 0,
         },
         headerStyle: {
-          backgroundColor: Colors.deepBlue,
-          borderBottomWidth: 1,
-          borderBottomColor: 'rgba(0, 212, 255, 0.3)',
+          backgroundColor: Colors.white,
         },
-        headerTintColor: Colors.electricCyan,
+        headerTintColor: Colors.text,
         headerTitleStyle: {
-          fontWeight: 'bold',
-          textAlign: 'center',
+          fontWeight: '600',
         },
+        headerShadowVisible: false,
         headerTitleAlign: 'center',
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Countdown',
-          tabBarLabel: 'Countdown',
+          title: 'Tracker',
+          tabBarLabel: 'Tracker',
           tabBarIcon: ({ color, size }) => (
             <Clock size={24} color={color} />
           ),
-          headerTitle: 'Countdown',
+          headerTitle: 'Visa Tracker',
         }}
       />
       <Tabs.Screen
