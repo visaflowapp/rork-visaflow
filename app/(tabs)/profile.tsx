@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
-import { Bell, Globe, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard, Link } from 'lucide-react-native';
+import { Bell, User, Shield, HelpCircle, LogOut, ChevronRight, CreditCard } from 'lucide-react-native';
 import ToggleSwitch from '@/components/ToggleSwitch';
 import Button from '@/components/Button';
 import Colors from '@/constants/colors';
@@ -35,12 +35,6 @@ export default function SettingsScreen() {
     }
   }, [userId, loadUserData]);
 
-  const copyReferralLink = () => {
-    const referralLink = 'https://visaflow.app/ref/alex-johnson';
-    // In a real app, you would copy to clipboard
-    Alert.alert('Referral Link Copied', referralLink);
-  };
-
   const handleToggleNotifications = async (value: boolean) => {
     if (value && Platform.OS !== 'web') {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -62,10 +56,6 @@ export default function SettingsScreen() {
     }
     
     toggleNotifications(value);
-  };
-
-  const handleLanguageChange = () => {
-    router.push('/screens/LanguageScreen');
   };
 
   const navigateToPassportInfo = () => {
@@ -180,14 +170,6 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Globe size={20} color="#0000EE" />}
-            title="Language"
-            onPress={handleLanguageChange}
-          />
-          
-          <View style={styles.divider} />
-          
-          <SettingsItem
             icon={<User size={20} color="#0000EE" />}
             title="Passport Information"
             onPress={navigateToPassportInfo}
@@ -207,14 +189,6 @@ export default function SettingsScreen() {
             icon={<CreditCard size={20} color="#0000EE" />}
             title="Billing & Subscription"
             onPress={navigateToBillingSubscription}
-          />
-          
-          <View style={styles.divider} />
-          
-          <SettingsItem
-            icon={<Link size={20} color="#0000EE" />}
-            title="Affiliate Program"
-            onPress={copyReferralLink}
           />
           
           <View style={styles.divider} />

@@ -49,12 +49,12 @@ export default function RequirementsScreen() {
   const [datesFocusAnim] = useState(new Animated.Value(1));
   
   // Form state
-  const [passportCountry, setPassportCountry] = useState('United States');
-  const [tripType, setTripType] = useState('Round Trip');
+  const [passportCountry, setPassportCountry] = useState('');
+  const [tripType, setTripType] = useState('');
   const [fromCountry, setFromCountry] = useState('');
   const [transitCountry, setTransitCountry] = useState('');
-  const [toCountry, setToCountry] = useState('Thailand');
-  const [tripPurpose, setTripPurpose] = useState('Tourism');
+  const [toCountry, setToCountry] = useState('');
+  const [tripPurpose, setTripPurpose] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)); // 7 days from now
   
@@ -299,10 +299,22 @@ export default function RequirementsScreen() {
     );
   };
 
+  // Validate all required fields are filled
+  const validateForm = () => {
+    if (!passportCountry) return 'Please select your nationality';
+    if (!tripType) return 'Please select trip type';
+    if (!fromCountry) return 'Please select origin country';
+    if (!toCountry) return 'Please select destination country';
+    if (!tripPurpose) return 'Please select purpose of travel';
+    if (!startDate || !endDate) return 'Please select travel dates';
+    return null;
+  };
+
   // Fetch visa requirements
   const fetchVisaRequirements = async () => {
-    if (!passportCountry || !toCountry) {
-      setError('Please select both passport country and destination');
+    const validationError = validateForm();
+    if (validationError) {
+      Alert.alert('Complete All Fields', validationError);
       return;
     }
 
@@ -311,16 +323,7 @@ export default function RequirementsScreen() {
     setShowResults(false);
 
     try {
-      // In a real app, you would make an actual API call here with the user's input
-      // For example:
-      // const response = await fetch(`/api/v1/visa/requirements/${passportCountry}/${toCountry}`, {
-      //   method: 'GET',
-      //   headers: { 'Content-Type': 'application/json' },
-      // });
-      // const data = await response.json();
-      
-      // For demo purposes, we'll use dynamic mock data based on user input
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const mockData = getMockVisaData(passportCountry, toCountry, tripPurpose);
       setApiResponse(mockData);
@@ -664,8 +667,13 @@ export default function RequirementsScreen() {
                 activeOpacity={0.7}
               >
                 <View style={styles.dropdownButtonContent}>
-                  <Text style={styles.countryFlag}>{getCountryFlag(passportCountry)}</Text>
-                  <Text style={styles.dropdownButtonText}>{passportCountry}</Text>
+                  {passportCountry && <Text style={styles.countryFlag}>{getCountryFlag(passportCountry)}</Text>}
+                  <Text style={[
+                    styles.dropdownButtonText,
+                    !passportCountry && styles.placeholderText
+                  ]}>
+                    {passportCountry || 'Select nationality'}
+                  </Text>
                 </View>
                 <ChevronDown size={16} color="#0000EE" />
               </TouchableOpacity>
@@ -686,7 +694,12 @@ export default function RequirementsScreen() {
               >
                 <View style={styles.dropdownButtonContent}>
                   <Plane size={16} color="#0000EE" style={styles.inputIcon} />
-                  <Text style={styles.dropdownButtonText}>{tripType}</Text>
+                  <Text style={[
+                    styles.dropdownButtonText,
+                    !tripType && styles.placeholderText
+                  ]}>
+                    {tripType || 'Select trip type'}
+                  </Text>
                 </View>
                 <ChevronDown size={16} color="#0000EE" />
               </TouchableOpacity>
@@ -812,7 +825,12 @@ export default function RequirementsScreen() {
               >
                 <View style={styles.dropdownButtonContent}>
                   <CreditCard size={16} color="#0000EE" style={styles.inputIcon} />
-                  <Text style={styles.dropdownButtonText}>{tripPurpose}</Text>
+                  <Text style={[
+                    styles.dropdownButtonText,
+                    !tripPurpose && styles.placeholderText
+                  ]}>
+                    {tripPurpose || 'Select purpose'}
+                  </Text>
                 </View>
                 <ChevronDown size={16} color="#0000EE" />
               </TouchableOpacity>

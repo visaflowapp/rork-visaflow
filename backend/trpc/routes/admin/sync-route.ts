@@ -77,7 +77,6 @@ export const ingestMultipleRoute = publicProcedure
       const result = await ingestService.ingestMultiple(input.pairs);
 
       return {
-        success: true,
         ingestedCount: result.success,
         failedCount: result.failed,
         errors: result.errors,
