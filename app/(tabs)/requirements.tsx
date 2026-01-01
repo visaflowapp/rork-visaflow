@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
-import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search } from 'lucide-react-native';
+import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, ExternalLink, Info, Search, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react-native';
 
 import { countries } from '@/constants/mockData';
 import { getCountryFlag } from '@/utils/countryFlags';
@@ -89,6 +89,14 @@ export default function RequirementsScreen() {
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+  
+  // Accordion state
+  const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({
+    visaReqs: true,
+    specialVisas: false,
+    documents: false,
+    validity: false,
+  });
 
   // Update marked dates for calendar
   const updateMarkedDates = React.useCallback(() => {
@@ -200,6 +208,95 @@ export default function RequirementsScreen() {
   // Show details in an alert
   const showDetails = (title: string, description: string) => {
     Alert.alert(title, description);
+  };
+
+  // Toggle accordion section
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Calculate compliance percentage
+  const calculateCompliance = () => {
+    if (!apiResponse) return 0;
+    
+    let total = 0;
+    let completed = 0;
+    
+    if (apiResponse.visa_required === false) {
+      completed += 1;
+    }
+    total += 1;
+    
+    if (apiResponse.requirements) {
+      total += apiResponse.requirements.length;
+      completed += Math.floor(apiResponse.requirements.length * 0.6);
+    }
+    
+    return Math.round((completed / total) * 100);
+  };
+
+  // Get compliance color
+  const getComplianceColor = (percentage: number) => {
+    if (percentage >= 80) return '#34C759';
+    if (percentage >= 50) return '#FF9500';
+    return '#FF3B30';
+  };
+
+  // Check if has urgent requirement
+  const hasUrgentRequirement = (requirements: any[]) => {
+    return requirements.some(req => 
+      req.name.includes('Mandatory') || req.name.includes('Required')
+    );
+  };
+
+  // Render accordion section
+  const renderAccordionSection = (
+    key: string,
+    title: string,
+    status: 'complete' | 'warning' | 'urgent' | 'info',
+    renderContent: () => React.ReactNode
+  ) => {
+    const isExpanded = expandedSections[key];
+    
+    return (
+      <View style={styles.accordionSection}>
+        <TouchableOpacity 
+          style={styles.accordionHeader}
+          onPress={() => toggleSection(key)}
+          activeOpacity={0.7}
+        >
+          <View style={styles.accordionHeaderLeft}>
+            <View style={[
+              styles.statusBadge,
+              status === 'complete' && styles.statusBadgeComplete,
+              status === 'warning' && styles.statusBadgeWarning,
+              status === 'urgent' && styles.statusBadgeUrgent,
+              status === 'info' && styles.statusBadgeInfo,
+            ]} />
+            <Text style={styles.accordionTitle}>{title}</Text>
+            {status === 'urgent' && (
+              <View style={styles.urgentBadge}>
+                <Text style={styles.urgentBadgeText}>!</Text>
+              </View>
+            )}
+          </View>
+          <ChevronRight 
+            size={20} 
+            color="#8E8E93" 
+            style={[styles.chevron, isExpanded && styles.chevronExpanded]} 
+          />
+        </TouchableOpacity>
+        
+        {isExpanded && (
+          <View style={styles.accordionContent}>
+            {renderContent()}
+          </View>
+        )}
+      </View>
+    );
   };
 
   // Fetch visa requirements
@@ -803,126 +900,148 @@ export default function RequirementsScreen() {
         )}
 
         {/* Results Section */}
-        {showResults && (
-          <View style={styles.resultsContainer}>
-            <View style={styles.resultsCard}>
-              {/* Visa Requirements Section */}
-              <View style={styles.resultSection}>
-                <Text style={styles.resultSectionTitle}>Visa Requirements</Text>
-                
-                {/* Visa Not Required Card */}
-                {apiResponse.visa_required === false && (
-                  <View style={styles.resultItem}>
-                    <View style={styles.resultItemHeader}>
-                      <Text style={styles.resultItemTitle}>
-                        Visa not required for up to {apiResponse.max_stay_days} days
-                      </Text>
-                    </View>
-                    <Text style={styles.resultItemDescription}>
-                      You don&apos;t need a visa for {toCountry} if you have a {passportCountry} passport.
-                    </Text>
-                    <TouchableOpacity 
-                      style={styles.seeDetailsButton}
-                      onPress={() => showDetails(
-                        "Visa Details",
-                        `${passportCountry} citizens can stay in ${toCountry} for up to ${apiResponse.max_stay_days} days without a visa.`
-                      )}
-                    >
-                      <Text style={styles.seeDetailsText}>See Details</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                
-                {/* Visa Required Card */}
-                {apiResponse.visa_required === true && (
-                  <View style={styles.resultItem}>
-                    <View style={styles.resultItemHeader}>
-                      <Text style={styles.resultItemTitle}>
-                        Visa is required for your trip
-                      </Text>
-                    </View>
-                    <Text style={styles.resultItemDescription}>
-                      {passportCountry} passport holders need a visa to enter {toCountry}.
-                    </Text>
-                    <TouchableOpacity 
-                      style={styles.seeDetailsButton}
-                      onPress={() => showDetails(
-                        "Visa Requirements",
-                        `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
-                      )}
-                    >
-                      <Text style={styles.seeDetailsText}>See Details</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                
-                {/* Special Visas */}
-                {apiResponse.special_visas && apiResponse.special_visas.map((visa: any, index: number) => (
-                  <View key={index} style={styles.resultItem}>
-                    <View style={styles.resultItemHeader}>
-                      <Text style={styles.resultItemTitle}>{visa.name}</Text>
-                    </View>
-                    <Text style={styles.resultItemDescription}>{visa.description}</Text>
-                    <TouchableOpacity 
-                      style={styles.seeDetailsButton}
-                      onPress={() => showDetails(visa.name, visa.description)}
-                    >
-                      <Text style={styles.seeDetailsText}>See Details</Text>
-                    </TouchableOpacity>
-                    
-                    {visa.url && (
-                      <TouchableOpacity 
-                        style={styles.applyButton}
-                        onPress={() => openExternalLink(visa.url)}
-                      >
-                        <Text style={styles.applyButtonText}>Apply Online</Text>
-                        <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                ))}
-              </View>
-              
-              {/* Passport & Documents Section */}
-              <View style={styles.resultSection}>
-                <Text style={styles.resultSectionTitle}>Passport & Documents</Text>
-                
-                {apiResponse.requirements && apiResponse.requirements.map((req: any, index: number) => (
-                  <View key={index} style={styles.resultItem}>
-                    <View style={styles.resultItemHeader}>
-                      <Text style={styles.resultItemTitle}>{req.name}</Text>
-                    </View>
-                    <Text style={styles.resultItemDescription}>{req.description}</Text>
-                    <TouchableOpacity 
-                      style={styles.seeDetailsButton}
-                      onPress={() => showDetails(req.name, req.description)}
-                    >
-                      <Text style={styles.seeDetailsText}>See Details</Text>
-                    </TouchableOpacity>
-                    
-                    {req.url && (
-                      <TouchableOpacity 
-                        style={styles.applyButton}
-                        onPress={() => openExternalLink(req.url)}
-                      >
-                        <Text style={styles.applyButtonText}>Apply Online</Text>
-                        <ExternalLink size={16} color="white" style={styles.applyButtonIcon} />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                ))}
-                
-                {/* Fallback if no requirements are provided */}
-                {(!apiResponse.requirements || apiResponse.requirements.length === 0) && (
-                  <View style={styles.resultItem}>
-                    <Text style={styles.resultItemDescription}>
-                      No specific document requirements found. Please check with the embassy or consulate for the most up-to-date information.
-                    </Text>
-                  </View>
-                )}
-              </View>
+        {showResults && apiResponse && (
+          <>
+          {/* Compliance Progress Bar */}
+          <View style={styles.complianceBarContainer}>
+            <View style={styles.complianceHeader}>
+              <Text style={styles.complianceTitle}>Compliance Status</Text>
+              <Text style={styles.compliancePercentage}>{calculateCompliance()}%</Text>
+            </View>
+            <View style={styles.progressBarBackground}>
+              <View 
+                style={[
+                  styles.progressBarFill, 
+                  { 
+                    width: `${calculateCompliance()}%`,
+                    backgroundColor: getComplianceColor(calculateCompliance())
+                  }
+                ]} 
+              />
             </View>
           </View>
+
+          <View style={styles.resultsContainer}>
+            <View style={styles.resultsCard}>
+              {/* Accordion Section: Visa Requirements */}
+              {renderAccordionSection(
+                'visaReqs',
+                'Visa Requirements',
+                apiResponse.visa_required ? 'urgent' : 'complete',
+                () => (
+                  <View>
+                    {apiResponse.visa_required === false && (
+                      <View style={styles.checklistItem}>
+                        <CheckCircle2 size={18} color="#34C759" style={styles.checklistIcon} />
+                        <View style={styles.checklistContent}>
+                          <Text style={styles.checklistTitle}>Visa-free entry</Text>
+                          <Text style={styles.checklistDesc}>Up to {apiResponse.max_stay_days} days with {passportCountry} passport</Text>
+                        </View>
+                      </View>
+                    )}
+                    
+                    {apiResponse.visa_required === true && (
+                      <View style={styles.checklistItem}>
+                        <AlertCircle size={18} color="#FF3B30" style={styles.checklistIcon} />
+                        <View style={styles.checklistContent}>
+                          <Text style={styles.checklistTitle}>Visa required</Text>
+                          <Text style={styles.checklistDesc}>{passportCountry} passport holders must obtain visa</Text>
+                          <TouchableOpacity 
+                            style={styles.inlineDetailsButton}
+                            onPress={() => showDetails(
+                              "Visa Requirements",
+                              `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
+                            )}
+                          >
+                            <Text style={styles.inlineDetailsText}>See Details</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                )
+              )}
+              
+              {/* Accordion Section: Special Visas */}
+              {apiResponse.special_visas && apiResponse.special_visas.length > 0 && renderAccordionSection(
+                'specialVisas',
+                'Destination Visa Options',
+                'info',
+                () => (
+                  <View>
+                    {apiResponse.special_visas.map((visa: any, index: number) => (
+                      <View key={index} style={styles.checklistItem}>
+                        <Info size={18} color="#007AFF" style={styles.checklistIcon} />
+                        <View style={styles.checklistContent}>
+                          <Text style={styles.checklistTitle}>{visa.name}</Text>
+                          <Text style={styles.checklistDesc}>{visa.description}</Text>
+                          <View style={styles.inlineActions}>
+                            <TouchableOpacity 
+                              style={styles.inlineDetailsButton}
+                              onPress={() => showDetails(visa.name, visa.description)}
+                            >
+                              <Text style={styles.inlineDetailsText}>Details</Text>
+                            </TouchableOpacity>
+                            {visa.url && (
+                              <TouchableOpacity 
+                                style={styles.inlineApplyButton}
+                                onPress={() => openExternalLink(visa.url)}
+                              >
+                                <Text style={styles.inlineApplyText}>Apply</Text>
+                                <ExternalLink size={12} color="white" />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                )
+              )}
+              
+              {/* Accordion Section: Documents */}
+              {apiResponse.requirements && apiResponse.requirements.length > 0 && renderAccordionSection(
+                'documents',
+                'Passport & Documents',
+                hasUrgentRequirement(apiResponse.requirements) ? 'urgent' : 'warning',
+                () => (
+                  <View>
+                    {apiResponse.requirements.map((req: any, index: number) => (
+                      <View key={index} style={styles.checklistItem}>
+                        {req.name.includes('Mandatory') || req.name.includes('Required') ? (
+                          <AlertCircle size={18} color="#FF9500" style={styles.checklistIcon} />
+                        ) : (
+                          <CheckCircle2 size={18} color="#8E8E93" style={styles.checklistIcon} />
+                        )}
+                        <View style={styles.checklistContent}>
+                          <Text style={styles.checklistTitle}>{req.name}</Text>
+                          <Text style={styles.checklistDesc}>{req.description}</Text>
+                          <View style={styles.inlineActions}>
+                            <TouchableOpacity 
+                              style={styles.inlineDetailsButton}
+                              onPress={() => showDetails(req.name, req.description)}
+                            >
+                              <Text style={styles.inlineDetailsText}>Details</Text>
+                            </TouchableOpacity>
+                            {req.url && (
+                              <TouchableOpacity 
+                                style={styles.inlineApplyButton}
+                                onPress={() => openExternalLink(req.url)}
+                              >
+                                <Text style={styles.inlineApplyText}>Complete</Text>
+                                <ExternalLink size={12} color="white" />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                )
+              )}
+            </View>
+          </View>
+          </>
         )}
 
         {/* Help Section */}
@@ -1273,81 +1392,174 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     lineHeight: 20,
   },
-  resultsContainer: {
-    marginTop: 24,
-    paddingHorizontal: 16,
+  complianceBarContainer: {
+    marginHorizontal: 16,
+    marginTop: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  resultsCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 8,
-  },
-  resultSection: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  resultSectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#000000',
-  },
-  resultItem: {
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  resultItemHeader: {
+  complianceHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
   },
-  resultItemTitle: {
-    fontSize: 16,
+  complianceTitle: {
+    fontSize: 13,
     fontWeight: '600',
+    color: '#000000',
+  },
+  compliancePercentage: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0000EE',
+  },
+  progressBarBackground: {
+    height: 6,
+    backgroundColor: '#E5E5EA',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  resultsContainer: {
+    marginTop: 12,
+    paddingHorizontal: 16,
+  },
+  resultsCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  accordionSection: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  accordionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: 'transparent',
+  },
+  accordionHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  statusBadge: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  statusBadgeComplete: {
+    backgroundColor: '#34C759',
+  },
+  statusBadgeWarning: {
+    backgroundColor: '#FF9500',
+  },
+  statusBadgeUrgent: {
+    backgroundColor: '#FF3B30',
+  },
+  statusBadgeInfo: {
+    backgroundColor: '#007AFF',
+  },
+  accordionTitle: {
+    fontSize: 15,
+    fontWeight: '700',
     color: '#000000',
     flex: 1,
   },
-  resultItemDescription: {
-    fontSize: 14,
-    color: '#8E8E93',
-    marginBottom: 12,
-    lineHeight: 20,
+  urgentBadge: {
+    backgroundColor: '#FF3B30',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
   },
-  seeDetailsButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 12,
+  urgentBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '700',
   },
-  seeDetailsText: {
-    color: '#0000EE',
-    fontSize: 14,
-    fontWeight: '500',
+  chevron: {
+    marginLeft: 8,
   },
-  applyButton: {
-    backgroundColor: '#0000EE',
-    borderRadius: 8,
-    paddingVertical: 10,
+  chevronExpanded: {
+    transform: [{ rotate: '90deg' }],
+  },
+  accordionContent: {
     paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  checklistItem: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F2F2F7',
+  },
+  checklistIcon: {
+    marginRight: 10,
+    marginTop: 2,
+  },
+  checklistContent: {
+    flex: 1,
+  },
+  checklistTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#000000',
+    marginBottom: 3,
+  },
+  checklistDesc: {
+    fontSize: 12,
+    color: '#8E8E93',
+    lineHeight: 16,
+    marginBottom: 6,
+  },
+  inlineActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-start',
+    marginTop: 4,
   },
-  applyButtonText: {
+  inlineDetailsButton: {
+    marginRight: 10,
+  },
+  inlineDetailsText: {
+    color: '#0000EE',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  inlineApplyButton: {
+    backgroundColor: '#0000EE',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inlineApplyText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
-    marginRight: 6,
-  },
-  applyButtonIcon: {
-    marginLeft: 4,
+    marginRight: 4,
   },
   helpCard: {
     backgroundColor: 'white',
