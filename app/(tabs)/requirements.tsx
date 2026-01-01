@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Modal,
   FlatList,
-
+  Animated,
   KeyboardAvoidingView,
   Platform,
   Linking,
@@ -39,6 +39,15 @@ const tripTypes = [
 ];
 
 export default function RequirementsScreen() {
+  // Animation values for focus states
+  const [nationalityFocusAnim] = useState(new Animated.Value(1));
+  const [tripTypeFocusAnim] = useState(new Animated.Value(1));
+  const [fromFocusAnim] = useState(new Animated.Value(1));
+  const [transitFocusAnim] = useState(new Animated.Value(1));
+  const [toFocusAnim] = useState(new Animated.Value(1));
+  const [purposeFocusAnim] = useState(new Animated.Value(1));
+  const [datesFocusAnim] = useState(new Animated.Value(1));
+  
   // Form state
   const [passportCountry, setPassportCountry] = useState('United States');
   const [tripType, setTripType] = useState('Round Trip');
@@ -54,11 +63,22 @@ export default function RequirementsScreen() {
   const [showTripTypeDropdown, setShowTripTypeDropdown] = useState(false);
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showTransitDropdown, setShowTransitDropdown] = useState(false);
+  const [showTransitSection, setShowTransitSection] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
   const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Focus animation helper
+  const animateFocus = (animValue: Animated.Value, focused: boolean) => {
+    Animated.spring(animValue, {
+      toValue: focused ? 1.02 : 1,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
   
   // Calendar state
   const [calendarType, setCalendarType] = useState<'start' | 'end'>('start');
@@ -77,7 +97,7 @@ export default function RequirementsScreen() {
     
     if (tripType === 'One Way') {
       setMarkedDates({
-        [startDateStr]: { selected: true, selectedColor: '#007AFF' }
+        [startDateStr]: { selected: true, selectedColor: '#0000EE' }
       });
     } else {
       // Create range of dates
@@ -89,11 +109,11 @@ export default function RequirementsScreen() {
         const dateStr = formatDateForCalendar(currentDate);
         
         if (dateStr === startDateStr) {
-          range[dateStr] = { selected: true, startingDay: true, color: '#007AFF' };
+          range[dateStr] = { selected: true, startingDay: true, color: '#0000EE' };
         } else if (dateStr === endDateStr) {
-          range[dateStr] = { selected: true, endingDay: true, color: '#007AFF' };
+          range[dateStr] = { selected: true, endingDay: true, color: '#0000EE' };
         } else {
-          range[dateStr] = { selected: true, color: '#007AFF', textColor: 'white' };
+          range[dateStr] = { selected: true, color: '#0000EE', textColor: 'white' };
         }
         
         currentDate.setDate(currentDate.getDate() + 1);
@@ -489,10 +509,10 @@ export default function RequirementsScreen() {
               markedDates={markedDates}
               markingType={tripType === 'Round Trip' ? 'period' : 'dot'}
               theme={{
-                selectedDayBackgroundColor: '#007AFF',
-                todayTextColor: '#007AFF',
-                arrowColor: '#007AFF',
-                dotColor: '#007AFF',
+                selectedDayBackgroundColor: '#0000EE',
+                todayTextColor: '#0000EE',
+                arrowColor: '#0000EE',
+                dotColor: '#0000EE',
                 textDayFontWeight: '500',
                 textMonthFontWeight: 'bold',
                 textDayHeaderFontWeight: '500',
@@ -513,12 +533,12 @@ export default function RequirementsScreen() {
     <View style={styles.container}>
       <Stack.Screen 
         options={{ 
-          title: 'Visa Requirements',
-          headerStyle: { backgroundColor: '#007AFF' },
+          title: 'Global Entry Advisor',
+          headerStyle: { backgroundColor: '#0000EE' },
           headerTintColor: 'white',
           headerTitleStyle: {
-            fontWeight: 'bold',
-            textAlign: 'center',
+            fontWeight: '700',
+            fontSize: 17,
           },
           headerTitleAlign: 'center',
         }} 
@@ -529,187 +549,234 @@ export default function RequirementsScreen() {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section */}
-        <View style={styles.headerSection}>
-          <Text style={styles.headerTitle}>Visa Requirements</Text>
-          <Text style={styles.headerSubtitle}>Check entry requirements for your next destination</Text>
-        </View>
+
 
         {/* Form Card */}
         <View style={styles.formCard}>
+          <Text style={styles.sectionHeader}>TRAVEL DETAILS</Text>
           {/* Passport Country */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Your Nationality</Text>
-            <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowPassportDropdown(true)}
-            >
-              <View style={styles.dropdownButtonContent}>
-                <Text style={styles.countryFlag}>{getCountryFlag(passportCountry)}</Text>
-                <Text style={styles.dropdownButtonText}>{passportCountry}</Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
-            </TouchableOpacity>
+            <Animated.View style={[{ transform: [{ scale: nationalityFocusAnim }] }]}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => {
+                  animateFocus(nationalityFocusAnim, true);
+                  setShowPassportDropdown(true);
+                  setTimeout(() => animateFocus(nationalityFocusAnim, false), 150);
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={styles.dropdownButtonContent}>
+                  <Text style={styles.countryFlag}>{getCountryFlag(passportCountry)}</Text>
+                  <Text style={styles.dropdownButtonText}>{passportCountry}</Text>
+                </View>
+                <ChevronDown size={16} color="#0000EE" />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
 
           {/* Trip Type */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Trip Type</Text>
-            <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowTripTypeDropdown(true)}
-            >
-              <View style={styles.dropdownButtonContent}>
-                <Plane size={20} color="#007AFF" style={styles.inputIcon} />
-                <Text style={styles.dropdownButtonText}>{tripType}</Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
-            </TouchableOpacity>
+            <Animated.View style={[{ transform: [{ scale: tripTypeFocusAnim }] }]}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => {
+                  animateFocus(tripTypeFocusAnim, true);
+                  setShowTripTypeDropdown(true);
+                  setTimeout(() => animateFocus(tripTypeFocusAnim, false), 150);
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={styles.dropdownButtonContent}>
+                  <Plane size={16} color="#0000EE" style={styles.inputIcon} />
+                  <Text style={styles.dropdownButtonText}>{tripType}</Text>
+                </View>
+                <ChevronDown size={16} color="#0000EE" />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
 
           {/* From Country */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Where From?</Text>
-            <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowFromDropdown(true)}
-            >
-              <View style={styles.dropdownButtonContent}>
-                <PlaneTakeoff size={20} color="#007AFF" style={styles.inputIcon} />
-                <Text style={[
-                  styles.dropdownButtonText,
-                  !fromCountry && styles.placeholderText
-                ]}>
-                  {fromCountry ? (
-                    <>
-                      {getCountryFlag(fromCountry)} {fromCountry}
-                    </>
-                  ) : (
-                    'Select origin country'
-                  )}
-                </Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
-            </TouchableOpacity>
+            <Animated.View style={[{ transform: [{ scale: fromFocusAnim }] }]}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => {
+                  animateFocus(fromFocusAnim, true);
+                  setShowFromDropdown(true);
+                  setTimeout(() => animateFocus(fromFocusAnim, false), 150);
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={styles.dropdownButtonContent}>
+                  <PlaneTakeoff size={16} color="#0000EE" style={styles.inputIcon} />
+                  <Text style={[
+                    styles.dropdownButtonText,
+                    !fromCountry && styles.placeholderText
+                  ]}>
+                    {fromCountry ? (
+                      <>
+                        {getCountryFlag(fromCountry)} {fromCountry}
+                      </>
+                    ) : (
+                      'Origin country'
+                    )}
+                  </Text>
+                </View>
+                <ChevronDown size={16} color="#0000EE" />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
 
-          {/* Transit Country (Optional) */}
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Transit Connection (Optional)</Text>
+          {/* Transit Country (Optional, Collapsible) */}
+          {!showTransitSection ? (
             <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowTransitDropdown(true)}
+              style={styles.addTransitButton}
+              onPress={() => setShowTransitSection(true)}
             >
-              <View style={styles.dropdownButtonContent}>
-                <Plane size={20} color="#007AFF" style={styles.inputIcon} />
-                <Text style={[
-                  styles.dropdownButtonText,
-                  !transitCountry && styles.placeholderText
-                ]}>
-                  {transitCountry ? (
-                    <>
-                      {getCountryFlag(transitCountry)} {transitCountry}
-                    </>
-                  ) : (
-                    'Select transit country (optional)'
-                  )}
-                </Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
+              <Text style={styles.addTransitText}>+ Add Transit Country</Text>
             </TouchableOpacity>
-          </View>
+          ) : (
+            <View style={styles.formGroup}>
+              <Animated.View style={[{ transform: [{ scale: transitFocusAnim }] }]}>
+                <TouchableOpacity 
+                  style={styles.dropdownButton}
+                  onPress={() => {
+                    animateFocus(transitFocusAnim, true);
+                    setShowTransitDropdown(true);
+                    setTimeout(() => animateFocus(transitFocusAnim, false), 150);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.dropdownButtonContent}>
+                    <Plane size={16} color="#0000EE" style={styles.inputIcon} />
+                    <Text style={[
+                      styles.dropdownButtonText,
+                      !transitCountry && styles.placeholderText
+                    ]}>
+                      {transitCountry ? (
+                        <>
+                          {getCountryFlag(transitCountry)} {transitCountry}
+                        </>
+                      ) : (
+                        'Transit country (optional)'
+                      )}
+                    </Text>
+                  </View>
+                  <ChevronDown size={16} color="#0000EE" />
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          )}
 
           {/* To Country */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Where To?</Text>
-            <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowToDropdown(true)}
-            >
-              <View style={styles.dropdownButtonContent}>
-                <PlaneLanding size={20} color="#007AFF" style={styles.inputIcon} />
-                <Text style={[
-                  styles.dropdownButtonText,
-                  !toCountry && styles.placeholderText
-                ]}>
-                  {toCountry ? (
-                    <>
-                      {getCountryFlag(toCountry)} {toCountry}
-                    </>
-                  ) : (
-                    'Select destination country'
-                  )}
-                </Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
-            </TouchableOpacity>
+            <Animated.View style={[{ transform: [{ scale: toFocusAnim }] }]}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => {
+                  animateFocus(toFocusAnim, true);
+                  setShowToDropdown(true);
+                  setTimeout(() => animateFocus(toFocusAnim, false), 150);
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={styles.dropdownButtonContent}>
+                  <PlaneLanding size={16} color="#0000EE" style={styles.inputIcon} />
+                  <Text style={[
+                    styles.dropdownButtonText,
+                    !toCountry && styles.placeholderText
+                  ]}>
+                    {toCountry ? (
+                      <>
+                        {getCountryFlag(toCountry)} {toCountry}
+                      </>
+                    ) : (
+                      'Destination country'
+                    )}
+                  </Text>
+                </View>
+                <ChevronDown size={16} color="#0000EE" />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
 
           {/* Trip Purpose */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>Purpose of Travel</Text>
-            <TouchableOpacity 
-              style={styles.dropdownButton}
-              onPress={() => setShowPurposeDropdown(true)}
-            >
-              <View style={styles.dropdownButtonContent}>
-                <CreditCard size={20} color="#007AFF" style={styles.inputIcon} />
-                <Text style={styles.dropdownButtonText}>{tripPurpose}</Text>
-              </View>
-              <ChevronDown size={20} color="#007AFF" />
-            </TouchableOpacity>
+            <Animated.View style={[{ transform: [{ scale: purposeFocusAnim }] }]}>
+              <TouchableOpacity 
+                style={styles.dropdownButton}
+                onPress={() => {
+                  animateFocus(purposeFocusAnim, true);
+                  setShowPurposeDropdown(true);
+                  setTimeout(() => animateFocus(purposeFocusAnim, false), 150);
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={styles.dropdownButtonContent}>
+                  <CreditCard size={16} color="#0000EE" style={styles.inputIcon} />
+                  <Text style={styles.dropdownButtonText}>{tripPurpose}</Text>
+                </View>
+                <ChevronDown size={16} color="#0000EE" />
+              </TouchableOpacity>
+            </Animated.View>
           </View>
 
           {/* Date Range */}
           <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>
-              {tripType === 'One Way' ? 'Select Departure Date' : 'Select Travel Dates'}
-            </Text>
-            
-            {tripType === 'One Way' ? (
-              <TouchableOpacity 
-                style={styles.singleDateButton}
-                onPress={() => {
-                  setCalendarType('start');
-                  setShowStartDatePicker(true);
-                }}
-              >
-                <View style={styles.dropdownButtonContent}>
-                  <Clock size={20} color="#007AFF" style={styles.inputIcon} />
-                  <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.dateRangeContainer}>
+            <Animated.View style={[{ transform: [{ scale: datesFocusAnim }] }]}>
+              {tripType === 'One Way' ? (
                 <TouchableOpacity 
-                  style={styles.dateButton}
+                  style={styles.singleDateButton}
                   onPress={() => {
+                    animateFocus(datesFocusAnim, true);
                     setCalendarType('start');
                     setShowStartDatePicker(true);
+                    setTimeout(() => animateFocus(datesFocusAnim, false), 150);
                   }}
+                  activeOpacity={0.7}
                 >
                   <View style={styles.dropdownButtonContent}>
-                    <Clock size={20} color="#007AFF" style={styles.inputIcon} />
+                    <Clock size={16} color="#0000EE" style={styles.inputIcon} />
                     <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
                   </View>
                 </TouchableOpacity>
-                
-                <Text style={styles.dateRangeSeparator}>—</Text>
-                
-                <TouchableOpacity 
-                  style={styles.dateButton}
-                  onPress={() => {
-                    setCalendarType('end');
-                    setShowEndDatePicker(true);
-                  }}
-                >
-                  <View style={styles.dropdownButtonContent}>
-                    <Clock size={20} color="#007AFF" style={styles.inputIcon} />
-                    <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
+              ) : (
+                <View style={styles.dateRangeContainer}>
+                  <TouchableOpacity 
+                    style={styles.dateButton}
+                    onPress={() => {
+                      animateFocus(datesFocusAnim, true);
+                      setCalendarType('start');
+                      setShowStartDatePicker(true);
+                      setTimeout(() => animateFocus(datesFocusAnim, false), 150);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.dropdownButtonContent}>
+                      <Clock size={16} color="#0000EE" style={styles.inputIcon} />
+                      <Text style={styles.dateButtonText}>{formatDate(startDate)}</Text>
+                    </View>
+                  </TouchableOpacity>
+                  
+                  <Text style={styles.dateRangeSeparator}>—</Text>
+                  
+                  <TouchableOpacity 
+                    style={styles.dateButton}
+                    onPress={() => {
+                      setCalendarType('end');
+                      setShowEndDatePicker(true);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.dropdownButtonContent}>
+                      <Clock size={16} color="#0000EE" style={styles.inputIcon} />
+                      <Text style={styles.dateButtonText}>{formatDate(endDate)}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </Animated.View>
           </View>
 
           {/* Check Requirements Button */}
@@ -717,6 +784,7 @@ export default function RequirementsScreen() {
             style={styles.checkButton}
             onPress={fetchVisaRequirements}
             disabled={isLoading}
+            activeOpacity={0.8}
           >
             {isLoading ? (
               <ActivityIndicator color="white" size="small" />
@@ -945,63 +1013,53 @@ export default function RequirementsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0000EE',
   },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: 40,
-  },
-  headerSection: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 30,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    paddingBottom: 24,
   },
   formCard: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
+    padding: 16,
     marginHorizontal: 16,
-    marginTop: -20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 8,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  sectionHeader: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    color: '#8E8E93',
+    marginBottom: 12,
   },
   formGroup: {
-    marginBottom: 16,
-  },
-  formLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#000000',
+    marginBottom: 12,
   },
   dropdownButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: 'white',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 0, 238, 0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   dropdownButtonContent: {
     flexDirection: 'row',
@@ -1009,19 +1067,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dropdownButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000000',
     flex: 1,
+    fontWeight: '500',
   },
   placeholderText: {
-    color: '#8E8E93',
+    color: '#A0A0A0',
+    fontWeight: '400',
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: 8,
   },
   countryFlag: {
-    fontSize: 20,
-    marginRight: 12,
+    fontSize: 18,
+    marginRight: 10,
+  },
+  addTransitButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 0, 238, 0.2)',
+    borderStyle: 'dashed',
+    backgroundColor: 'rgba(0, 0, 238, 0.03)',
+  },
+  addTransitText: {
+    fontSize: 13,
+    color: '#0000EE',
+    fontWeight: '500',
+    textAlign: 'center',
   },
   dateRangeContainer: {
     flexDirection: 'row',
@@ -1030,44 +1106,62 @@ const styles = StyleSheet.create({
   dateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 0, 238, 0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   singleDateButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: 'white',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 0, 238, 0.15)',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   dateButtonText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#000000',
+    fontWeight: '500',
   },
   dateRangeSeparator: {
-    marginHorizontal: 8,
-    fontSize: 16,
+    marginHorizontal: 6,
+    fontSize: 14,
     color: '#8E8E93',
+    fontWeight: '500',
   },
   checkButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    paddingVertical: 16,
+    backgroundColor: '#0000EE',
+    borderRadius: 8,
+    paddingVertical: 13,
     alignItems: 'center',
     marginTop: 8,
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   checkButtonText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   modalOverlay: {
     flex: 1,
@@ -1116,7 +1210,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   closeButtonText: {
-    color: '#007AFF',
+    color: '#0000EE',
     fontSize: 16,
     fontWeight: '500',
   },
@@ -1232,12 +1326,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   seeDetailsText: {
-    color: '#007AFF',
+    color: '#0000EE',
     fontSize: 14,
     fontWeight: '500',
   },
   applyButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0000EE',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -1270,18 +1364,18 @@ const styles = StyleSheet.create({
   helpHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   helpTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '700',
     marginLeft: 8,
     color: '#000000',
   },
   helpText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8E8E93',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   calendarModalContent: {
     backgroundColor: 'white',
@@ -1306,7 +1400,7 @@ const styles = StyleSheet.create({
   },
   calendarCloseText: {
     fontSize: 16,
-    color: '#007AFF',
+    color: '#0000EE',
     fontWeight: '600',
   },
   calendar: {
