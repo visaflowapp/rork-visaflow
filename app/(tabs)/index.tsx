@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { Stack } from 'expo-router';
+import { AlertCircle, Info, AlertTriangle } from 'lucide-react-native';
 
 import Colors from '@/constants/colors';
 import { useVisaStore } from '@/store/visaStore';
@@ -13,12 +14,15 @@ import VisaCard from '@/components/VisaCard';
 export default function TrackerScreen() {
   const { 
     activeVisas, 
+    alerts,
     isLoading, 
     userId, 
     setUserId, 
     loadUserData,
     addVisa,
-    removeVisa 
+    removeVisa,
+    dismissAlert,
+    markAlertAsRead
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   
@@ -138,6 +142,42 @@ export default function TrackerScreen() {
               />
             )}
             
+            {alerts.length > 0 && (
+              <View style={styles.recentAlertsSection}>
+                <Text style={styles.recentAlertsTitle}>Recent Alerts</Text>
+                {alerts.slice(0, 3).map((alert) => (
+                  <TouchableOpacity
+                    key={alert.id}
+                    style={[
+                      styles.compactAlertCard,
+                      !alert.is_read && styles.compactAlertCardUnread
+                    ]}
+                    onPress={() => markAlertAsRead(alert.id)}
+                  >
+                    <View style={styles.compactAlertIcon}>
+                      {alert.type === 'deadline' && <AlertCircle size={16} color={Colors.warning} />}
+                      {alert.type === 'policy' && <Info size={16} color={Colors.primary} />}
+                      {alert.type === 'embassy' && <AlertTriangle size={16} color={Colors.error} />}
+                    </View>
+                    <View style={styles.compactAlertContent}>
+                      <Text style={styles.compactAlertTitle} numberOfLines={1}>{alert.title}</Text>
+                      <Text style={styles.compactAlertDescription} numberOfLines={1}>{alert.description}</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.dismissButton}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        dismissAlert(alert.id);
+                      }}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <Text style={styles.dismissButtonText}>×</Text>
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+            
             {currentVisa && (
               <View style={styles.visaCardContainer}>
                 <VisaCard
@@ -251,5 +291,64 @@ const styles = StyleSheet.create({
   },
   additionalVisaCard: {
     marginRight: 12,
+  },
+  recentAlertsSection: {
+    marginTop: 16,
+    marginHorizontal: 16,
+  },
+  recentAlertsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 12,
+  },
+  compactAlertCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    minHeight: 48,
+  },
+  compactAlertCardUnread: {
+    backgroundColor: Colors.primaryLight,
+    borderColor: Colors.primary,
+    borderWidth: 1.5,
+  },
+  compactAlertIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  compactAlertContent: {
+    flex: 1,
+  },
+  compactAlertTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 2,
+  },
+  compactAlertDescription: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+  },
+  dismissButton: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dismissButtonText: {
+    fontSize: 24,
+    color: Colors.textTertiary,
+    fontWeight: '300',
   },
 });
