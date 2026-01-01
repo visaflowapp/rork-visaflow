@@ -145,7 +145,7 @@ export default function SettingsScreen() {
           onValueChange={onToggle || (() => {})}
         />
       ) : (
-        <ChevronRight size={20} color="#C7C7CC" />
+        <ChevronRight size={20} color="#0000EE" />
       )}
     </TouchableOpacity>
   );
@@ -156,19 +156,21 @@ export default function SettingsScreen() {
         options={{
           title: 'Settings',
           headerStyle: {
-            backgroundColor: Colors.white,
+            backgroundColor: '#0000EE',
           },
-          headerTintColor: Colors.text,
+          headerTintColor: 'white',
           headerTitleStyle: {
-            fontWeight: '600',
+            fontWeight: '700',
+            fontSize: 17,
           },
+          headerTitleAlign: 'center',
           headerShadowVisible: false,
         }}
       />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.settingsCard}>
           <SettingsItem
-            icon={<Bell size={20} color="#007AFF" />}
+            icon={<Bell size={20} color="#0000EE" />}
             title="Push Notifications"
             showToggle={true}
             toggleValue={userProfile.notifications}
@@ -178,7 +180,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Globe size={20} color="#007AFF" />}
+            icon={<Globe size={20} color="#0000EE" />}
             title="Language"
             onPress={handleLanguageChange}
           />
@@ -186,7 +188,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<User size={20} color="#007AFF" />}
+            icon={<User size={20} color="#0000EE" />}
             title="Passport Information"
             onPress={navigateToPassportInfo}
           />
@@ -194,7 +196,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Shield size={20} color="#007AFF" />}
+            icon={<Shield size={20} color="#0000EE" />}
             title="Privacy & Security"
             onPress={navigateToPrivacySecurity}
           />
@@ -202,7 +204,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<CreditCard size={20} color="#007AFF" />}
+            icon={<CreditCard size={20} color="#0000EE" />}
             title="Billing & Subscription"
             onPress={navigateToBillingSubscription}
           />
@@ -210,7 +212,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<Link size={20} color="#007AFF" />}
+            icon={<Link size={20} color="#0000EE" />}
             title="Affiliate Program"
             onPress={copyReferralLink}
           />
@@ -218,7 +220,7 @@ export default function SettingsScreen() {
           <View style={styles.divider} />
           
           <SettingsItem
-            icon={<HelpCircle size={20} color="#007AFF" />}
+            icon={<HelpCircle size={20} color="#0000EE" />}
             title="Help & Support"
             onPress={navigateToHelpSupport}
           />
@@ -231,7 +233,7 @@ export default function SettingsScreen() {
           onPress={handleLogout}
           variant="outline"
           style={styles.logoutButton}
-          icon={() => <LogOut size={18} color="#007AFF" style={styles.logoutIcon} />}
+          icon={() => <LogOut size={18} color="#0000EE" style={styles.logoutIcon} />}
         />
       </View>
 
@@ -259,7 +261,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#0000EE',
   },
   loadingContainer: {
     justifyContent: 'center',
@@ -271,26 +273,27 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 16,
   },
   settingsCard: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 16,
     marginHorizontal: 16,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    marginTop: 16,
+    padding: 16,
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   settingsItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 0,
   },
   settingsItemLeft: {
     flexDirection: 'row',
@@ -301,15 +304,15 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.primaryLight,
+    backgroundColor: 'rgba(0, 0, 238, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   settingsItemText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '500',
-    color: Colors.text,
+    color: '#000000',
     flex: 1,
   },
   valueContainer: {
@@ -323,23 +326,24 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.borderLight,
-    marginLeft: 60,
+    backgroundColor: 'rgba(0, 0, 238, 0.1)',
+    marginLeft: 0,
+    marginVertical: 0,
   },
   logoutContainer: {
     padding: 16,
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   logoutButton: {
-    backgroundColor: Colors.white,
-    shadowColor: Colors.cardShadow,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    shadowColor: '#0000EE',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 2,
-    height: 54,
+    height: 50,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   logoutIcon: {
     marginRight: 8,
