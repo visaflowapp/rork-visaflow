@@ -620,13 +620,7 @@ export default function RequirementsScreen() {
                     styles.dropdownButtonText,
                     !fromCountry && styles.placeholderText
                   ]}>
-                    {fromCountry ? (
-                      <>
-                        {getCountryFlag(fromCountry)} {fromCountry}
-                      </>
-                    ) : (
-                      'Origin country'
-                    )}
+                    {fromCountry ? `${getCountryFlag(fromCountry)} ${fromCountry}` : 'Origin country'}
                   </Text>
                 </View>
                 <ChevronDown size={16} color="#0000EE" />
@@ -660,13 +654,7 @@ export default function RequirementsScreen() {
                       styles.dropdownButtonText,
                       !transitCountry && styles.placeholderText
                     ]}>
-                      {transitCountry ? (
-                        <>
-                          {getCountryFlag(transitCountry)} {transitCountry}
-                        </>
-                      ) : (
-                        'Transit country (optional)'
-                      )}
+                      {transitCountry ? `${getCountryFlag(transitCountry)} ${transitCountry}` : 'Transit country (optional)'}
                     </Text>
                   </View>
                   <ChevronDown size={16} color="#0000EE" />
@@ -693,13 +681,7 @@ export default function RequirementsScreen() {
                     styles.dropdownButtonText,
                     !toCountry && styles.placeholderText
                   ]}>
-                    {toCountry ? (
-                      <>
-                        {getCountryFlag(toCountry)} {toCountry}
-                      </>
-                    ) : (
-                      'Destination country'
-                    )}
+                    {toCountry ? `${getCountryFlag(toCountry)} ${toCountry}` : 'Destination country'}
                   </Text>
                 </View>
                 <ChevronDown size={16} color="#0000EE" />
