@@ -8,7 +8,8 @@ import {
   TextInput,
   ScrollView,
   Platform,
-  Alert
+  Alert,
+  KeyboardAvoidingView
 } from 'react-native';
 import { X } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -179,7 +180,10 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
       onRequestClose={handleClose}
       onShow={() => console.log('AddVisaModal: Modal shown')}
     >
-      <View style={styles.modalOverlay}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.modalOverlay}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>Add Visa</Text>
@@ -189,9 +193,11 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
           </View>
           
           <ScrollView 
-            style={styles.formContainer} 
+            style={styles.formContainer}
+            contentContainerStyle={styles.formContentContainer}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            bounces={false}
           >
             <View style={styles.formGroup}>
               <Text style={styles.label}>Country *</Text>
@@ -357,7 +363,7 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             />
           )}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -374,8 +380,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     paddingTop: 20,
     paddingHorizontal: 16,
-    paddingBottom: 30,
+    paddingBottom: Platform.OS === 'ios' ? 30 : 16,
     maxHeight: '90%',
+    minHeight: '50%',
   },
   header: {
     flexDirection: 'row',
@@ -392,8 +399,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   formContainer: {
-    marginBottom: 16,
     flex: 1,
+  },
+  formContentContainer: {
+    paddingBottom: 16,
   },
   formGroup: {
     marginBottom: 16,

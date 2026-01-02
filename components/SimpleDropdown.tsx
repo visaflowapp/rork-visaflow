@@ -67,13 +67,14 @@ const renderItem = ({ item }: { item: string }) => (
     <Modal
       visible={true}
       transparent={true}
-      animationType="slide"
+      animationType="fade"
+      statusBarTranslucent
     >
       <Pressable 
         style={styles.modalOverlay}
         onPress={onClose}
       >
-        <View style={styles.modalContent}>
+        <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
           <Text style={styles.modalTitle}>{label}</Text>
           {searchable && (
             <View style={styles.searchContainer}>
@@ -95,7 +96,7 @@ const renderItem = ({ item }: { item: string }) => (
             style={styles.optionsList}
             showsVerticalScrollIndicator={false}
           />
-        </View>
+        </Pressable>
       </Pressable>
     </Modal>
   );
