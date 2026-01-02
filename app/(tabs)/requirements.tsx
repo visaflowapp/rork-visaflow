@@ -21,6 +21,7 @@ import { Clock, ChevronDown, Plane, PlaneTakeoff, PlaneLanding, CreditCard, Exte
 
 import { countries } from '@/constants/mockData';
 import { getCountryFlag } from '@/utils/countryFlags';
+import { trpc } from '@/lib/trpc';
 
 // Trip purposes
 const tripPurposes = [
@@ -310,7 +311,41 @@ export default function RequirementsScreen() {
     return null;
   };
 
-  // Fetch visa requirements
+  const visaCheckQuery = trpc.visa.checkTravelBuddy.useQuery(
+    {
+      from: passportCountry,
+      to: toCountry,
+      tripType: tripType,
+      purpose: tripPurpose,
+    },
+    {
+      enabled: false,
+      retry: 1,
+    }
+  );
+
+  useEffect(() => {
+    if (visaCheckQuery.data) {
+      console.log('[Requirements] API Success:', visaCheckQuery.data);
+      if (visaCheckQuery.data.success && visaCheckQuery.data.data) {
+        setApiResponse(visaCheckQuery.data.data);
+        setShowResults(true);
+        setError(null);
+        setIsLoading(false);
+      } else {
+        setError('No data received from API');
+        setIsLoading(false);
+      }
+    }
+    
+    if (visaCheckQuery.error) {
+      console.error('[Requirements] API Error:', visaCheckQuery.error);
+      setError(visaCheckQuery.error.message || 'Failed to fetch visa requirements. Please verify with embassy.');
+      setShowResults(false);
+      setIsLoading(false);
+    }
+  }, [visaCheckQuery.data, visaCheckQuery.error]);
+
   const fetchVisaRequirements = async () => {
     const validationError = validateForm();
     if (validationError) {
@@ -323,154 +358,15 @@ export default function RequirementsScreen() {
     setShowResults(false);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const mockData = getMockVisaData(passportCountry, toCountry, tripPurpose);
-      setApiResponse(mockData);
-      setShowResults(true);
-      
+      await visaCheckQuery.refetch();
     } catch (err: unknown) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
       setError(errorObj.message);
-    } finally {
       setIsLoading(false);
     }
   };
 
-  // Dynamic mock data based on user input
-  const getMockVisaData = (from: string, to: string, purpose: string) => {
-    // Different responses based on destination country
-    if (to === 'Thailand') {
-      return {
-        visa_required: false,
-        max_stay_days: 60,
-        visa_on_arrival: false,
-        evisa_available: true,
-        special_visas: [
-          {
-            name: "Destination Thailand Visa (DTV)",
-            description: "Available for remote workers and long term travelers",
-            url: "https://www.thaievisa.go.th"
-          }
-        ],
-        requirements: [
-          {
-            name: "Mandatory Digital Arrival Card",
-            description: "Must be completed before arrival",
-            url: "https://tdac.immigration.go.th"
-          },
-          {
-            name: "Passport Validity",
-            description: "Passport must be valid for at least 6 months from the time of entry",
-            url: null
-          },
-          {
-            name: "Return Ticket",
-            description: "Proof of onward travel may be required",
-            url: null
-          },
-          {
-            name: "Sufficient Funds",
-            description: "Proof of 20,000 THB per person or 40,000 THB per family may be requested",
-            url: null
-          }
-        ]
-      };
-    } else if (to === 'Indonesia') {
-      return {
-        visa_required: purpose === 'Digital Nomad',
-        max_stay_days: purpose === 'Tourism' ? 30 : 60,
-        visa_on_arrival: true,
-        evisa_available: true,
-        special_visas: [
-          {
-            name: "B211A Visa",
-            description: "For digital nomads and remote workers staying up to 60 days",
-            url: "https://imigrasi.go.id"
-          }
-        ],
-        requirements: [
-          {
-            name: "Electronic Customs Declaration",
-            description: "Must be completed before arrival",
-            url: "https://ecd.beacukai.go.id"
-          },
-          {
-            name: "Passport Validity",
-            description: "Passport must be valid for at least 6 months from the time of entry",
-            url: null
-          },
-          {
-            name: "Return Ticket",
-            description: "Proof of onward travel is required",
-            url: null
-          },
-          {
-            name: "Sufficient Funds",
-            description: "Proof of $1,500 USD for the duration of stay",
-            url: null
-          }
-        ]
-      };
-    } else if (to === 'Vietnam') {
-      return {
-        visa_required: true,
-        max_stay_days: 30,
-        visa_on_arrival: true,
-        evisa_available: true,
-        special_visas: [
-          {
-            name: "E-Visa",
-            description: "Available for tourists and business travelers for up to 30 days",
-            url: "https://evisa.gov.vn"
-          }
-        ],
-        requirements: [
-          {
-            name: "Visa Application",
-            description: "Must be completed online before arrival",
-            url: "https://evisa.gov.vn"
-          },
-          {
-            name: "Passport Validity",
-            description: "Passport must be valid for at least 6 months from the time of entry",
-            url: null
-          },
-          {
-            name: "Passport Photos",
-            description: "Two recent passport-sized photos",
-            url: null
-          },
-          {
-            name: "Proof of Accommodation",
-            description: "Hotel bookings or address of stay in Vietnam",
-            url: null
-          }
-        ]
-      };
-    } else {
-      // Default response for other countries
-      return {
-        visa_required: true,
-        max_stay_days: 30,
-        visa_on_arrival: false,
-        evisa_available: false,
-        special_visas: [],
-        requirements: [
-          {
-            name: "Passport Validity",
-            description: "Passport must be valid for at least 6 months from the time of entry",
-            url: null
-          },
-          {
-            name: "Visa Application",
-            description: "Contact the embassy or consulate for specific requirements",
-            url: null
-          }
-        ]
-      };
-    }
-  };
+
 
   // Render dropdown item
   const renderDropdownItem = (item: string, onSelect: (item: string) => void, closeDropdown: () => void) => {

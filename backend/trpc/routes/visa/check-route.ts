@@ -3,6 +3,7 @@ import { VisaRuleModel } from '../../../models/visa-rule';
 import { CountryModel } from '../../../models/country';
 import { getVisaIngestService } from '../../../services/visa-ingest/ingestion';
 import { getVisaExplainerService } from '../../../services/visa-explainer/explainer';
+import { getTravelBuddyClient } from '../../../services/travelbuddy/client';
 import { z } from 'zod';
 
 export const checkVisaRoute = publicProcedure
@@ -86,5 +87,37 @@ export const getVisaRuleRoute = publicProcedure
     } catch (error) {
       console.error('[getVisaRuleRoute] Error:', error);
       throw error;
+    }
+  });
+
+export const checkTravelBuddyRoute = publicProcedure
+  .input(z.object({
+    from: z.string(),
+    to: z.string(),
+    tripType: z.string(),
+    purpose: z.string(),
+  }))
+  .query(async ({ input }) => {
+    console.log('[checkTravelBuddyRoute] Checking requirements:', input);
+    
+    try {
+      const client = getTravelBuddyClient();
+      const result = await client.getVisaRequirements(
+        input.from,
+        input.to,
+        input.tripType,
+        input.purpose
+      );
+
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      console.error('[checkTravelBuddyRoute] Error:', error);
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch visa requirements: ${error.message}`);
+      }
+      throw new Error('Failed to fetch visa requirements');
     }
   });

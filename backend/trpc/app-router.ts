@@ -8,6 +8,7 @@ import {
 import {
   checkVisaRoute,
   getVisaRuleRoute,
+  checkTravelBuddyRoute,
 } from "./routes/visa/check-route";
 import {
   createTripRoute,
@@ -33,6 +34,7 @@ export const appRouter = createTRPCRouter({
   visa: createTRPCRouter({
     check: checkVisaRoute,
     getRule: getVisaRuleRoute,
+    checkTravelBuddy: checkTravelBuddyRoute,
   }),
   trips: createTRPCRouter({
     create: createTripRoute,
