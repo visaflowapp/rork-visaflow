@@ -48,7 +48,13 @@ export class TravelBuddyClient {
   ): Promise<VisaRequirement> {
     console.log(`[TravelBuddyClient] Fetching visa requirements: ${from} -> ${to}`);
 
-    const url = `${this.config.apiHost}/visa-requirement`;
+    const params = new URLSearchParams({
+      from: from,
+      to: to,
+    });
+    const url = `${this.config.apiHost}/visa-requirement?${params.toString()}`;
+
+    console.log(`[TravelBuddyClient] Request URL:`, url);
 
     try {
       const controller = new AbortController();
@@ -65,6 +71,8 @@ export class TravelBuddyClient {
 
       clearTimeout(timeoutId);
 
+      console.log(`[TravelBuddyClient] Response status:`, response.status);
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`[TravelBuddyClient] Error response:`, {
@@ -77,12 +85,27 @@ export class TravelBuddyClient {
           throw new Error('Rate limit exceeded. Please try again later.');
         }
 
+        if (response.status === 403) {
+          throw new Error('API authentication failed. Please check your API credentials.');
+        }
+
         throw new Error(
-          `TravelBuddyAI API error: ${response.status} ${response.statusText}`
+          `API error: ${response.status} - ${errorText || response.statusText}`
         );
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log(`[TravelBuddyClient] Response text:`, responseText.substring(0, 200));
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error(`[TravelBuddyClient] JSON parse error:`, parseError);
+        console.error(`[TravelBuddyClient] Response was:`, responseText);
+        throw new Error(`Invalid API response format. Please verify your API credentials.`);
+      }
+
       console.log(`[TravelBuddyClient] Success`);
       return data as VisaRequirement;
     } catch (error) {
