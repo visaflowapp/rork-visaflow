@@ -154,6 +154,7 @@ export default function TrackerScreen() {
                     ]}
                     onPress={() => markAlertAsRead(alert.id)}
                   >
+
                     <View style={styles.compactAlertIcon}>
                       {alert.type === 'deadline' && <AlertCircle size={16} color={Colors.warning} />}
                       {alert.type === 'policy' && <Info size={16} color={Colors.primary} />}

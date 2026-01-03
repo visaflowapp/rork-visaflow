@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 16,
     marginHorizontal: 16,
-    marginTop: 16,
-    padding: 16,
+    marginTop: 12,
+    padding: 12,
     shadowColor: '#0000EE',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 0,
   },
   settingsItemLeft: {
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     padding: 16,
-    paddingBottom: 24,
+    paddingBottom: 20,
   },
   logoutButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',

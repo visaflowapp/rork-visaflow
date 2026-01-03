@@ -361,7 +361,9 @@ export default function RequirementsScreen() {
       await visaCheckQuery.refetch();
     } catch (err: unknown) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj.message);
+      // Clean up error message for UI
+      const cleanError = errorObj.message.replace('TRPCClientError: ', '').replace('Error: ', '');
+      setError(cleanError);
       setIsLoading(false);
     }
   };

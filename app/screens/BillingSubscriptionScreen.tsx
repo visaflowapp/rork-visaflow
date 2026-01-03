@@ -57,7 +57,7 @@ export default function BillingSubscriptionScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Billing & Subscription',
-          headerStyle: { backgroundColor: Colors.primary },
+          headerStyle: { backgroundColor: '#0000EE' },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -167,7 +167,7 @@ export default function BillingSubscriptionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#0000EE',
   },
   backButton: {
     marginLeft: 8,
@@ -178,14 +178,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   planHeader: {
     flexDirection: 'row',

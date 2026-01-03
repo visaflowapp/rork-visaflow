@@ -115,9 +115,15 @@ export const checkTravelBuddyRoute = publicProcedure
       };
     } catch (error) {
       console.error('[checkTravelBuddyRoute] Error:', error);
-      if (error instanceof Error) {
-        throw new Error(`Failed to fetch visa requirements: ${error.message}`);
+      // Ensure we return a clean error message that doesn't break the client JSON parsing
+      // If error is an object, try to extract message
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      // If it's a JSON parse error from the client itself, it might mean the upstream API failed hard
+      if (errorMessage.includes('Unexpected character') || errorMessage.includes('JSON Parse error')) {
+        throw new Error('Visa data currently unavailable. Please try again later.');
       }
-      throw new Error('Failed to fetch visa requirements');
+      
+      throw new Error(errorMessage);
     }
   });

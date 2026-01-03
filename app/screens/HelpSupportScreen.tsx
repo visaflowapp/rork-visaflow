@@ -38,7 +38,7 @@ export default function HelpSupportScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Help & Support',
-          headerStyle: { backgroundColor: '#007AFF' },
+          headerStyle: { backgroundColor: '#0000EE' },
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -55,7 +55,7 @@ export default function HelpSupportScreen() {
         <View style={styles.card}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Bug size={20} color="#007AFF" style={styles.sectionIcon} />
+              <Bug size={20} color="#0000EE" style={styles.sectionIcon} />
               <Text style={styles.sectionTitle}>Report a Bug</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -83,7 +83,7 @@ export default function HelpSupportScreen() {
           
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Mail size={20} color="#007AFF" style={styles.sectionIcon} />
+              <Mail size={20} color="#0000EE" style={styles.sectionIcon} />
               <Text style={styles.sectionTitle}>Contact Support</Text>
             </View>
             <Text style={styles.sectionDescription}>
@@ -94,7 +94,7 @@ export default function HelpSupportScreen() {
               onPress={handleContactSupport}
               variant="outline"
               style={styles.contactButton}
-              icon={() => <Mail size={18} color="#007AFF" style={styles.buttonIcon} />}
+              icon={() => <Mail size={18} color="#0000EE" style={styles.buttonIcon} />}
             />
           </View>
         </View>
@@ -106,7 +106,7 @@ export default function HelpSupportScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0000EE',
   },
   backButton: {
     marginLeft: 8,
@@ -117,14 +117,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   section: {
     marginBottom: 16,

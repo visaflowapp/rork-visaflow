@@ -57,7 +57,7 @@ export default function PrivacySecurityScreen() {
       <Stack.Screen 
         options={{ 
           title: 'Privacy & Security',
-          headerStyle: { backgroundColor: '#0066CC' }, // Hardcoded primary color to fix the error
+          headerStyle: { backgroundColor: '#0000EE' }, // Deep blue
           headerTintColor: 'white',
           headerTitleStyle: {
             fontWeight: 'bold',
@@ -77,7 +77,7 @@ export default function PrivacySecurityScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingTextContainer}>
               <View style={styles.iconContainer}>
-                <Fingerprint size={20} color="#0066CC" /> {/* Hardcoded primary color to fix the error */}
+                <Fingerprint size={20} color="#0000EE" />
               </View>
               <View style={styles.settingTextContent}>
                 <Text style={styles.settingTitle}>Face ID / Touch ID</Text>
@@ -100,7 +100,7 @@ export default function PrivacySecurityScreen() {
           <TouchableOpacity style={styles.linkItem} onPress={openPrivacyPolicy}>
             <View style={styles.linkTextContainer}>
               <View style={styles.iconContainer}>
-                <Shield size={20} color="#0066CC" /> {/* Hardcoded primary color to fix the error */}
+                <Shield size={20} color="#0000EE" />
               </View>
               <Text style={styles.linkText}>Privacy Policy</Text>
             </View>
@@ -141,7 +141,7 @@ export default function PrivacySecurityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0066CC', // Hardcoded primary color to fix the error
+    backgroundColor: '#0000EE',
   },
   backButton: {
     marginLeft: 8,
@@ -152,14 +152,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowColor: '#0000EE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   sectionTitle: {
     fontSize: 18,
