@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { AlertCircle, Info, AlertTriangle } from 'lucide-react-native';
 
 import Colors from '@/constants/colors';
@@ -12,6 +12,7 @@ import { getProgressPercentage } from '@/utils/visaHelpers';
 import VisaCard from '@/components/VisaCard';
 
 export default function TrackerScreen() {
+  const params = useLocalSearchParams();
   const { 
     activeVisas, 
     alerts,
@@ -22,7 +23,8 @@ export default function TrackerScreen() {
     addVisa,
     removeVisa,
     dismissAlert,
-    markAlertAsRead
+    markAlertAsRead,
+    userProfile
   } = useVisaStore();
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   
@@ -41,15 +43,22 @@ export default function TrackerScreen() {
     }
   }, [userId, setUserId, loadUserData]);
 
-  // Show Add Visa modal for new users after initialization
   useEffect(() => {
     if (!isLoading && !hasInitialized) {
       setHasInitialized(true);
-      if (activeVisas.length === 0) {
+      if (activeVisas.length === 0 && !params.openAddModal) {
         setShowAddModal(true);
       }
     }
-  }, [isLoading, activeVisas.length, hasInitialized]);
+  }, [isLoading, activeVisas.length, hasInitialized, params.openAddModal]);
+
+  useEffect(() => {
+    if (params.openAddModal === 'true' || userProfile?.hasUpcomingTrips) {
+      setTimeout(() => {
+        setShowAddModal(true);
+      }, 500);
+    }
+  }, [params.openAddModal, userProfile?.hasUpcomingTrips]);
 
   // If there's only one visa, select it automatically
   useEffect(() => {

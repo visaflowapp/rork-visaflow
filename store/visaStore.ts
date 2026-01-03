@@ -13,6 +13,7 @@ export const useVisaStore = create<VisaState>()(
       alerts: [],
       userProfile: null,
       isLoading: false,
+      hasCompletedOnboarding: false,
       
       setUserId: (userId: string) => {
         set({ userId });
@@ -107,6 +108,10 @@ export const useVisaStore = create<VisaState>()(
       toggleTravelMode: (enabled: boolean) => {
         get().updateProfile({ travel_mode: enabled });
       },
+      
+      completeOnboarding: () => {
+        set({ hasCompletedOnboarding: true });
+      },
     }),
     {
       name: 'visa-storage',
@@ -116,6 +121,7 @@ export const useVisaStore = create<VisaState>()(
         userProfile: state.userProfile,
         activeVisas: state.activeVisas,
         alerts: state.alerts,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
       }),
     }
   )

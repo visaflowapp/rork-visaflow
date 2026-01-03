@@ -1,11 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc, trpcClient } from "@/lib/trpc";
+import { useVisaStore } from "@/store/visaStore";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -51,12 +52,27 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const router = useRouter();
+  const segments = useSegments();
+  const { hasCompletedOnboarding } = useVisaStore();
+
+  useEffect(() => {
+    const inOnboarding = segments[0] === 'onboarding';
+    
+    if (!hasCompletedOnboarding && !inOnboarding) {
+      router.replace('/onboarding');
+    } else if (hasCompletedOnboarding && inOnboarding) {
+      router.replace('/(tabs)');
+    }
+  }, [hasCompletedOnboarding, segments, router]);
+
   return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
     >
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: "modal" }} />
     </Stack>

@@ -336,30 +336,24 @@ const AddVisaModal: React.FC<AddVisaModalProps> = ({
             />
           )}
 
-{showCountryDropdown && (
+          {showCountryDropdown && (
             <SimpleDropdown
-              label="Select Country"
-              options={allCountries}
-              value={country}
+              options={allCountries.map(c => ({ label: `${getCountryFlag(c)} ${c}`, value: c }))}
+              selectedValue={country}
               onSelect={handleCountrySelect}
               placeholder="Select country"
-              onClose={() => setShowCountryDropdown(false)}
-              renderOption={(item) => `${getCountryFlag(item)} ${item}`}
-              searchable={true}
             />
           )}
 
           {showVisaTypeDropdown && (
             <SimpleDropdown
-              label="Select Visa Type"
-              options={availableVisaTypes}
-              value={visaType}
+              options={availableVisaTypes.map(vt => ({ label: vt, value: vt }))}
+              selectedValue={visaType}
               onSelect={(value) => {
                 setVisaType(value);
                 setShowVisaTypeDropdown(false);
               }}
               placeholder="Select visa type"
-              onClose={() => setShowVisaTypeDropdown(false)}
             />
           )}
         </View>

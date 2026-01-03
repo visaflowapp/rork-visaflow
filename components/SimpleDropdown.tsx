@@ -11,72 +11,84 @@ import {
 } from 'react-native';
 import { Check, Search } from 'lucide-react-native';
 
-interface SimpleDropdownProps {
+interface DropdownOption {
   label: string;
-  options: string[];
   value: string;
-  onSelect: (item: string) => void;
+}
+
+interface SimpleDropdownProps {
+  options: DropdownOption[];
+  selectedValue: string;
+  onSelect: (value: string) => void;
   placeholder?: string;
-  onClose?: () => void;
-  renderOption?: (item: string) => string;
-  searchable?: boolean;
 }
 
 const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
-  label,
   options,
-  value,
+  selectedValue,
   onSelect,
   placeholder = 'Select an option',
-  onClose,
-  renderOption,
-  searchable = false
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const filteredOptions = useMemo(() => {
-    if (!searchable || !searchQuery.trim()) {
+    if (!searchQuery.trim()) {
       return options;
     }
     const query = searchQuery.toLowerCase();
     return options.filter(option => 
-      option.toLowerCase().includes(query)
+      option.label.toLowerCase().includes(query)
     );
-  }, [options, searchQuery, searchable]);
-const renderItem = ({ item }: { item: string }) => (
+  }, [options, searchQuery]);
+
+  const selectedOption = options.find(opt => opt.value === selectedValue);
+  const renderItem = ({ item }: { item: DropdownOption }) => (
     <TouchableOpacity
       style={[
         styles.option,
-        item === value && styles.selectedOption
+        item.value === selectedValue && styles.selectedOption
       ]}
-      onPress={() => onSelect(item)}
+      onPress={() => {
+        onSelect(item.value);
+        setIsOpen(false);
+      }}
     >
       <Text style={[
         styles.optionText,
-        item === value && styles.selectedOptionText
+        item.value === selectedValue && styles.selectedOptionText
       ]}>
-        {renderOption ? renderOption(item) : item}
+        {item.label}
       </Text>
-      {item === value && (
+      {item.value === selectedValue && (
         <Check size={20} color="#007AFF" />
       )}
     </TouchableOpacity>
   );
 
   return (
-    <Modal
-      visible={true}
-      transparent={true}
-      animationType="fade"
-      statusBarTranslucent
-    >
-      <Pressable 
-        style={styles.modalOverlay}
-        onPress={onClose}
+    <View>
+      <TouchableOpacity
+        style={styles.dropdownButton}
+        onPress={() => setIsOpen(true)}
       >
-        <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-          <Text style={styles.modalTitle}>{label}</Text>
-          {searchable && (
+        <Text style={[styles.dropdownButtonText, !selectedValue && styles.placeholderText]}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={isOpen}
+        transparent={true}
+        animationType="fade"
+        statusBarTranslucent
+      >
+        <Pressable 
+          style={styles.modalOverlay}
+          onPress={() => setIsOpen(false)}
+        >
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <Text style={styles.modalTitle}>{placeholder}</Text>
             <View style={styles.searchContainer}>
               <Search size={20} color="#8E8E93" style={styles.searchIcon} />
               <TextInput
@@ -88,21 +100,40 @@ const renderItem = ({ item }: { item: string }) => (
                 autoFocus={true}
               />
             </View>
-          )}
-          <FlatList
-            data={filteredOptions}
-            renderItem={renderItem}
-            keyExtractor={(item) => item}
-            style={styles.optionsList}
-            showsVerticalScrollIndicator={false}
-          />
+            <FlatList
+              data={filteredOptions}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.value}
+              style={styles.optionsList}
+              showsVerticalScrollIndicator={false}
+            />
+          </Pressable>
         </Pressable>
-      </Pressable>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  dropdownButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    minHeight: 56,
+    justifyContent: 'center',
+  },
+  dropdownButtonText: {
+    fontSize: 16,
+    color: '#000000',
+    fontWeight: '500',
+  },
+  placeholderText: {
+    color: '#8E8E93',
+    fontWeight: '400',
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

@@ -29,6 +29,16 @@ export interface UserProfile {
   notifications: boolean;
   travel_mode: boolean;
   email: string;
+  travelStyle?: string;
+  hasMultiplePassports?: boolean;
+  secondNationality?: string;
+  primaryResidency?: string;
+  passportExpiry?: string;
+  secondPassportExpiry?: string;
+  typicalTripLength?: string;
+  frequentSpecialDestinations?: string;
+  preferredAlertTiming?: number;
+  hasUpcomingTrips?: boolean;
 }
 
 export interface VisaState {
@@ -38,6 +48,7 @@ export interface VisaState {
   alerts: Alert[];
   userProfile: UserProfile | null;
   isLoading: boolean;
+  hasCompletedOnboarding: boolean;
   
   // Actions
   setUserId: (userId: string) => void;
@@ -50,4 +61,5 @@ export interface VisaState {
   updateProfile: (profile: Partial<UserProfile>) => void;
   toggleNotifications: (enabled: boolean) => void;
   toggleTravelMode: (enabled: boolean) => void;
+  completeOnboarding: () => void;
 }
