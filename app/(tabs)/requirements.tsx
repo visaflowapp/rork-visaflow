@@ -833,7 +833,9 @@ export default function RequirementsScreen() {
                         <CheckCircle2 size={18} color="#34C759" style={styles.checklistIcon} />
                         <View style={styles.checklistContent}>
                           <Text style={styles.checklistTitle}>Visa-free entry</Text>
-                          <Text style={styles.checklistDesc}>Up to {apiResponse.max_stay_days} days with {passportCountry} passport</Text>
+                          <Text style={styles.checklistDesc}>
+                            {apiResponse.max_stay_days ? `Up to ${apiResponse.max_stay_days} days with ${passportCountry} passport` : `Visa-free entry with ${passportCountry} passport`}
+                          </Text>
                         </View>
                       </View>
                     )}
@@ -843,12 +845,14 @@ export default function RequirementsScreen() {
                         <AlertCircle size={18} color="#FF3B30" style={styles.checklistIcon} />
                         <View style={styles.checklistContent}>
                           <Text style={styles.checklistTitle}>Visa required</Text>
-                          <Text style={styles.checklistDesc}>{passportCountry} passport holders must obtain visa</Text>
+                          <Text style={styles.checklistDesc}>
+                            {passportCountry} passport holders must obtain visa
+                          </Text>
                           <TouchableOpacity 
                             style={styles.inlineDetailsButton}
                             onPress={() => showDetails(
                               "Visa Requirements",
-                              `${passportCountry} citizens need a visa to enter ${toCountry}. Maximum stay: ${apiResponse.max_stay_days} days.`
+                              `${passportCountry} citizens need a visa to enter ${toCountry}.${apiResponse.max_stay_days ? ` Maximum stay: ${apiResponse.max_stay_days} days.` : ''}`
                             )}
                           >
                             <Text style={styles.inlineDetailsText}>See Details</Text>
