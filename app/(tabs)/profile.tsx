@@ -207,7 +207,7 @@ export default function SettingsScreen() {
           onPress={handleLogout}
           variant="outline"
           style={styles.logoutButton}
-          icon={() => <LogOut size={18} color="#0000EE" style={styles.logoutIcon} />}
+          icon={() => <LogOut size={18} color="#0000EE" />}
         />
       </View>
 

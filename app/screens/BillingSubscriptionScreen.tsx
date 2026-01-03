@@ -82,7 +82,7 @@ export default function BillingSubscriptionScreen() {
           </View>
           
           <View style={styles.expiryContainer}>
-            <Calendar size={18} color={Colors.primary} style={styles.expiryIcon} />
+            <Calendar size={18} color={Colors.primary} />
             <Text style={styles.expiryText}>
               {subscriptionData.plan === 'Free Trial' 
                 ? `Trial expires on ${formatDate(subscriptionData.expiryDate)}`
@@ -139,7 +139,7 @@ export default function BillingSubscriptionScreen() {
               onPress={handleManageBilling}
               variant="outline"
               style={styles.actionButton}
-              icon={() => <CreditCard size={18} color={Colors.primary} style={styles.buttonIcon} />}
+              icon={() => <CreditCard size={18} color="#0000EE" />}
             />
             
             {subscriptionData.plan !== 'Free Trial' && (
@@ -149,7 +149,7 @@ export default function BillingSubscriptionScreen() {
                 variant="outline"
                 style={[styles.actionButton, styles.cancelButton]}
                 textStyle={styles.cancelButtonText}
-                icon={() => <AlertTriangle size={18} color={Colors.error} style={styles.buttonIcon} />}
+                icon={() => <AlertTriangle size={18} color="#FF3B30" />}
               />
             )}
           </View>

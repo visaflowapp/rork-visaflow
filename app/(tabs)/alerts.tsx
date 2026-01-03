@@ -58,7 +58,7 @@ export default function AlertsScreen() {
                 style={styles.markAllButton}
                 onPress={handleMarkAllAsRead}
               >
-                <CheckCircle size={16} color={Colors.primary} style={styles.markAllIcon} />
+                <CheckCircle size={16} color={Colors.primary} />
                 <Text style={styles.markAllButtonText}>Mark all as read</Text>
               </TouchableOpacity>
             ) : null

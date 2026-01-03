@@ -124,7 +124,7 @@ export default function PrivacySecurityScreen() {
               variant="outline"
               style={styles.deleteButton}
               textStyle={styles.deleteButtonText}
-              icon={() => <Trash2 size={18} color={Colors.error} style={styles.deleteIcon} />}
+              icon={() => <Trash2 size={18} color="#FF3B30" />}
             />
           </View>
         </View>
